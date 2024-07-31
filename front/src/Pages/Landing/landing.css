@@ -1,0 +1,10 @@
+.landing-wrapper {
+    width: 100%;
+    height: 100vh;
+    background-image: url('../../Assets/Images/tinder_background_img.jpg');
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    color: white;
+}

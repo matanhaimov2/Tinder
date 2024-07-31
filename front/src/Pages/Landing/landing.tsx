@@ -5,7 +5,7 @@ import './landing.css';
 
 // Components
 
-function Landing() {
+const Landing: React.FC = () => {
 
     return (
         <div className='landing-wrapper'>
