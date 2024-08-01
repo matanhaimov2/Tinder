@@ -1,10 +1,35 @@
 .landing-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     width: 100%;
-    height: 100vh;
-    background-image: url('../../Assets/Images/tinder_background_img.jpg');
-    background-size: cover;
-    background-position: center;
-    position: absolute;
-    top: 0;
+    height: 100%;
     color: white;
+    gap: 3%;
+}
+
+.landing-title-wrapper {
+    font-size: 1000%;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.landing-register-button-wrapper {
+    z-index: 1;
+}
+
+.landing-register-button {
+    background: linear-gradient(45deg, #eb3131, #d43e73 );
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px #0003;
+    color: #fff;
+    cursor: pointer;
+    font-size: 120%;
+    padding: 15px 25px;
+    text-decoration: none;
+    transition: all .3s ease;
+    font-weight: 600;
+    z-index: 1;
 }

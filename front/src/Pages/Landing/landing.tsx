@@ -4,13 +4,28 @@ import React, { useState, useEffect } from 'react';
 import './landing.css';
 
 // Components
+import Register from '../../Components/Register/register';
 
-const Landing: React.FC = () => {
+function Landing () {
 
+    const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+    
     return (
         <div className='landing-wrapper'>
-            <h1>Landing Page</h1>
+            <div className='landing-title-wrapper'>
+                <span className='landing-title'> Swipe Right </span>
+            </div>
 
+            <div className='landing-register-button-wrapper'>
+                <button className='landing-register-button' onClick={() => setIsRegisterOpen(true)}> Create account </button>
+            </div>
+
+            {isRegisterOpen && (
+                <>
+                    <div className="overlay"></div>
+                    <Register isRegisterOpen={isRegisterOpen} setIsRegisterOpen={setIsRegisterOpen}/>
+                </>
+            )}
         </div>
     );
 }

@@ -1,0 +1,33 @@
+# Python specific
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Django specific
+*.log
+db.sqlite3
+/media/
+*.pot
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Environment configuration
+.env
+
+# Virtual environment
+venv/
+.env/
+venv/
+
+# IDE specific
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
