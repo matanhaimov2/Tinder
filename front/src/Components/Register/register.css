@@ -21,11 +21,6 @@
     flex-direction: column;
 }
 
-.register-tinder-title-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
 .register-tinder-icon-wrapper {
     display: flex;
     justify-content: center;
@@ -34,4 +29,29 @@
 .register-tinder-icon {
     width: 80px;
     height: fit-content;
+}
+
+.register-tinder-title-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.register-name-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 2%;
+}
+
+.register-loading-wrapper {
+    display: flex;
+    justify-content: center;
+    background: #0b6bcb;
+    padding: 1%;
+    border-radius: 5px;
+    margin-top: 1px;
+}
+
+.register-submit-button {
+    padding: 3% !important;
+    margin-top: 1px;
 }

@@ -3,34 +3,54 @@ import axios from "axios";
 // Global Veribales
 import { SERVER_URL } from "../Assets/GlobalVeriables";
 
-
-// -- Authentication
-const login = async () => {
-    try {
-        // Sends to back email and password to see if correct
-        const response = await axios.post(SERVER_URL + "/login", )
-        console.log(response);
-
-        return response.data
-    }
-    catch (err) {
-        console.log(err);
-    }
+// Props Types
+type RegisterData = {
+    email: string;
+    username: string;
+    first_name: string;
+    last_name: string;
+    password: string;
 }
 
-const register = async () => {
+type LoginData = {
+    username: string;
+    password: string;
+}
+
+const register = async (data : RegisterData) => {
     try {
         // Sends to back the data to insert db
-        const response = await axios.post(SERVER_URL + "/register", )
+        const response = await axios.post(SERVER_URL + "/users/register", data)
         console.log(response);
 
         return response.data
     }
-    catch (err) {
-        console.log(err);
+    catch (err: any) {
+        if (err.response) {
+            return err.response.data;
+        } else {
+            return { error: ["An unknown error occurred."] };
+        }
     }
-
 }
+
+const login = async (data : LoginData) => {
+    try {
+        // Sends to back username and password to see if correct
+        const response = await axios.post(SERVER_URL + "/users/login", data)
+        console.log(response);
+
+        return response.data
+    }
+    catch (err: any) {
+        if (err.response) {
+            return err.response.data;
+        } else {
+            return { error: ["An unknown error occurred."] };
+        }
+    }
+}
+
 
 export {
     login,

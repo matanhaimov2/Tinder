@@ -1,9 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import UserSerializer
-
-# Create your views here.
+from .serializers import UserSerializer, LoginSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -12,8 +10,22 @@ def register(request):
     if serializer.is_valid():
         serializer.save()
         return Response({'success': 'User registered successfully'}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Collect and format error messages
+    error_messages = [error for errors in serializer.errors.values() for error in errors]
 
+    return Response({'error': error_messages}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def login(request):
+    serializer = LoginSerializer(data=request.data)
+
+    if serializer.is_valid():
+        return Response({'success': 'Login successful'}, status=status.HTTP_200_OK)
+    
+    error_messages = [error for errors in serializer.errors.values() for error in errors]
+
+    return Response({'error': error_messages}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 # without serializer:

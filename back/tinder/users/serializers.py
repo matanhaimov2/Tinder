@@ -1,7 +1,8 @@
 # translator - python to json
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
+            raise serializers.ValidationError("A user with this email already exists")
+        return value
+    
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("A user with this username already exists")
         return value
 
     def create(self, validated_data):
@@ -23,3 +29,19 @@ class UserSerializer(serializers.ModelSerializer):
             password=make_password(validated_data['password'])
         )
         return user
+    
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        # Authenticate user
+        user = authenticate(username=username, password=password)
+        
+        if user is None:
+            raise serializers.ValidationError('Invalid username or password.')
+
+        return data
