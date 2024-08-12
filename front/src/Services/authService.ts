@@ -20,7 +20,7 @@ type LoginData = {
 const register = async (data : RegisterData) => {
     try {
         // Sends to back the data to insert db
-        const response = await axios.post(SERVER_URL + "/users/register", data)
+        const response = await axios.post(SERVER_URL + "/users/register/", data)
         console.log(response);
 
         return response.data
@@ -37,7 +37,7 @@ const register = async (data : RegisterData) => {
 const login = async (data : LoginData) => {
     try {
         // Sends to back username and password to see if correct
-        const response = await axios.post(SERVER_URL + "/users/login", data)
+        const response = await axios.post(SERVER_URL + "/users/login/", data)
         console.log(response);
 
         return response.data

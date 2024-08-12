@@ -21,7 +21,8 @@ def login(request):
     serializer = LoginSerializer(data=request.data)
 
     if serializer.is_valid():
-        return Response({'success': 'Login successful'}, status=status.HTTP_200_OK)
+        tokens = serializer.validated_data
+        return Response(tokens, status=status.HTTP_200_OK)
     
     error_messages = [error for errors in serializer.errors.values() for error in errors]
 

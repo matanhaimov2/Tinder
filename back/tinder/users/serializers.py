@@ -1,5 +1,6 @@
 # translator - python to json
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken 
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -40,8 +41,11 @@ class LoginSerializer(serializers.Serializer):
 
         # Authenticate user
         user = authenticate(username=username, password=password)
-        
+
         if user is None:
             raise serializers.ValidationError('Invalid username or password.')
 
-        return data
+        # Generate tokens
+        refresh = RefreshToken.for_user(user)
+
+        return {'refresh': str(refresh), 'access': str(refresh.access_token)}
