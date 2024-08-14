@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 // CSS
 import './login.css';
@@ -71,8 +72,11 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
             const response = await login(data);
             console.log(response);
 
-            if (response && response.success) {
-                navigate('/home')
+            if (response) {
+                const accessToken = Cookies.get('access_token');
+                console.log('here', accessToken)
+                // problem - access token coming as undefind even though token is there (before refreshing)
+                // navigate('/home')
             } else {
                 setErrorMessage(response.error[0]);
             }

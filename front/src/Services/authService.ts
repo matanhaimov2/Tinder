@@ -17,6 +17,11 @@ type LoginData = {
     password: string;
 }
 
+type TokenData = {
+    username: string;
+    password: string;
+}
+
 const register = async (data : RegisterData) => {
     try {
         // Sends to back the data to insert db
@@ -37,7 +42,9 @@ const register = async (data : RegisterData) => {
 const login = async (data : LoginData) => {
     try {
         // Sends to back username and password to see if correct
-        const response = await axios.post(SERVER_URL + "/users/login/", data)
+        const response = await axios.post(SERVER_URL + "/users/login/", data, {
+            withCredentials: true // Include cookies
+        })
         console.log(response);
 
         return response.data
@@ -50,6 +57,23 @@ const login = async (data : LoginData) => {
         }
     }
 }
+
+// const getNewAccessToken = async (data : LoginData) => {
+//     try {
+//         // Sends to back username and password to see if correct
+//         const response = await axios.post(SERVER_URL + "/users/login/", data)
+//         console.log(response);
+
+//         return response.data
+//     }
+//     catch (err: any) {
+//         if (err.response) {
+//             return err.response.data;
+//         } else {
+//             return { error: ["An unknown error occurred."] };
+//         }
+//     }
+// }
 
 
 export {

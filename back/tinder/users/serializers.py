@@ -1,6 +1,5 @@
 # translator - python to json
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken 
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -30,22 +29,3 @@ class UserSerializer(serializers.ModelSerializer):
             password=make_password(validated_data['password'])
         )
         return user
-    
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-
-        # Authenticate user
-        user = authenticate(username=username, password=password)
-
-        if user is None:
-            raise serializers.ValidationError('Invalid username or password.')
-
-        # Generate tokens
-        refresh = RefreshToken.for_user(user)
-
-        return {'refresh': str(refresh), 'access': str(refresh.access_token)}
