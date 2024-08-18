@@ -8,9 +8,5 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             user=instance,
-            email=instance.email,
-            username=instance.username,
-            first_name=instance.first_name,
-            last_name=instance.last_name
             # Leave other fields empty as they will be set to their default values
         )

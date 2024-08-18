@@ -1,11 +1,12 @@
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import UserSerializer
 from .models import Profile
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.http import JsonResponse
 
 @api_view(['POST'])
 def register(request):
@@ -57,8 +58,15 @@ class MyTokenObtainPairView(TokenObtainPairView):
         refresh_token = data.get('refresh')
         
         # Set the cookies
-        response.set_cookie('access_token', access_token, max_age=3600, secure=False, samesite='Strict', httponly=True)
-        response.set_cookie('refresh_token', refresh_token, max_age=604800, secure=False, samesite='Strict', httponly=True)
+        response.set_cookie('access_token', access_token, max_age=None, expires=None, secure=False, samesite='None', httponly=False, domain=None)
+        response.set_cookie('refresh_token', refresh_token, max_age=None, expires=None, secure=False, samesite='None', httponly=False, domain=None)
 
         # problem - cookies gets deleted from f12 after refreshing
         return response
+
+
+# class AuthStatusView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         return Response({"isAuthenticated": True, "username": request.user.username})

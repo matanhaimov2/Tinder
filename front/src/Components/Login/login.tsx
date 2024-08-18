@@ -73,8 +73,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
             console.log(response);
 
             if (response) {
-                const accessToken = Cookies.get('access_token');
-                console.log('here', accessToken)
+
                 // problem - access token coming as undefind even though token is there (before refreshing)
                 // navigate('/home')
             } else {
