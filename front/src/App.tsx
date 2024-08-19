@@ -8,6 +8,7 @@ import './App.css';
 // Pages
 import Landing from './Pages/Landing/landing';
 import Home from './Pages/Home/home';
+import SetProfile from './Pages/SetProfile/setprofile';
 
 // Components
 import TopNav from './Components/TopNav/topnav';
@@ -22,6 +23,10 @@ function landing() {
 
 function home() {
   return <Home />;
+}
+
+function setprofile() {
+  return <SetProfile />;
 }
 
 
@@ -66,6 +71,7 @@ const PrivateRoutes = () => {
       {isLoggedIn ? (
         <Routes>
           <Route path="/home" element={home()} />
+          <Route path="/setprofile" element={setprofile()} />
         </Routes>
       ) : (
         <Navigate to="/" />
@@ -89,6 +95,20 @@ function App() {
 
     // healthChecker();
   }, [])
+
+  // load google maps api script to an head
+  useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
+
+    loadGoogleMapsScript();
+  }, []);
+
 
   return (
     <div className='wrapper'>
