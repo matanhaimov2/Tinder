@@ -75,7 +75,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
             if (response) {
 
                 // problem - access token coming as undefind even though token is there (before refreshing)
-                // navigate('/home')
+                navigate('/home')
                 // navigate('/setprofile')
 
                 // if firstlogin => navigate('/setprofile'), else => navigate('/home')

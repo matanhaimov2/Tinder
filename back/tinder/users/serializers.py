@@ -1,8 +1,42 @@
 # translator - python to json
-from django.contrib.auth import authenticate
+# from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ("first_name", "last_name", "email", "password")
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def save(self):
+        user = get_user_model()(
+            email=self.validated_data["email"],
+            first_name=self.validated_data["first_name"],
+            last_name=self.validated_data["last_name"],
+        )
+     
+        password = self.validated_data["password"]
+
+        # Advanced password cheks
+
+        user.set_password(password)
+        user.save()
+
+        return user
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(
+        style={"input_type": "password"}, write_only=True)
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

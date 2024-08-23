@@ -1,72 +1,144 @@
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from django.contrib.auth import authenticate
+from django.conf import settings
+from django.middleware import csrf
+from rest_framework import exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
+from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
+from users import serializers, models
 from .serializers import UserSerializer
-from .models import Profile
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import status
 
-@api_view(['POST'])
+def get_user_tokens(user):
+    refresh = tokens.RefreshToken.for_user(user)
+    return {
+        "refresh_token": str(refresh),
+        "access_token": str(refresh.access_token)
+    }
+
+# Register
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([])
 def register(request):
     serializer = UserSerializer(data=request.data)
-    
+
+    # Check if serializer is valid and raise exceptions if not
     if serializer.is_valid():
-        serializer.save()
-        return Response({'success': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        if user is not None:
+            return response.Response({'success': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+        return rest_exceptions.AuthenticationFailed({'fail': 'Invalid credentials!'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        # Log or print the errors for debugging
+        error_messages = [error for errors in serializer.errors.values() for error in errors]
+        return response.Response({'error': error_messages}, status=status.HTTP_400_BAD_REQUEST)
     
-    # Collect and format error messages
-    error_messages = [error for errors in serializer.errors.values() for error in errors]
+# Login
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([])
+def login(request):
+    serializer = serializers.LoginSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
 
-    return Response({'error': error_messages}, status=status.HTTP_400_BAD_REQUEST)
+    username = serializer.validated_data["username"]
+    password = serializer.validated_data["password"]
 
-# Custom JWT serializer
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
+    user = authenticate(username=username, password=password)
 
-        # Fetch the user's profile
-        try:
-            profile = Profile.objects.get(user=user)
-        except Profile.DoesNotExist:
-            profile = None
+    if user is not None:
+        tokens = get_user_tokens(user)
+        res = response.Response()
+        res.set_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+            value=tokens["access_token"],
+            expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+        )
 
-       # Add custom claims
-        token['email'] = user.email
-        token['username'] = user.username
-        token['first_name'] = user.first_name
-        token['last_name'] = user.last_name
-        token['age'] = profile.age if profile else None
-        token['gender'] = profile.gender if profile else None
-        token['interested_in'] = profile.interested_in if profile else None
-        token['location'] = profile.location if profile else None
+        res.set_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+            value=tokens["refresh_token"],
+            expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+        )
 
-        return token
+        res.data = tokens
 
-# Custom JWT view
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+        res["X-CSRFToken"] = csrf.get_token(request)
+        return res
+    raise rest_exceptions.AuthenticationFailed(
+        "Email or Password is incorrect!")
 
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+# Logout
+@rest_decorators.api_view(['POST'])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def logout(request):
+    try:
+        refreshToken = request.COOKIES.get(
+            settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        token = tokens.RefreshToken(refreshToken)
+        token.blacklist()
+
+        res = response.Response()
+        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+        res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        res.delete_cookie("X-CSRFToken")
+        res.delete_cookie("csrftoken")
+        res["X-CSRFToken"]=None
         
-        # Parse the JWT tokens from the response
-        data = response.data
-        access_token = data.get('access')
-        refresh_token = data.get('refresh')
-        
-        # Set the cookies
-        response.set_cookie('access_token', access_token, max_age=None, expires=None, secure=False, samesite='None', httponly=False, domain=None)
-        response.set_cookie('refresh_token', refresh_token, max_age=None, expires=None, secure=False, samesite='None', httponly=False, domain=None)
+        return res
+    except:
+        raise rest_exceptions.ParseError("Invalid token")
 
-        # problem - cookies gets deleted from f12 after refreshing
-        return response
+# Refresh Token
+class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
+    refresh = None
 
+    def validate(self, attrs):
+        attrs['refresh'] = self.context['request'].COOKIES.get('refresh')
+        if attrs['refresh']:
+            return super().validate(attrs)
+        else:
+            raise jwt_exceptions.InvalidToken(
+                'No valid token found in cookie \'refresh\'')
 
-# class AuthStatusView(APIView):
-#     permission_classes = [IsAuthenticated]
+class CookieTokenRefreshView(jwt_views.TokenRefreshView):
+    serializer_class = CookieTokenRefreshSerializer
 
-#     def get(self, request):
-#         return Response({"isAuthenticated": True, "username": request.user.username})
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get("refresh"):
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                value=response.data['refresh'],
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+
+            del response.data["refresh"]
+
+        # Set the access token in the cookie if it exists in the response data
+        if response.data.get("access"):
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value=response.data['access'],
+                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+        response["X-CSRFToken"] = request.COOKIES.get("csrftoken")
+        return super().finalize_response(request, response, *args, **kwargs)
+
+# Verify Token
+@rest_decorators.api_view(["GET"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def verify(request):
+    try:
+        return response.Response({'Success': 'User authorized'}, status=status.HTTP_201_CREATED)
+    except:
+        return response.Response({'Error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+    
