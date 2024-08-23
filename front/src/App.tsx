@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import PersistLogin from './Components/PersistLogin';
+import useAxiosPrivate from "./Hooks/usePrivate"
 
 // Main CSS
 import './App.css';
 
 // Pages
 import Landing from './Pages/Landing/landing';
-import Login from './Pages/Login/login';
-import Register from './Pages/Register/register';
 import Home from './Pages/Home/home';
+import SetProfile from './Pages/SetProfile/setprofile';
 
 // Components
 import TopNav from './Components/TopNav/topnav';
@@ -21,16 +22,12 @@ function landing() {
   return <Landing />;
 }
 
-function login() {
-  return <Login />;
-}
-
-function register() {
-  return <Register />;
-}
-
 function home() {
   return <Home />;
+}
+
+function setprofile() {
+  return <SetProfile />;
 }
 
 
@@ -38,7 +35,6 @@ function home() {
 const ComponentsWithNav = () => {
   return (
     <div className='com-with-nav-wrapper'>
-
       <div className='com-wrapper'>
         <div className='com-with-nav'>
           <TopNav />
@@ -62,10 +58,18 @@ const ComponentsWithNav = () => {
 const PrivateRoutes = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const axiosPrivateInstance = useAxiosPrivate()
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      // setIsLoggedIn(await isAuthenticated())
+      try {
+        const { data } = await axiosPrivateInstance.get('users/verify/')
+
+        console.log(data)
+
+      } catch (error:any) {
+        setIsLoggedIn(false)
+      }
     }
 
     checkAuthentication()
@@ -75,10 +79,16 @@ const PrivateRoutes = () => {
     <div className='private-routes'>
       {isLoggedIn ? (
         <Routes>
-          <Route path="/home" element={home()} />
+          <Route path='/' element={<PersistLogin />}>
+            <Route path="/home" element={home()} />
+            <Route path="/setprofile" element={setprofile()} />
+            
+            {/* Page Doesnt Exists */}
+            <Route path='*' element={<div>404 doesnt exists</div>} />
+          </Route>
         </Routes>
       ) : (
-        <Navigate to="/login" />
+        <Navigate to="/" />
       )}
     </div>
   );
@@ -100,29 +110,40 @@ function App() {
     // healthChecker();
   }, [])
 
+  // load google maps api script to an head
+  useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
+
+    loadGoogleMapsScript();
+  }, []);
+
+
   return (
-    <div className="outer-wrapper">
-      <div className='wrapper'>
-        <Router>
-          <Routes>
-            {/* Routes With Topnav */}
-            <Route path='/' element={<ComponentsWithNav />} />
+    <div className='wrapper'>
+      <Router>
+        {/* <TokenManagement /> */}
 
-            <Route path='/login' element={login()} />
-            <Route path='/register' element={register()} />
+        <Routes> 
+          {/* Routes With Topnav */}
+          <Route path='/' element={<ComponentsWithNav />} />
 
-            {/* Private Routes */}
-            <Route path='/*' element={ <PrivateRoutes /> } />
+          {/* Private Routes */}
+          <Route path='/*' element={<PrivateRoutes />} />
 
-            {/* Backend Disabled */}
-            <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
+          {/* Backend Disabled */}
+          <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
 
-            {/* Page Doesnt Exists */}
-            <Route path='/*' element={<div>404 doesnt exists</div>} />
-          </Routes>
+          {/* Page Doesnt Exists */}
+          <Route path='*' element={<div>404 doesnt exists</div>} />
+        </Routes>
 
-        </Router>
-      </div>
+      </Router>
     </div>
   );
 }
