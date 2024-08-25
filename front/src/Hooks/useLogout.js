@@ -1,5 +1,5 @@
 import useAuth from "./useAuth"
-import { axiosPrivateInstance } from "../api/apiConfig"
+import { axiosPrivateInstance } from "../Services/authService"
 
 export default function useLogout() {
     // const { setUser, setAccessToken, setCSRFToken, setIsLoggedIn } = useAuth()

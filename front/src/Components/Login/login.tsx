@@ -20,6 +20,7 @@ import Box from '@mui/material/Box';
 
 // Services
 import { login } from '../../Services/authService';
+import { axiosInstance } from "../../Services/authService";
 
 // Props Types
 type LoginProps = {
@@ -38,6 +39,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
     // Refs
     const loginRef = useRef<HTMLFormElement>(null);
 
+    
     // Close login when clicking outside of the component
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -69,7 +71,9 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
         setLoading(true);
 
         try {
-            const response = await login(data);
+            console.log(axiosInstance)
+            const response = await axiosInstance.post('users/login/', data)
+            // const response = await login(data);
             console.log(response);
 
             if (response) {
@@ -80,7 +84,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
 
                 // if firstlogin => navigate('/setprofile'), else => navigate('/home')
             } else {
-                setErrorMessage(response.error[0]);
+                // setErrorMessage(response.error[0]);
             }
 
         } catch (error) {

@@ -1,4 +1,4 @@
-import { axiosPrivateInstance } from "../api/apiConfig";
+import { axiosPrivateInstance } from "../Services/authService";
 import { useEffect } from 'react'
 // import useAuth from "./useAuth";
 import useRefreshToken from "./useRefreshToken";
@@ -23,7 +23,7 @@ export default function useAxiosPrivate() {
             },
             (error) => Promise.reject(error)
         )
-
+        console.log('jio2')
         const responseIntercept = axiosPrivateInstance.interceptors.response.use(
             response => response,
             async (error) => {
@@ -41,6 +41,7 @@ export default function useAxiosPrivate() {
                 return Promise.reject(error);
             }
         )
+        console.log('jio2')
 
         return () => {
             axiosPrivateInstance.interceptors.request.eject(requestIntercept)
