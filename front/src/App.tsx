@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { TokenManagement } from './Hooks/useTokenManagement';
+import PersistLogin from './Components/PersistLogin';
+import useAxiosPrivate from "./Hooks/usePrivate"
 
 // Main CSS
 import './App.css';
@@ -57,10 +58,18 @@ const ComponentsWithNav = () => {
 const PrivateRoutes = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const axiosPrivateInstance = useAxiosPrivate()
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      // setIsLoggedIn(await isAuthenticated())
+      try {
+        const { data } = await axiosPrivateInstance.get('users/verify/')
+
+        console.log(data)
+
+      } catch (error:any) {
+        setIsLoggedIn(false)
+      }
     }
 
     checkAuthentication()
@@ -70,8 +79,13 @@ const PrivateRoutes = () => {
     <div className='private-routes'>
       {isLoggedIn ? (
         <Routes>
-          <Route path="/home" element={home()} />
-          <Route path="/setprofile" element={setprofile()} />
+          <Route path='/' element={<PersistLogin />}>
+            <Route path="/home" element={home()} />
+            <Route path="/setprofile" element={setprofile()} />
+            
+            {/* Page Doesnt Exists */}
+            <Route path='*' element={<div>404 doesnt exists</div>} />
+          </Route>
         </Routes>
       ) : (
         <Navigate to="/" />
@@ -126,7 +140,7 @@ function App() {
           <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
 
           {/* Page Doesnt Exists */}
-          <Route path='/*' element={<div>404 doesnt exists</div>} />
+          <Route path='*' element={<div>404 doesnt exists</div>} />
         </Routes>
 
       </Router>

@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-// CSS
-import './home.css';
-
-// Components
-
-function Home() {
+export default function Home() {
 
     return (
-        <div className='home-wrapper'>
-
+        <div>
+            home
         </div>
     );
 }
-
-export default Home;

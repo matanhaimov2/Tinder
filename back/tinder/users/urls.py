@@ -1,19 +1,21 @@
 from django.urls import path
-from .views import register, MyTokenObtainPairView
-from rest_framework_simplejwt.views import TokenRefreshView
+from .views import login, register, logout, CookieTokenRefreshView, verify
+# from .views import login, register, MyTokenObtainPairView
+# from rest_framework_simplejwt.views import TokenRefreshView
 
 
 urlpatterns = [
     path('register/', register, name='register'),
-    path('login/', MyTokenObtainPairView.as_view(), name='login'),
-    path('jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('auth/status/', AuthStatusView.as_view(), name='auth_status'),
+    path('login/', login, name='login'),
 
-    # path('jwt/create/', TokenObtainPairView.as_view(), name='jwt_create'),
-    # path('jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
+    path("verify/", verify, name='verify'),
+    
+    path('logout/', logout, name='logout'),
 ]
 
-# handle access and refresh storing token in cookies
-# handle new access token from refresh token when expired
-# component that verifies jwt token (cookies can be reached in backend)
-# when login => decode token => store userData in global state using redux
+
+# go through everything and understand it
+# organize everthing
+# get data from profile table when login
+# store userData, tokens in global state using redux
