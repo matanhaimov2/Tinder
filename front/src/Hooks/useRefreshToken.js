@@ -1,4 +1,4 @@
-import { axiosInstance } from "../api/apiConfig";
+import { axiosInstance } from "../Services/authService";
 // import useAuth from "./useAuth";
 
 export default function useRefreshToken() {
@@ -12,6 +12,7 @@ export default function useRefreshToken() {
         
         const response = await axiosInstance.post('users/refresh/')
         // setAccessToken(response.data.access)
+        console.log('hiaefniknik')
         localStorage.setItem('accesstoken', response.data.access)
         localStorage.setItem('CSRFToken', response.headers["x-csrftoken"])
         // setCSRFToken(response.headers["x-csrftoken"])

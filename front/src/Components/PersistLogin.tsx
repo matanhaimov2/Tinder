@@ -28,7 +28,7 @@ export default function PersistLogin() {
             try {
                 await refresh();
                 const { data } = await axiosPrivate.get('users/verify/');
-            
+                console.log('jio')
                 console.log(data)
             } catch (error: any) {
                 console.log(error?.response);
