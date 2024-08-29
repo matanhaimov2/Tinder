@@ -17,6 +17,10 @@ import Button from '@mui/joy/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 
+// Redux
+import { useSelector } from 'react-redux';
+import { RootState } from '../../Redux/store';
+
 // Declare global type for Google Maps API
 declare global {
     interface Window {
@@ -44,7 +48,6 @@ function SetProfile() {
         fields: ["address_components", "geometry", "icon", "name"],
         types: ["address"]
     };
-
 
     useEffect(() => {
         if (window.google && inputRef.current) {
@@ -107,6 +110,9 @@ function SetProfile() {
 
     const ages = Array.from({ length: 82 }, (_, i) => i + 18); // Creates an array from 18 to 99
 
+    const userData = useSelector((state: RootState) => state.auth.userData);
+    console.log(userData,'damn')
+    
     return (
         <form className='setprofile-wrapper' onSubmit={handleSubmit}>
             <div className='setprofile-inner-wrapper'>
