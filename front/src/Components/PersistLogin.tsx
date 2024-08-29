@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 
+// Redux
+import { useSelector } from 'react-redux';
+import { RootState } from '../Redux/store';
+
+// Hooks
 import useAxiosPrivate from '../Hooks/usePrivate';
 import useRefreshToken from '../Hooks/useRefreshToken';
 
 export default function PersistLogin() {
     const refresh = useRefreshToken();
-    // const { accessToken, isLoggedIn, setUser } = useAuth();
-    const isLoggedIn = localStorage.getItem('isLoggedIn')
-    const accessToken = localStorage.getItem('accesstoken')
+
+    const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+    const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+    const userData = useSelector((state: RootState) => state.auth.userData);
 
     const [loading, setLoading] = useState<boolean>(true);
     const axiosPrivate = useAxiosPrivate();
@@ -20,15 +26,15 @@ export default function PersistLogin() {
         let isMounted = true;
 
         async function verifyUser() {
-            // if (!isLoggedIn) {
-            //     if (isMounted) setLoading(false);
-            //     return;
-            // }
+            if (!isLoggedIn) {
+                if (isMounted) setLoading(false);
+                return;
+            }
 
             try {
                 await refresh();
                 const { data } = await axiosPrivate.get('users/verify/');
-                console.log('jio')
+                
                 console.log(data)
             } catch (error: any) {
                 console.log(error?.response);

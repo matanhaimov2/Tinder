@@ -24,7 +24,6 @@ declare global {
     }
 }
 
-
 function SetProfile() {
     // States
     const [loading, setLoading] = useState<boolean>(false);

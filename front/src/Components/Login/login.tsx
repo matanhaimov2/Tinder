@@ -18,9 +18,16 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
+// Redux
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../Redux/store';
+import { setAccessToken, setUserData } from "../../Redux/features/authSlice";
+
+// Hooks
+import useAxiosPrivate from "../../Hooks/usePrivate"
+
 // Services
 import { login } from '../../Services/authService';
-import { axiosInstance } from "../../Services/authService";
 
 // Props Types
 type LoginProps = {
@@ -29,6 +36,7 @@ type LoginProps = {
 }
 
 function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
+    const dispatch = useDispatch<AppDispatch>();
 
     // States
     const [username, setUsername] = useState<string>('');
@@ -38,7 +46,6 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
 
     // Refs
     const loginRef = useRef<HTMLFormElement>(null);
-
     
     // Close login when clicking outside of the component
     useEffect(() => {
@@ -60,6 +67,8 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
     // Navigation Handle
     const navigate = useNavigate();
 
+    const axiosPrivateInstance = useAxiosPrivate()
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -72,17 +81,25 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
 
         try {
             const response = await login(data);
-            console.log(response);
+            dispatch(setAccessToken(response.access_token))
 
             if (response && !response.detail) {
                 console.log('SUCCESS')
-                // problem - access token coming as undefind even though token is there (before refreshing)
-                navigate('/home')
-                // navigate('/setprofile')
 
-                // if firstlogin => navigate('/setprofile'), else => navigate('/home')
-            } else {
-                setErrorMessage(response.error[0]);
+                const userData = await axiosPrivateInstance.get('users/getUserData/')
+                console.log(userData.data.userData[0])
+
+                if (userData && userData.data.userData[0].isFirstLogin) {
+                    dispatch(setUserData(userData.data.userData[0]))
+                    navigate('/setprofile')
+                }
+                else {
+                    dispatch(setUserData(userData.data.userData[0]))
+                    navigate('/home')
+                }
+            } 
+            else {
+                setErrorMessage('Username or password incorrect'); // when mistake happen - if i try again with correct credentials => An error occurred - Problem!
             }
 
         } catch (error) {

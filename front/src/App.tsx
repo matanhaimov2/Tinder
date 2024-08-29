@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import PersistLogin from './Components/PersistLogin';
-import useAxiosPrivate from "./Hooks/usePrivate"
 
 // Main CSS
 import './App.css';
+
+// Redux
+import store from './Redux/store'
+import { Provider } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from './Redux/store';
+import { setIsLoggedIn } from './Redux/features/authSlice';
 
 // Pages
 import Landing from './Pages/Landing/landing';
@@ -13,6 +18,10 @@ import SetProfile from './Pages/SetProfile/setprofile';
 
 // Components
 import TopNav from './Components/TopNav/topnav';
+import PersistLogin from './Components/PersistLogin';
+
+// Hooks
+import useAxiosPrivate from "./Hooks/usePrivate"
 
 // Services
 import { healthCheck } from './Services/administrationService';
@@ -56,24 +65,27 @@ const ComponentsWithNav = () => {
 
 // For Pages that are private
 const PrivateRoutes = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const axiosPrivateInstance = useAxiosPrivate()
 
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
         const { data } = await axiosPrivateInstance.get('users/verify/')
+        dispatch(setIsLoggedIn(true));
 
         console.log(data)
 
       } catch (error:any) {
-        setIsLoggedIn(false)
+        dispatch(setIsLoggedIn(false));
+
       }
     }
 
     checkAuthentication()
-  })
+  }, [dispatch])
 
   return (
     <div className='private-routes'>
@@ -125,26 +137,29 @@ function App() {
 
 
   return (
-    <div className='wrapper'>
-      <Router>
-        {/* <TokenManagement /> */}
+    <Provider store={store}>
+      <div className='wrapper'>
+        <Router>
+          {/* <TokenManagement /> */}
 
-        <Routes> 
-          {/* Routes With Topnav */}
-          <Route path='/' element={<ComponentsWithNav />} />
+          <Routes> 
+            {/* Routes With Topnav */}
+            <Route path='/' element={<ComponentsWithNav />} />
 
-          {/* Private Routes */}
-          <Route path='/*' element={<PrivateRoutes />} />
+            {/* Private Routes */}
+            <Route path='/*' element={<PrivateRoutes />} />
 
-          {/* Backend Disabled */}
-          <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
+            {/* Backend Disabled */}
+            <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
 
-          {/* Page Doesnt Exists */}
-          <Route path='*' element={<div>404 doesnt exists</div>} />
-        </Routes>
+            {/* Page Doesnt Exists */}
+            <Route path='*' element={<div>404 doesnt exists</div>} />
+          </Routes>
 
-      </Router>
-    </div>
+        </Router>
+      </div>
+    </Provider>
+
   );
 }
 
