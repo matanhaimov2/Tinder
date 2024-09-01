@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 
 // Redux
-import store from './Redux/store'
+import store, { persistor } from './Redux/store'
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from './Redux/store';
@@ -119,7 +120,7 @@ function App() {
       }
     }
 
-    // healthChecker();
+    healthChecker();
   }, [])
 
   // load google maps api script to an head
@@ -138,10 +139,9 @@ function App() {
 
   return (
     <Provider store={store}>
+      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
       <div className='wrapper'>
         <Router>
-          {/* <TokenManagement /> */}
-
           <Routes> 
             {/* Routes With Topnav */}
             <Route path='/' element={<ComponentsWithNav />} />
@@ -158,6 +158,7 @@ function App() {
 
         </Router>
       </div>
+      </PersistGate>
     </Provider>
 
   );

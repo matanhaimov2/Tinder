@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 
 // CSS
 import './login.css';
@@ -84,10 +83,8 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
             dispatch(setAccessToken(response.access_token))
 
             if (response && !response.detail) {
-                console.log('SUCCESS')
-
-                const userData = await axiosPrivateInstance.get('users/getUserData/')
-                console.log(userData.data.userData[0])
+                const userData = await axiosPrivateInstance.get('profiles/getUserData/')
+                // console.log(userData.data.userData[0])
 
                 if (userData && userData.data.userData[0].isFirstLogin) {
                     dispatch(setUserData(userData.data.userData[0]))

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import login, register, logout, CookieTokenRefreshView, verify, getUserData
+from .views import login, register, logout, CookieTokenRefreshView, verify, healthCheck
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -7,7 +7,7 @@ urlpatterns = [
 
     path('refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
     path("verify/", verify, name='verify'),
-    path("getUserData/", getUserData, name='getUserData'),
+    path("healthCheck/", healthCheck, name='healthCheck'),
     
     path('logout/', logout, name='logout'),
 ]

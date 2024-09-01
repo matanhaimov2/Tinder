@@ -6,8 +6,6 @@ from rest_framework_simplejwt import tokens, views as jwt_views, serializers as 
 from users import serializers
 from .serializers import UserSerializer
 from rest_framework import status
-from .models import Profile
-import jwt
 
 
 def get_user_tokens(user):
@@ -143,16 +141,13 @@ def verify(request):
         return response.Response({'Success': 'User authorized'}, status=status.HTTP_201_CREATED)
     except:
         return response.Response({'Error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
+# Health Check
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([])
+def healthCheck(request):
+    try:
+        return response.Response({'status': True}, status=status.HTTP_201_CREATED)
+    except:
+        return response.Response({'status': False}, status=status.HTTP_400_BAD_REQUEST)
     
-# Get User Data From DB
-@rest_decorators.api_view(["GET"])
-@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
-def getUserData(request):
-    auth_header = request.headers.get('Authorization', None) # get user's access_token
-    access_token = auth_header.split(' ')[1]  # Extract the token part
-    decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-    user_id = decoded_payload.get('user_id') # extract from payload, user_id
-
-    data = Profile.objects.filter(user_id=user_id).values() # get from db data where user_id=user_id
-
-    return response.Response({'userData': data}, status=status.HTTP_201_CREATED)
