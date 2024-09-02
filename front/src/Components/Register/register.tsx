@@ -89,106 +89,112 @@ function Register({ isRegisterOpen, setIsRegisterOpen }: RegisterProps) {
     };
 
     return (
-        <form className='register-wrapper' ref={registerRef} onSubmit={handleRegistration}>
-            <Sheet
-                sx={{
-                    backgroundColor: "#111418",
-                    border: 'none',
-                    width: 300,
-                    height: 520,
-                    mx: 'auto', // margin left & right
-                    my: 12, // margin top & bottom
-                    py: 6, // padding top & bottom
-                    px: 2, // padding left & right
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    borderRadius: 'sm',
-                    boxShadow: 'md',
-                    color: 'white'
-                }}
-                variant="outlined"
-            >
-                <div className='register-tinder-content-wrapper'>
-                    <div className='register-tinder-icon-wrapper'>
-                        <img className='register-tinder-icon' src={tinder_icon}></img>
+        <div className='register-wrapper'>
+            <form ref={registerRef} onSubmit={handleRegistration}>
+                <Sheet
+                    sx={{
+                        backgroundColor: "#111418",
+                        border: 'none',
+                        width: 300,
+                        mx: 'auto', // margin left & right
+                        my: 12, // margin top & bottom
+                        py: 6, // padding top & bottom
+                        px: 2, // padding left & right
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        borderRadius: 'sm',
+                        boxShadow: 'md',
+                        color: 'white'
+                    }}
+                    variant="outlined"
+                >
+                    <div className='register-tinder-content-wrapper'>
+                        <div className='register-tinder-icon-wrapper'>
+                            <img className='register-tinder-icon' src={tinder_icon}></img>
+                        </div>
+
+                        <div className='register-tinder-title-wrapper'>
+                            <h1>Create account</h1>
+                        </div>
                     </div>
 
-                    <div className='register-tinder-title-wrapper'>
-                        <h1>Create account</h1>
-                    </div>
-                </div>
-
-                <FormControl>
-                    <FormLabel sx={{ color: 'white' }}>Email</FormLabel>
-                    <Input onChange={(e) => setEmail(e.target.value)}
-                        // html input attribute
-                        name="email"
-                        type="email"
-                        placeholder="example@gmail.com"
-                    />
-                </FormControl>
-
-                <FormControl>
-                    <FormLabel sx={{ color: 'white' }}>Username</FormLabel>
-                    <Input onChange={(e) => setUsername(e.target.value)}
-                        // html input attribute
-                        name="username"
-                        type="name"
-                        placeholder="username"
-                    />
-                </FormControl>
-
-                <div className='register-name-wrapper'>
-                    <FormControl sx={{ width: '49%' }}>
-                        <FormLabel sx={{ color: 'white' }}>Firstname</FormLabel>
-                        <Input onChange={(e) => setFname(e.target.value)}
+                    <FormControl>
+                        <FormLabel sx={{ color: 'white' }}>Email</FormLabel>
+                        <Input onChange={(e) => setEmail(e.target.value)}
                             // html input attribute
-                            name="firstname"
-                            type="name"
-                            placeholder="firstname"
+                            name="email"
+                            type="email"
+                            placeholder="example@gmail.com"
+                            required
                         />
                     </FormControl>
 
-                    <FormControl sx={{ width: '49%' }}>
-                        <FormLabel sx={{ color: 'white' }}>Lastname</FormLabel>
-                        <Input onChange={(e) => setLname(e.target.value)}
+                    <FormControl>
+                        <FormLabel sx={{ color: 'white' }}>Username</FormLabel>
+                        <Input onChange={(e) => setUsername(e.target.value)}
                             // html input attribute
-                            name="lastname"
+                            name="username"
                             type="name"
-                            placeholder="lastname"
+                            placeholder="username"
+                            required
                         />
                     </FormControl>
-                </div>
 
-                <FormControl>
-                    <FormLabel sx={{ color: 'white' }}>Password</FormLabel>
-                    <Input onChange={(e) => setPassword(e.target.value)}
-                        // html input attribute
-                        name="password"
-                        type="password"
-                        placeholder="password"
-                    />
-                </FormControl>
+                    <div className='register-name-wrapper'>
+                        <FormControl sx={{ width: '49%' }}>
+                            <FormLabel sx={{ color: 'white' }}>Firstname</FormLabel>
+                            <Input onChange={(e) => setFname(e.target.value)}
+                                // html input attribute
+                                name="firstname"
+                                type="name"
+                                placeholder="firstname"
+                                required
+                            />
+                        </FormControl>
+
+                        <FormControl sx={{ width: '49%' }}>
+                            <FormLabel sx={{ color: 'white' }}>Lastname</FormLabel>
+                            <Input onChange={(e) => setLname(e.target.value)}
+                                // html input attribute
+                                name="lastname"
+                                type="name"
+                                placeholder="lastname"
+                                required
+                            />
+                        </FormControl>
+                    </div>
+
+                    <FormControl>
+                        <FormLabel sx={{ color: 'white' }}>Password</FormLabel>
+                        <Input onChange={(e) => setPassword(e.target.value)}
+                            // html input attribute
+                            name="password"
+                            type="password"
+                            placeholder="password"
+                            required
+                        />
+                    </FormControl>
 
 
-                {/* Show CircularProgress while loading */}
-                {loading ? (
-                    <Box className='register-loading-wrapper'>
-                        <CircularProgress color='inherit'/>
-                    </Box>
-                ) : (
-                    <Button type='submit' className='register-submit-button'>Register</Button>
-                )}
+                    {/* Show CircularProgress while loading */}
+                    {loading ? (
+                        <Box className='register-loading-wrapper'>
+                            <CircularProgress color='inherit'/>
+                        </Box>
+                    ) : (
+                        <Button type='submit' className='register-submit-button'>Register</Button>
+                    )}
 
-                {/* Display message */}
-                {message && (
-                    <Alert severity={message.startsWith('User registered successfully') ? 'success' : 'error'}>
-                        {message}
-                    </Alert>
-                )}
-            </Sheet>
-        </form>
+                    {/* Display message */}
+                    {message && (
+                        <Alert severity={message.startsWith('User registered successfully') ? 'success' : 'error'}>
+                            {message}
+                        </Alert>
+                    )}
+                </Sheet>
+            </form>
+        </div>
     );
 }
 

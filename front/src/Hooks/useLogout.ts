@@ -18,6 +18,7 @@ export default function useLogout() {
             dispatch(setUserData([]))
             dispatch(setIsLoggedIn(false))
             console.log('nurds')
+            // delete from localstorage redux persist
 
         } catch (error) {
             console.error('Logout failed', error); // Check for any errors

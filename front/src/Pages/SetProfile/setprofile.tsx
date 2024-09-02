@@ -195,7 +195,7 @@ function SetProfile() {
                 sx={{
                     backgroundColor: "#111418",
                     border: 'none',
-                    width: 450,
+                    width: 'auto',
                     mx: 'auto', // margin left & right
                     py: 3, // padding top & bottom
                     px: 2, // padding left & right
@@ -290,6 +290,7 @@ function SetProfile() {
                         label="Age"
                         value={age}
                         onChange={handleAgeChange}
+                        required
                         >
                         {ages.map(age => (
                         <MenuItem key={age} value={age}>
@@ -308,6 +309,7 @@ function SetProfile() {
                         label="Gender"
                         value={gender}
                         onChange={handleGenderChange}
+                        required
                         >
                         <MenuItem value={'man'}>Man</MenuItem>
                         <MenuItem value={'woman'}>Woman</MenuItem>
@@ -316,7 +318,7 @@ function SetProfile() {
                     </FormControl>
                 </div>
 
-                <FormControl required sx={{ width: '100%' }}>
+                <FormControl sx={{ width: '100%' }}>
                     <InputLabel id="location-input" sx={{ color: 'white' }}>Location</InputLabel>
                     <input
                         ref={inputRef}
@@ -324,10 +326,11 @@ function SetProfile() {
                         type="text"
                         placeholder="Enter your location"
                         style={{padding: '6%', borderRadius: '4px'}}
+                        required
                     />
                 </FormControl>
 
-                <FormControl required sx={{ width: '100%' }}>
+                <FormControl sx={{ width: '100%' }}>
                     <InputLabel id="interest-select-label" sx={{ color: 'white' }}>Interested in</InputLabel>
                     <Select
                     sx={{ background: 'white' }}
@@ -336,6 +339,7 @@ function SetProfile() {
                     label="Interested in"
                     value={interest}
                     onChange={handleInterestChange}
+                    required
                     >
                     <MenuItem value={'man'}>Man</MenuItem>
                     <MenuItem value={'woman'}>Woman</MenuItem>
