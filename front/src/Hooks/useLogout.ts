@@ -11,14 +11,15 @@ export default function useLogout() {
 
     const logout = async () => {
         try {
-            const response = await axiosPrivateInstance.post("users/logout/")
-
+            await axiosPrivateInstance.post("users/logout/")
+            
             dispatch(setAccessToken(''))
             dispatch(setCsrfToken(null))
-            dispatch(setUserData([]))
+            dispatch(setUserData(null))
             dispatch(setIsLoggedIn(false))
-            console.log('nurds')
-            // delete from localstorage redux persist
+            
+            // Clear local storage
+            localStorage.removeItem('persist:root'); // Adjust if you use a different key
 
         } catch (error) {
             console.error('Logout failed', error); // Check for any errors

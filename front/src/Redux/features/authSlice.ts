@@ -1,15 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface AuthState {
-  accessToken: string;
-  userData: any[]; // Adjust the type based on your data structure
-  isLoggedIn: boolean;
-  csrfToken: string | null;
-}
+import { AuthState, UserData } from './types'; // Adjust the import path as needed
 
 const initialState: AuthState = {
   accessToken: '',
-  userData: [],
+  userData: null,
   isLoggedIn: true,
   csrfToken: null,
 };
@@ -21,7 +15,7 @@ const authSlice = createSlice({
     setAccessToken(state, action: PayloadAction<string>) {
       state.accessToken = action.payload;
     },
-    setUserData(state, action: PayloadAction<any[]>) { // Adjust type
+    setUserData(state, action: PayloadAction<UserData | null>) { // accepts UserData or null
       state.userData = action.payload;
     },
     setIsLoggedIn(state, action: PayloadAction<boolean>) {
