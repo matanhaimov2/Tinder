@@ -24,3 +24,23 @@
     height: 1px;
     background-color: grey;
 }
+
+.myProfile-arrow-wrapper {
+    display: flex;
+    align-items: center;
+    direction: ltr;
+}
+
+.myProfile-arrow-icon {
+    color: #7c8591;
+    cursor: pointer;
+}
+.myProfile-arrow-icon:hover {
+    color: #ff4458;
+}
+
+div#interest-select {
+    width: 7vw; /* try to understand why percentage doesnt work */
+    padding: unset;
+    padding-block: 3%;
+}

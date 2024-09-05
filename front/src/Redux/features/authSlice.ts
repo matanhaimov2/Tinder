@@ -5,7 +5,7 @@ const initialState: AuthState = {
   accessToken: '',
   userData: null,
   isLoggedIn: true,
-  csrfToken: null,
+  csrfToken: '',
 };
 
 const authSlice = createSlice({
@@ -21,7 +21,7 @@ const authSlice = createSlice({
     setIsLoggedIn(state, action: PayloadAction<boolean>) {
       state.isLoggedIn = action.payload;
     },
-    setCsrfToken(state, action: PayloadAction<string | null>) {
+    setCsrfToken(state, action: PayloadAction<string>) {
       state.csrfToken = action.payload;
     },
   },

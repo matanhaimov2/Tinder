@@ -5,6 +5,15 @@ import './myProfile.css';
 
 // React MUI
 import Slider from '@mui/material/Slider';
+import FormControl from '@mui/joy/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+
+// React Icons
+import { IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
 
 // Redux
 import { useSelector } from 'react-redux';
@@ -13,14 +22,25 @@ import { RootState } from '../../Redux/store';
 // Hooks
 import useLogout from '../../Hooks/useLogout';
 
+// Utils
+import useLocation from '../../Utils/locationUtils';
+
 function MyProfile() {
     // States
     const [ageRange, setAgeRange] = useState<number[]>([18, 21]);
     const [distance, setDistance] = useState<number>((25));
+    const [interest, setInterest] = useState<string | ''>('');
+
+
+    const [isLocationOpen, setIsLocationOpen] = useState(false);
+    const [isInterestOpen, setIsInterestOpen] = useState(false);
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
     console.log(userData, 'damn')
+
+    // Use location hook
+    const { location, setLocation, inputRef } = useLocation('');
 
     // Get logout function from the hook
     const logout = useLogout()
@@ -40,11 +60,15 @@ function MyProfile() {
         }
     };
 
+    const handleInterestChange = (event: SelectChangeEvent<string>) => {
+        setInterest(event.target.value);
+    };
+
     return (
         <div className='myProfile-wrapper'>
             <span className='myProfile-discovery-title'> DISCOVERY SETTINGS </span>
 
-            <div className='myProfile-underline-separator'/> {/* underline separator */}
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
 
             {/* Location Update */}
             <div className='myProfile-divs-wrapper'>
@@ -53,14 +77,29 @@ function MyProfile() {
                         Location
                     </span>
 
-                    <span style={{ color: 'white' }}>
-                        api here
-                    </span>
+                    {!isLocationOpen ? (
+                        <div className='myProfile-arrow-wrapper'>
+                            <IoIosArrowForward className='myProfile-arrow-icon' onClick={() => setIsLocationOpen(!isLocationOpen)} />
+                            <span style={{ color: '#7c8591' }}> {userData?.location} </span>
+                        </div>
+                    ) : (
+                        <div className='myProfile-arrow-wrapper'>
+                            <IoIosArrowBack className='myProfile-arrow-icon' onClick={() => setIsLocationOpen(!isLocationOpen)} />
+                            <input
+                                ref={inputRef}
+                                id="location-input"
+                                type="text"
+                                placeholder="Enter your location"
+                                style={{ padding: '2%', borderRadius: '4px', width: '100%' }}
+                                onChange={(e) => setLocation(e.target.value)}
+                            />
+                        </div>
+                    )}
                 </div>
 
             </div>
 
-            <div className='myProfile-underline-separator'/> {/* underline separator */}
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
 
             {/* Distance Slider */}
             <div className='myProfile-divs-wrapper'>
@@ -97,7 +136,7 @@ function MyProfile() {
                 />
             </div>
 
-            <div className='myProfile-underline-separator'/> {/* underline separator */}
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
 
             {/* Interested_in Update */}
             <div className='myProfile-divs-wrapper'>
@@ -106,13 +145,35 @@ function MyProfile() {
                         Looking for
                     </span>
 
-                    <span style={{ color: 'white' }}>
-                        options here
-                    </span>
+                    {!isInterestOpen ? (
+                        <div className='myProfile-arrow-wrapper'>
+                            <IoIosArrowForward className='myProfile-arrow-icon' onClick={() => setIsInterestOpen(!isInterestOpen)} />
+                            <span style={{ color: '#7c8591' }}> {userData?.interested_in} </span>
+                        </div>
+                    ) : (
+                        <div className='myProfile-arrow-wrapper'>
+                            <IoIosArrowBack className='myProfile-arrow-icon' onClick={() => setIsInterestOpen(!isInterestOpen)} />
+
+                            <div className='damn'>
+                                <Select
+                                    sx={{ background: 'white' }}
+                                    labelId="interest-select-label"
+                                    id="interest-select"
+                                    label="Interested in"
+                                    value={interest}
+                                    onChange={handleInterestChange}
+                                >
+                                    <MenuItem value={'man'}>Man</MenuItem>
+                                    <MenuItem value={'woman'}>Woman</MenuItem>
+                                    <MenuItem value={'other'}>Other</MenuItem>
+                                </Select>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className='myProfile-underline-separator'/> {/* underline separator */}
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
 
             {/* Age Slider */}
             <div className='myProfile-divs-wrapper'>
@@ -148,10 +209,10 @@ function MyProfile() {
                 />
             </div>
 
-            <div className='myProfile-underline-separator'/> {/* underline separator */}
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
 
             {/* Logout */}
-            <div className='myProfile-divs-wrapper' style={{cursor: 'pointer'}} onClick={logout}>
+            <div className='myProfile-divs-wrapper' style={{ cursor: 'pointer' }} onClick={logout}>
                 <div className='myProfile-organize-row'>
                     <span style={{ color: 'white', fontSize: '110%', margin: 'auto' }}>
                         Logout
@@ -159,7 +220,7 @@ function MyProfile() {
                 </div>
             </div>
 
-            <div className='myProfile-underline-separator'/> {/* underline separator */}
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
 
         </div>
     );

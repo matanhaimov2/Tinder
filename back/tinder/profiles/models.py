@@ -11,6 +11,7 @@ class Profile(models.Model):
     interested_in = models.CharField(max_length=100, blank=True)
     location = models.CharField(max_length=255, blank=True)
     images = models.JSONField(default=list)  # Default to an empty list
+    bio = models.CharField(max_length=300, blank=True, null=True)
 
     class Meta:
         db_table = 'users_profile'  # Ensures the table is named 'profile'

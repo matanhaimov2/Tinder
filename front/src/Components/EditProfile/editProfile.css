@@ -1,0 +1,47 @@
+.editProfile-wrapper {
+    width: 35%;
+    height: 69%;
+    margin: auto;
+    border-radius: 5px;
+    box-shadow: rgba(99, 99, 99, 0.2) 2px 5px 8px 2px;
+}
+
+/* First Div - view wrapper */
+.editProfile-view-wrapper {
+    height: 10%;
+    background: #111418;
+}
+
+.MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+/* Second Div - card wrapper */
+.editProfile-card-wrapper {
+    height: 80%;
+    background: blue;
+}
+
+/* Third Div - save wrapper */
+.editProfile-save-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10%;
+}
+
+.editProfile-save-button {
+    height: 80%;
+    background: linear-gradient(45deg, #eb3131, #d43e73 );
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px #0003;
+    color: #fff;
+    cursor: pointer;
+    font-size: 120%;
+    padding: 15px 25px;
+    text-decoration: none;
+    transition: all .3s ease;
+    font-weight: 600;    
+}

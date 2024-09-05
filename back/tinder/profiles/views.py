@@ -32,8 +32,9 @@ def updateProfile(request):
     location = request.data.get('location')
     images = request.data.get('images')
     interest = request.data.get('interest')
+    bio = request.data.get('bio')
 
     # Update user's profile
-    Profile.objects.filter(user_id=user_id).update(isFirstLogin=False, gender=gender, age=age, interested_in=interest, location=location, images=images)
+    Profile.objects.filter(user_id=user_id).update(isFirstLogin=False, gender=gender, age=age, interested_in=interest, location=location, images=images, bio=bio)
 
     return response.Response(status=status.HTTP_201_CREATED)

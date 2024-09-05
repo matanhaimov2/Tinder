@@ -14,7 +14,7 @@ export default function useLogout() {
             await axiosPrivateInstance.post("users/logout/")
             
             dispatch(setAccessToken(''))
-            dispatch(setCsrfToken(null))
+            dispatch(setCsrfToken(''))
             dispatch(setUserData(null))
             dispatch(setIsLoggedIn(false))
             

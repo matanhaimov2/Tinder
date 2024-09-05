@@ -20,7 +20,7 @@ import Box from '@mui/material/Box';
 // Redux
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../Redux/store';
-import { setAccessToken, setUserData } from "../../Redux/features/authSlice";
+import { setAccessToken, setCsrfToken, setUserData } from "../../Redux/features/authSlice";
 
 // Hooks
 import useAxiosPrivate from "../../Hooks/usePrivate"
@@ -81,9 +81,13 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
         try {
             const response = await login(data);
             console.log(response)
-            dispatch(setAccessToken(response.access_token))
+
+            // dispatch(setAccessToken(response.access_token))
 
             if (response && !response.detail) {
+                dispatch(setAccessToken(response.data.access_token))
+                dispatch(setCsrfToken(response.headers['x-csrftoken']));
+
                 const userData = await axiosPrivateInstance.get('profiles/getUserData/')
                 // console.log(userData.data.userData[0])
 

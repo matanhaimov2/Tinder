@@ -26,6 +26,9 @@ import { setUserData } from "../../Redux/features/authSlice";
 // Hooks
 import useAxiosPrivate from "../../Hooks/usePrivate"
 
+// Utils
+import useLocation from '../../Utils/locationUtils';
+
 // Services
 import { sendImagesToImgbb } from '../../Services/profileService';
 
@@ -45,45 +48,20 @@ function SetProfile() {
     const [loading, setLoading] = useState<boolean>(false);
     const [age, setAge] = useState<number | ''>('');
     const [gender, setGender] = useState<string | ''>('');
-    const [location, setLocation] = useState<string | ''>('');
     const [images, setImages] = useState<Image[]>([]); // Updated type
     const [interest, setInterest] = useState<string | ''>('');
+    const [bio, setBio] = useState<string | ''>('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // Refs
-    const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-    const inputRef = useRef<HTMLInputElement | null>(null);
+    // Use location hook
+    const { location, setLocation, inputRef } = useLocation('');
+
+    // Use Private hook
+    const axiosPrivateInstance = useAxiosPrivate()
 
     // Navigation Handle
     const navigate = useNavigate();
     
-    const axiosPrivateInstance = useAxiosPrivate()
-
-    // google maps place autoComplete
-    // Define the options type according to Google Maps API types
-    const options: google.maps.places.AutocompleteOptions = {
-        componentRestrictions: { country: "IL" },
-        fields: ["address_components", "geometry", "icon", "name"],
-        types: ["address"]
-    };
-
-    useEffect(() => {
-        if (window.google && inputRef.current) {
-            autoCompleteRef.current = new window.google.maps.places.Autocomplete(
-                inputRef.current,
-                options
-            );
-
-            autoCompleteRef.current.addListener("place_changed", async function () {
-                const place = autoCompleteRef.current?.getPlace();
-                if(place) {
-                    const address = place.name || '';
-                    setLocation(address);
-                }
-            });
-        }
-    }, [options]); // --- render error!
-
     // Handle form changes
     const handleAgeChange = (event: SelectChangeEvent<number>) => {
         setAge(event.target.value as number);
@@ -96,6 +74,11 @@ function SetProfile() {
     const handleInterestChange = (event: SelectChangeEvent<string>) => {
         setInterest(event.target.value);
     };
+
+    const handleBioChange = (event: SelectChangeEvent<string>) => {
+        setBio(event.target.value);
+    };
+
 
     // Handle image change
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -158,7 +141,8 @@ function SetProfile() {
             gender: gender,
             images: uploadedImages,
             location: location,
-            interest: interest
+            interest: interest,
+            bio: bio
         }
 
         setLoading(true);
@@ -218,6 +202,7 @@ function SetProfile() {
                     </div>
                 </div>
 
+                {/* Images Input */}
                 <div className='setprofile-upload-images-wrapper'>
                     <InputLabel id="age-select-label" sx={{ color: 'white' }}>Images</InputLabel>
 
@@ -280,6 +265,7 @@ function SetProfile() {
                     </div>
                 </div>
 
+                {/* Age & Gender Input */}
                 <div className='setprofile-content-wrapper'>
                     <FormControl required sx={{ width: '50%' }}>
                         <InputLabel id="age-select-label" sx={{ color: 'white' }}>Age</InputLabel>
@@ -318,6 +304,21 @@ function SetProfile() {
                     </FormControl>
                 </div>
 
+                {/* Bio Input */}
+                <FormControl sx={{ width: '100%' }}>
+                    <InputLabel id="bio-input" sx={{ color: 'white' }}>Bio</InputLabel>
+                    <input
+                        id="bio-input"
+                        type="text"
+                        placeholder="Tell us about yourself"
+                        style={{padding: '6% 2%', borderRadius: '4px'}}
+                        value={bio}
+                        onChange={handleBioChange}
+                        required
+                    />
+                </FormControl>
+
+                {/* Location Input */}
                 <FormControl sx={{ width: '100%' }}>
                     <InputLabel id="location-input" sx={{ color: 'white' }}>Location</InputLabel>
                     <input
@@ -325,11 +326,13 @@ function SetProfile() {
                         id="location-input"
                         type="text"
                         placeholder="Enter your location"
-                        style={{padding: '6%', borderRadius: '4px'}}
+                        style={{padding: '2%', borderRadius: '4px'}}
+                        onChange={(e) => setLocation(e.target.value)} 
                         required
                     />
                 </FormControl>
 
+                {/* Intereset_in Input */}
                 <FormControl sx={{ width: '100%' }}>
                     <InputLabel id="interest-select-label" sx={{ color: 'white' }}>Interested in</InputLabel>
                     <Select

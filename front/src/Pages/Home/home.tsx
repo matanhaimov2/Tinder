@@ -9,6 +9,7 @@ import { RootState } from '../../Redux/store';
 
 // Components
 import MyProfile from '../../Components/MyProfile/myProfile';
+import EditProfile from '../../Components/EditProfile/editProfile';
 
 export default function Home() {
     // States
@@ -24,17 +25,23 @@ export default function Home() {
     return (
         <div className='home-wrapper'>
             <div className='home-main-wrapper'>
-                <div className='home-main-card-wrapper'>
-                    <div className='home-main-card'>
+                {!isProfileOpen ? (
+                    // at the meantime htmk untill component will be created
+                    <div className='home-main-card-wrapper'>
+                        <div className='home-main-card'>
 
+                        </div>
+
+                        <div style={{ height: '1px', backgroundColor: 'grey'}} /> {/* underline separator */}
+
+                        <div className='home-main-nav-card'>
+
+                        </div>
                     </div>
+                ) : (
+                    <EditProfile />
+                )}
 
-                    <div style={{ height: '1px', backgroundColor: 'grey'}} />
-
-                    <div className='home-main-nav-card'>
-
-                    </div>
-                </div>
             </div>
 
             <div className='home-side-wrapper'>
