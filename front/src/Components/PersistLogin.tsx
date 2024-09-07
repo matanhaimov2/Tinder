@@ -38,6 +38,11 @@ export default function PersistLogin() {
                 console.log(data)
             } catch (error: any) {
                 console.log(error?.response);
+                
+                if(error && error.response && error.response.data.code==="token_not_valid") {
+                    navigate('/');
+                }
+
             } finally {
                 if (isMounted) setLoading(false);
             }

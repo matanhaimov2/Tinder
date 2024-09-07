@@ -79,13 +79,15 @@ def logout(request):
     try:
         refreshToken = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
         token = tokens.RefreshToken(refreshToken)
-        # token.blacklist()
+        token.blacklist()
 
         res = response.Response()
+   
         res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
         res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
         res.delete_cookie("X-CSRFToken")
         res.delete_cookie("csrftoken")
+   
         res["X-CSRFToken"]=None
         
         return res

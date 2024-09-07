@@ -8,15 +8,16 @@ import { axiosPrivateInstance } from "../Services/authService"
 
 export default function useLogout() {
     const dispatch = useDispatch<AppDispatch>();
-
+    
     const logout = async () => {
         try {
-            await axiosPrivateInstance.post("users/logout/")
-            
+            const res = await axiosPrivateInstance.post("users/logout/")
+          
+            console.log(res)
             dispatch(setAccessToken(''))
             dispatch(setCsrfToken(''))
             dispatch(setUserData(null))
-            dispatch(setIsLoggedIn(false))
+            dispatch(setIsLoggedIn(true))
             
             // Clear local storage
             localStorage.removeItem('persist:root'); // Adjust if you use a different key

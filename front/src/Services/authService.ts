@@ -42,8 +42,8 @@ const login = async (data : LoginData) => {
         })
         console.log(response);
 
-        // return response.data;
-        return response;
+        return response.data;
+        // return response;
     }
     catch (err: any) {
         if (err.response) {
