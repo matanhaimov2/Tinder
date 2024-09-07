@@ -3,6 +3,7 @@ from django.conf import settings
 from django.middleware import csrf
 from rest_framework import exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
 from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
+from rest_framework_simplejwt.exceptions import TokenError
 from users import serializers
 from .serializers import UserSerializer
 from rest_framework import status
@@ -140,9 +141,25 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def verify(request):
     try:
-        return response.Response({'Success': 'User authorized'}, status=status.HTTP_201_CREATED)
-    except:
-        return response.Response({'Error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+        # Retrieve the refresh token from the request's cookies or headers
+        refreshToken = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        
+        # Try to validate the refresh token
+        token = tokens.RefreshToken(refreshToken)
+        print(token)
+        
+        # If no exception is raised, the token is not blacklisted
+        return response.Response({'Success': 'User authorized'}, status=status.HTTP_200_OK)
+    
+    except TokenError:
+        # If the token is blacklisted or invalid, a TokenError is raised
+        return response.Response({'Error': 'Token is invalid or blacklisted'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    except Exception as e:
+        # Handle any other errors that may occur
+        return response.Response({'Error': f'Something went wrong: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # Health Check
 @rest_decorators.api_view(["POST"])

@@ -16,7 +16,7 @@ def getUserData(request):
 
     data = Profile.objects.filter(user_id=user_id).values() # get from db data where user_id=user_id
 
-    return response.Response({'userData': data}, status=status.HTTP_201_CREATED)
+    return response.Response({'userData': data[0]}, status=status.HTTP_201_CREATED)
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])

@@ -4,7 +4,7 @@ import { AuthState, UserData } from './types'; // Adjust the import path as need
 const initialState: AuthState = {
   accessToken: '',
   userData: null,
-  isLoggedIn: true,
+  isLoggedIn: false,
   csrfToken: '',
 };
 

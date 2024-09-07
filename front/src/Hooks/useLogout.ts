@@ -17,7 +17,7 @@ export default function useLogout() {
             dispatch(setAccessToken(''))
             dispatch(setCsrfToken(''))
             dispatch(setUserData(null))
-            dispatch(setIsLoggedIn(true))
+            dispatch(setIsLoggedIn(false))
             
             // Clear local storage
             localStorage.removeItem('persist:root'); // Adjust if you use a different key

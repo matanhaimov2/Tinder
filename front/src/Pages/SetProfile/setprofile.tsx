@@ -152,10 +152,10 @@ function SetProfile() {
 
             if (response) {
                 const userData = await axiosPrivateInstance.get('profiles/getUserData/')
-                // console.log(userData.data.userData[0])
+                // console.log(userData.data.userData)
 
                 if (userData) {
-                    dispatch(setUserData(userData.data.userData[0]))
+                    dispatch(setUserData(userData.data.userData))
                     navigate('/home')
                 }
             }
@@ -289,17 +289,17 @@ function SetProfile() {
                     <FormControl required sx={{ width: '50%' }}>
                         <InputLabel id="gender-select-label" sx={{ color: 'white' }}>Gender</InputLabel>
                         <Select
-                        sx={{ background: 'white' }}
-                        labelId="gender-select-label"
-                        id="gender-select"
-                        label="Gender"
-                        value={gender}
-                        onChange={handleGenderChange}
-                        required
-                        >
-                        <MenuItem value={'man'}>Man</MenuItem>
-                        <MenuItem value={'woman'}>Woman</MenuItem>
-                        <MenuItem value={'other'}>Other</MenuItem>
+                            sx={{ background: 'white' }}
+                            labelId="gender-select-label"
+                            id="gender-select"
+                            label="Gender"
+                            value={gender}
+                            onChange={handleGenderChange}
+                            required
+                            >
+                            <MenuItem value={'man'}>Man</MenuItem>
+                            <MenuItem value={'woman'}>Woman</MenuItem>
+                            <MenuItem value={'other'}>Other</MenuItem>
                         </Select>
                     </FormControl>
                 </div>
@@ -336,17 +336,17 @@ function SetProfile() {
                 <FormControl sx={{ width: '100%' }}>
                     <InputLabel id="interest-select-label" sx={{ color: 'white' }}>Interested in</InputLabel>
                     <Select
-                    sx={{ background: 'white' }}
-                    labelId="interest-select-label"
-                    id="interest-select"
-                    label="Interested in"
-                    value={interest}
-                    onChange={handleInterestChange}
-                    required
-                    >
-                    <MenuItem value={'man'}>Man</MenuItem>
-                    <MenuItem value={'woman'}>Woman</MenuItem>
-                    <MenuItem value={'other'}>Other</MenuItem>
+                        sx={{ background: 'white' }}
+                        labelId="interest-select-label"
+                        id="interest-select-0"
+                        label="Interested in"
+                        value={interest}
+                        onChange={handleInterestChange}
+                        required
+                        >
+                        <MenuItem value={'man'}>Man</MenuItem>
+                        <MenuItem value={'woman'}>Woman</MenuItem>
+                        <MenuItem value={'other'}>Other</MenuItem>
                     </Select>
                 </FormControl>
 

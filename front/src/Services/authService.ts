@@ -1,4 +1,5 @@
 import axios from "axios";
+import { access } from "fs";
 
 // Global Veribales
 import { SERVER_URL } from "../Assets/GlobalVeriables";
@@ -40,10 +41,8 @@ const login = async (data : LoginData) => {
         const response = await axios.post(SERVER_URL + "/users/login/", data, {
             withCredentials: true // Include cookies
         })
-        console.log(response);
 
         return response.data;
-        // return response;
     }
     catch (err: any) {
         if (err.response) {
@@ -61,6 +60,7 @@ export const axiosInstance = axios.create({
         "Content-Type": "application/json"
     }
 })
+
 
 export const axiosPrivateInstance = axios.create({
     baseURL: SERVER_URL,

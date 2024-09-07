@@ -20,7 +20,7 @@ import Box from '@mui/material/Box';
 // Redux
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../Redux/store';
-import { setAccessToken, setUserData } from "../../Redux/features/authSlice";
+import { setAccessToken, setUserData, setIsLoggedIn } from "../../Redux/features/authSlice";
 
 // Hooks
 import useAxiosPrivate from "../../Hooks/usePrivate"
@@ -33,6 +33,7 @@ type LoginProps = {
     isLoginOpen: boolean;
     setIsLoginOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 
 function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
     const dispatch = useDispatch<AppDispatch>();
@@ -80,22 +81,27 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
 
         try {
             const response = await login(data);
-            console.log(response)
 
-            dispatch(setAccessToken(response.access_token))
-
+            dispatch(setAccessToken(response.access_token));
+            
             if (response && !response.detail) {
-      
-                const userData = await axiosPrivateInstance.get('profiles/getUserData/')
-                // console.log(userData.data.userData[0])
-
-                if (userData && userData.data.userData[0].isFirstLogin) {
-                    dispatch(setUserData(userData.data.userData[0]))
-                    navigate('/setprofile')
+               
+                const res = await axiosPrivateInstance.get('profiles/getUserData/');
+                const data = res.data.userData;
+               
+                dispatch(setIsLoggedIn(true));
+            
+                if (data && data.isFirstLogin) {
+                    dispatch(setUserData(data));
+                    navigate('/setprofile');
+                }
+                else if (data && !data.isFirstLogin) {
+                    dispatch(setUserData(data));
+                    navigate('/home');
                 }
                 else {
-                    dispatch(setUserData(userData.data.userData[0]))
-                    navigate('/home')
+                    dispatch(setIsLoggedIn(false));
+                    console.log('Something went wrong');
                 }
             } 
             else {

@@ -7,6 +7,7 @@ import authReducer from './features/authSlice';
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['accessToken', 'csrfToken'],
 };
 
 // Wrap the authReducer with persistReducer to enable persistence

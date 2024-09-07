@@ -68,7 +68,6 @@ const ComponentsWithNav = () => {
 const PrivateRoutes = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-
   const axiosPrivateInstance = useAxiosPrivate()
 
   useEffect(() => {
@@ -81,7 +80,6 @@ const PrivateRoutes = () => {
 
       } catch (error:any) {
         dispatch(setIsLoggedIn(false));
-
       }
     }
 
