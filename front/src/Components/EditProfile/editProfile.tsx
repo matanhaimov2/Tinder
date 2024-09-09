@@ -11,13 +11,18 @@ import { TabContext, TabList } from '@mui/lab';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
 
+// Sub Components
+import EditCard from './subComponents/editCard/editCard';
+
 function EditProfile() {
     // States
     const [tabValue, setTabValue] = useState('Edit')
+    const [isSaveUpdates, setIsSaveUpdates] = useState(false)
+
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
-    console.log(userData, 'damn')
+    // console.log(userData, 'damn')
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setTabValue(newValue);
@@ -66,7 +71,7 @@ function EditProfile() {
             <div className='editProfile-card-wrapper'>
                 {tabValue==='Edit' ? (
                     <div className='editProfile-edit-wrapper'>
-                        edit card here
+                        <EditCard isSaveUpdates={isSaveUpdates} setIsSaveUpdates={setIsSaveUpdates}/>
                     </div>
                 ) : (
                     <div className='editProfile-preview-wrapper'>
@@ -77,7 +82,7 @@ function EditProfile() {
 
             {tabValue==='Edit' && (
                 <div className='editProfile-save-wrapper'>
-                    <button className='editProfile-save-button'> Save </button>
+                    <button className='editProfile-save-button' onClick={() => setIsSaveUpdates(true)}> Save </button>
                 </div>
             )}
         </div>

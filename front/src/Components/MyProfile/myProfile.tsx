@@ -5,8 +5,6 @@ import './myProfile.css';
 
 // React MUI
 import Slider from '@mui/material/Slider';
-import FormControl from '@mui/joy/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
@@ -16,8 +14,9 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 
 // Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../../Redux/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../Redux/store';
+import { setUpdatedUserData } from "../../Redux/features/authSlice";
 
 // Hooks
 import useLogout from '../../Hooks/useLogout';
@@ -26,18 +25,19 @@ import useLogout from '../../Hooks/useLogout';
 import useLocation from '../../Utils/locationUtils';
 
 function MyProfile() {
+    const dispatch = useDispatch<AppDispatch>();
+
     // States
     const [ageRange, setAgeRange] = useState<number[]>([18, 21]);
     const [distance, setDistance] = useState<number>((25));
     const [interest, setInterest] = useState<string | ''>('');
-
 
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [isInterestOpen, setIsInterestOpen] = useState(false);
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
-    console.log(userData, 'damn')
+    const updatedUserData = useSelector((state: RootState) => state.auth.updatedUserData);
 
     // Use location hook
     const { location, setLocation, inputRef } = useLocation('');
@@ -45,12 +45,19 @@ function MyProfile() {
     // Get logout function from the hook
     const logout = useLogout()
 
-    // Handle change for distance slider
+    // Set default values for ageRange and distance based on userData
+    useEffect(() => {
+        if (userData) {
+            setAgeRange(userData.ageRange || [18, 21]);
+            setDistance(userData.distance || 25);
+        }
+    }, [userData]);
+
+    // Handle form changes
     const handleDistanceChange = (event: Event, newValue: number | number[]) => {
         setDistance(newValue as number);
     };
 
-    // Handle change for age range slider
     const handleAgeChange = (event: Event, newValue: number | number[]) => {
         const newValueArray = newValue as number[];
 
@@ -64,6 +71,21 @@ function MyProfile() {
         setInterest(event.target.value);
     };
 
+    useEffect(() => {
+        if (userData) {
+            const data = {
+                ...userData,
+                ...updatedUserData,
+                distance: distance,
+                ageRange: ageRange,
+                location: location || userData.location,
+                interested_in: interest || userData.interested_in,
+            };
+    
+            dispatch(setUpdatedUserData(data));
+        }
+    }, [distance, ageRange, interest, location, dispatch]);
+    
     return (
         <div className='myProfile-wrapper'>
             <span className='myProfile-discovery-title'> DISCOVERY SETTINGS </span>

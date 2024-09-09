@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AuthState, UserData } from './types'; // Adjust the import path as needed
+import { AuthState, UserData, UpdatedUserData } from './types'; // Adjust the import path as needed
 
 const initialState: AuthState = {
   accessToken: '',
   userData: null,
+  updatedUserData: null,
   isLoggedIn: false,
   csrfToken: '',
 };
@@ -18,6 +19,9 @@ const authSlice = createSlice({
     setUserData(state, action: PayloadAction<UserData | null>) { // accepts UserData or null
       state.userData = action.payload;
     },
+    setUpdatedUserData(state, action: PayloadAction<UpdatedUserData | null>) {
+      state.updatedUserData = action.payload;
+    },
     setIsLoggedIn(state, action: PayloadAction<boolean>) {
       state.isLoggedIn = action.payload;
     },
@@ -27,5 +31,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAccessToken, setUserData, setIsLoggedIn, setCsrfToken } = authSlice.actions;
+export const { setAccessToken, setUserData, setUpdatedUserData, setIsLoggedIn, setCsrfToken } = authSlice.actions;
 export default authSlice.reducer;

@@ -146,7 +146,6 @@ def verify(request):
         
         # Try to validate the refresh token
         token = tokens.RefreshToken(refreshToken)
-        print(token)
         
         # If no exception is raised, the token is not blacklisted
         return response.Response({'Success': 'User authorized'}, status=status.HTTP_200_OK)

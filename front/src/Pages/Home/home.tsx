@@ -16,7 +16,7 @@ export default function Home() {
     const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage visibility
 
     const userData = useSelector((state: RootState) => state.auth.userData);
-    console.log(userData,'damn')
+    // console.log(userData,'damn')
     
     const handleProfileClick = () => {
         setIsProfileOpen(!isProfileOpen); // Toggle profile visibility

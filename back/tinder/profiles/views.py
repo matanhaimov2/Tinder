@@ -38,3 +38,36 @@ def updateProfile(request):
     Profile.objects.filter(user_id=user_id).update(isFirstLogin=False, gender=gender, age=age, interested_in=interest, location=location, images=images, bio=bio)
 
     return response.Response(status=status.HTTP_201_CREATED)
+
+
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def modifyProfile(request):
+    auth_header = request.headers.get('Authorization', None) # extract user's access_token
+    access_token = auth_header.split(' ')[1]  # extract the token part
+    decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+    user_id = decoded_payload.get('user_id') # extract user_id from payload
+
+    # Extract data
+    age = request.data.get('age')
+    ageRange = request.data.get('ageRange')
+    bio = request.data.get('bio')
+    distance = request.data.get('distance')
+    gender = request.data.get('gender')
+    images = request.data.get('images')
+    interest = request.data.get('interested_in')
+    location = request.data.get('location')
+
+    # Update user's profile
+    Profile.objects.filter(user_id=user_id).update(
+            isFirstLogin=False,
+            gender=gender, age=age,
+            interested_in=interest,
+            location=location,
+            images=images,
+            bio=bio,
+            ageRange=ageRange,
+            distance=distance
+        )
+
+    return response.Response(status=status.HTTP_201_CREATED)
