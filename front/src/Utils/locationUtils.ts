@@ -7,7 +7,10 @@ declare global {
 }
 
 const useLocation = (initialValue: string) => {
+    // States
     const [location, setLocation] = useState<string | ''>(initialValue);
+    const [coordinates, setCoordinates] = useState<{ lat: number, lng: number } | null>(null);
+
     const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -28,13 +31,25 @@ const useLocation = (initialValue: string) => {
                 const place = autoCompleteRef.current?.getPlace();
                 if (place) {
                     const address = place.name || '';
+
+                    if (place.geometry && place.geometry.location) {
+                        const lat = place.geometry.location.lat();
+                        const lng = place.geometry.location.lng();
+
+                        setCoordinates({ lat, lng });  // Store coordinates
+
+                        console.log({ address, lat, lng });
+                    } else {
+                        console.warn("Location or geometry is not available");
+                    }
+
                     setLocation(address);
                 }
             });
         }
     }, []);
 
-    return { location, setLocation, inputRef, options };
+    return { location, setLocation, coordinates, inputRef, options };
 };
 
 export default useLocation;

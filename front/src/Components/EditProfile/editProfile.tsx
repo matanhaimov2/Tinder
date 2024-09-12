@@ -7,9 +7,8 @@ import './editProfile.css';
 import Tab from '@mui/material/Tab';
 import { TabContext, TabList } from '@mui/lab';
 
-// Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../../Redux/store';
+// Components
+import CardProfile from '../CardProfile/cardProfile';
 
 // Sub Components
 import EditCard from './subComponents/editCard/editCard';
@@ -19,18 +18,12 @@ function EditProfile() {
     const [tabValue, setTabValue] = useState('Edit')
     const [isSaveUpdates, setIsSaveUpdates] = useState(false)
 
-
-    // Global States
-    const userData = useSelector((state: RootState) => state.auth.userData);
-    // console.log(userData, 'damn')
-
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setTabValue(newValue);
     };
 
     return (
         <div className='editProfile-wrapper'>
-
             <div className='editProfile-view-wrapper'>
                 <TabContext value={tabValue}>
                     <div style={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -68,14 +61,14 @@ function EditProfile() {
                 </TabContext>
             </div>
 
-            <div className='editProfile-card-wrapper'>
+            <div className={`editProfile-card-wrapper ${tabValue==='Edit' ? 'editProfile-card-wrapper-edit' : ''}`}>
                 {tabValue==='Edit' ? (
                     <div className='editProfile-edit-wrapper'>
                         <EditCard isSaveUpdates={isSaveUpdates} setIsSaveUpdates={setIsSaveUpdates}/>
                     </div>
                 ) : (
                     <div className='editProfile-preview-wrapper'>
-                        preview card here
+                        <CardProfile isInEditProfile={true}/>
                     </div>
                 )}
             </div>

@@ -11,6 +11,8 @@ export interface UserData {
     bio: string;
     distance: number;
     ageRange: number[];
+    latitude: number;
+    longitude: number;
 }
 
 export interface UpdatedUserData {
@@ -26,6 +28,8 @@ export interface UpdatedUserData {
     bio: string;
     distance: number;
     ageRange: number[];
+    latitude: number;
+    longitude: number;
 }
 
 export interface AuthState {

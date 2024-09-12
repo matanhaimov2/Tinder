@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 // CSS
 import './home.css';
 
+// React Icons
+import { FaUserCircle } from "react-icons/fa";
+
 // Redux
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
@@ -10,13 +13,15 @@ import { RootState } from '../../Redux/store';
 // Components
 import MyProfile from '../../Components/MyProfile/myProfile';
 import EditProfile from '../../Components/EditProfile/editProfile';
+import CardProfile from '../../Components/CardProfile/cardProfile';
+
 
 export default function Home() {
     // States
     const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage visibility
 
     const userData = useSelector((state: RootState) => state.auth.userData);
-    // console.log(userData,'damn')
+    console.log(userData,'damn')
     
     const handleProfileClick = () => {
         setIsProfileOpen(!isProfileOpen); // Toggle profile visibility
@@ -26,22 +31,10 @@ export default function Home() {
         <div className='home-wrapper'>
             <div className='home-main-wrapper'>
                 {!isProfileOpen ? (
-                    // at the meantime htmk untill component will be created
-                    <div className='home-main-card-wrapper'>
-                        <div className='home-main-card'>
-
-                        </div>
-
-                        <div style={{ height: '1px', backgroundColor: 'grey'}} /> {/* underline separator */}
-
-                        <div className='home-main-nav-card'>
-
-                        </div>
-                    </div>
+                    <CardProfile isInEditProfile={false}/>
                 ) : (
                     <EditProfile />
                 )}
-
             </div>
 
             <div className='home-side-wrapper'>
@@ -50,8 +43,11 @@ export default function Home() {
                         <div>
                             {userData?.first_name}
                         </div>
-
-                        <img className='home-side-nav-img' src={userData?.images[0]}></img>
+                        {userData && userData.images.length > 0 ? (
+                            <img className='home-side-nav-img' src={userData.images[0]}></img>
+                        ) : (
+                            <FaUserCircle className='home-side-nav-img'/>
+                        )}
                     </div>
                 </div>
 

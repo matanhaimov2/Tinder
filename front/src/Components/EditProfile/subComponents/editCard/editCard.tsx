@@ -154,6 +154,7 @@ function EditCard({isSaveUpdates, setIsSaveUpdates}: SaveData) {
                     if (userData) {
                         dispatch(setUserData(userData.data.userData));
                         // add a success alert
+                        alert('profile has been updated')
                         // navigate('/home')
                     }
                 }

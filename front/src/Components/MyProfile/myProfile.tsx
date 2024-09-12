@@ -40,7 +40,7 @@ function MyProfile() {
     const updatedUserData = useSelector((state: RootState) => state.auth.updatedUserData);
 
     // Use location hook
-    const { location, setLocation, inputRef } = useLocation('');
+    const { location, coordinates, setLocation, inputRef } = useLocation('');
 
     // Get logout function from the hook
     const logout = useLogout()

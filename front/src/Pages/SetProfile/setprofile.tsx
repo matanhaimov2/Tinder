@@ -54,7 +54,7 @@ function SetProfile() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // Use location hook
-    const { location, setLocation, inputRef } = useLocation('');
+    const { location, coordinates, setLocation, inputRef } = useLocation('');
 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
@@ -142,7 +142,9 @@ function SetProfile() {
             images: uploadedImages,
             location: location,
             interest: interest,
-            bio: bio
+            bio: bio,
+            latitude: coordinates?.lat,
+            longitude: coordinates?.lng 
         }
 
         setLoading(true);

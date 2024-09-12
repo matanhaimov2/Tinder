@@ -13,24 +13,6 @@
     background: black;
 }
 
-.home-main-card-wrapper {
-    width: 35%;
-    height: 69%;
-    margin: auto;
-    border-radius: 5px;
-    box-shadow: rgba(99, 99, 99, 0.2) 2px 5px 8px 2px;
-}
-
-.home-main-card {
-    height: 85%;
-    background: green;
-}
-
-.home-main-nav-card {
-    height: 15%;
-    background: black;
-}
-
 /* Right Side */
 .home-side-wrapper {
     display: flex;

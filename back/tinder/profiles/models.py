@@ -10,6 +10,8 @@ class Profile(models.Model):
     age = models.PositiveIntegerField(blank=True, null=True)
     interested_in = models.CharField(max_length=100, blank=True)
     location = models.CharField(max_length=255, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     images = models.JSONField(default=list)  # Default to an empty list
     bio = models.CharField(max_length=300, blank=True, null=True)
     ageRange = models.JSONField(default=[18, 21])  # List of two numbers (age range)
