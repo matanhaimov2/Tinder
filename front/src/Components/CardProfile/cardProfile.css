@@ -1,6 +1,8 @@
 .cardProfile-wrapper {
-    width: 375px;
-    height: 668px;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    height: 95%;
     margin: auto;
     border-radius: 5px;
     box-shadow: rgba(99, 99, 99, 0.2) 2px 5px 8px 2px;
@@ -9,8 +11,8 @@
 /* Card Profile - main */
 .cardProfile-card {
     position: relative;
-    height: 85%;
     background: black;
+    flex: 8;
 }
 
 .cardProfile-card-ifEdit {
@@ -18,8 +20,8 @@
 }
 
 .cardProfile-wrapper-ifEdit {
-    width: 375px;
-    height: 592px;
+    width: 100%;
+    height: 100%;
 }
 
 .cardProfile-user-wrapper {
@@ -94,11 +96,10 @@
 /* Card Profile - bottom nav */
 .cardProfile-nav-card {
     display: flex;
+    flex: 2;
     justify-content: space-evenly;
     align-items: center;
-    height: 15%;
     background: black;
-    padding-top: 1%;
 }
 
 .tinder-button {
