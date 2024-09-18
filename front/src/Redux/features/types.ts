@@ -13,6 +13,9 @@ export interface UserData {
     ageRange: number[];
     latitude: number;
     longitude: number;
+    likes: number[];
+    matches: number[];
+    blacklist: number[];
 }
 
 export interface UpdatedUserData {

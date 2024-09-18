@@ -16,6 +16,9 @@ class Profile(models.Model):
     bio = models.CharField(max_length=300, blank=True, null=True)
     ageRange = models.JSONField(default=[18, 21])  # List of two numbers (age range)
     distance = models.PositiveIntegerField(default=25)  # Default distance value
+    likes = models.JSONField(default=list)
+    matches = models.JSONField(default=list)
+    blacklist = models.JSONField(default=list)
 
     class Meta:
         db_table = 'users_profile'  # Ensures the table is named 'profile'

@@ -69,13 +69,12 @@
 
 .home-side-content-title-wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     color: white;
-    justify-content: end;
-    gap: 2%;
-    padding: 4%;
 }
 
-.home-side-content-matches-wrapper {
-
+.home-side-content-title-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
 }

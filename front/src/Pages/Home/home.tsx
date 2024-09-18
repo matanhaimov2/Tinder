@@ -6,6 +6,12 @@ import './home.css';
 // React Icons
 import { FaUserCircle } from "react-icons/fa";
 
+// React MUI
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+
 // Redux
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
@@ -19,19 +25,27 @@ import CardProfile from '../../Components/CardProfile/cardProfile';
 export default function Home() {
     // States
     const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage visibility
+    const [navValue, setNavValue] = useState(2); // Index for nav (Matches/Messages)
+
 
     const userData = useSelector((state: RootState) => state.auth.userData);
-    console.log(userData,'damn')
-    
+    // console.log(userData, 'damn')
+
+    // Toggle profile visibility
     const handleProfileClick = () => {
-        setIsProfileOpen(!isProfileOpen); // Toggle profile visibility
+        setIsProfileOpen(!isProfileOpen);
+    };
+
+    // Navigating between messages and matches
+    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+        setNavValue(parseInt(newValue, 10));
     };
 
     return (
         <div className='home-wrapper'>
             <div className='home-main-wrapper'>
                 {!isProfileOpen ? (
-                    <CardProfile isInEditProfile={false}/>
+                    <CardProfile isInEditProfile={false} />
                 ) : (
                     <EditProfile />
                 )}
@@ -46,7 +60,7 @@ export default function Home() {
                         {userData && userData.images.length > 0 ? (
                             <img className='home-side-nav-img' src={userData.images[0]}></img>
                         ) : (
-                            <FaUserCircle className='home-side-nav-img'/>
+                            <FaUserCircle className='home-side-nav-img' />
                         )}
                     </div>
                 </div>
@@ -56,25 +70,51 @@ export default function Home() {
                     {!isProfileOpen ? (
                         <>
                             <div className='home-side-content-title-wrapper'>
-                                <div>
-                                    Messages
-                                </div>
+                                <TabContext value={navValue.toString()}>
+                                    <div className='home-side-content-title-inner'>
+                                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                            <TabList onChange={handleChange} aria-label="lab API tabs example"
+                                                TabIndicatorProps={{
+                                                    style: {
+                                                        backgroundColor: '#ff4458', // The active tab
+                                                    },
+                                                }}
+                                            >
 
-                                <div>
-                                    Matches
-                                </div>
-                            </div>
+                                                <Tab label="Messages" value="1" sx={{
+                                                        fontWeight: '600',
+                                                        color: 'white', // Default color for inactive tabs
+                                                        textTransform: 'none', // Disable uppercase transformation
+                                                        '&.Mui-selected': {
+                                                            color: 'white', // Set white color for the active tab
+                                                        },
+                                                    }}
+                                                />
+                                                <Tab label="Matches" value="2" sx={{
+                                                        fontWeight: '600',
+                                                        color: 'white', // Default color for inactive tabs
+                                                        textTransform: 'none', // Disable uppercase transformation
+                                                        '&.Mui-selected': {
+                                                            color: 'white', // Set white color for the active tab
+                                                        },
+                                                    }} 
+                                                />
+                                            </TabList>
+                                        </Box>
+                                    </div>
 
-                            <div className='home-side-content-matches-wrapper'>
+                                    {navValue===1 ? (
+                                        <div> Messages Here </div>
+                                    ) : (
+                                        <div> Matches Here </div>
+                                    )}
 
-                            </div>
+                                </TabContext>
+                            </div> 
                         </>
                     ) : (
                         <MyProfile />
                     )}
-
-        
-
                 </div>
             </div>
 

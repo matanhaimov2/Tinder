@@ -101,10 +101,18 @@ def fetchProfiles(request):
     interest = request.data.get('interest') # match with gender
     user_lat= request.data.get('latitude')
     user_lon = request.data.get('longitude')
+
+    # Fetch the user's profile to get the blacklist
+    profile = Profile.objects.get(user_id=user_id)
+    user_blacklist = profile.blacklist
     
+    # Add the current user ID to the blacklist to ensure they are excluded
+    user_blacklist.append(user_id)
+
     # Filter profiles based on age range and interest
     min_age, max_age = ageRange
-    profiles = Profile.objects.filter(age__gte=min_age, age__lte=max_age, gender=interest).exclude(user_id=user_id)
+
+    profiles = Profile.objects.filter(age__gte=min_age, age__lte=max_age, gender=interest).exclude(user_id__in=user_blacklist)
 
     # Filter by distance
     matching_profiles = []
@@ -135,7 +143,7 @@ def fetchProfiles(request):
     return response.Response({'usersProfilesData': profiles_data}, status=status.HTTP_200_OK)
 
 
-@rest_decorators.api_view(["POST"])
+@rest_decorators.api_view(["GET"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def fetchOwnProfile(request):
     auth_header = request.headers.get('Authorization', None) # extract user's access_token
@@ -164,6 +172,99 @@ def fetchOwnProfile(request):
     ]
 
     return response.Response({'usersProfileData': profile_data}, status=status.HTTP_200_OK)
+
+
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def handleUserReaction(request, action):
+    auth_header = request.headers.get('Authorization', None)
+    access_token = auth_header.split(' ')[1]
+    decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+    user_id = decoded_payload.get('user_id') # 4
+
+    target_user_id = request.data.get('target_user_id')  # ID of user(if liked), 4 OR users(if disliked), [2,4,7]
+    print('hodss', target_user_id)
+    
+    try:
+        profile = Profile.objects.get(user_id=user_id)
+    except Profile.DoesNotExist:
+        return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if action == 'like':    
+        # Fetch the target_profile
+        try:
+            target_profile = Profile.objects.get(user_id=target_user_id)
+        except Profile.DoesNotExist:
+            return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)  
+
+        # Add target_user_id to user_id blacklist             
+        if target_user_id not in profile.blacklist:
+            profile.blacklist.append(target_user_id)
+
+        likes = target_profile.likes
+        if user_id not in likes:
+            likes.append(user_id)
+            target_profile.likes = likes
+
+        target_profile.save()
+
+    elif action == 'dislike':
+        for id in target_user_id:
+            # Add target_user_id to user_id blacklist             
+            if id not in profile.blacklist:
+                print('hod', id)
+                profile.blacklist.append(id)
+            
+
+    # Save changes to the profile
+    profile.save()
+
+    return response.Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def verifyMatch(request):
+    auth_header = request.headers.get('Authorization', None)
+    access_token = auth_header.split(' ')[1]
+    decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+    user_id = decoded_payload.get('user_id')
+
+    target_user_id = request.data.get('target_user_id')  # The ID of the user being liked/disliked 14
+
+    # Fetch the profile
+    try:
+        profile = Profile.objects.get(user_id=user_id)
+    except Profile.DoesNotExist:
+        return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Fetch the target_profile
+    try:
+        target_profile = Profile.objects.get(user_id=target_user_id)
+    except Profile.DoesNotExist:
+        return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+    matches = profile.matches
+    if target_user_id not in matches:
+        matches.append(target_user_id)
+        profile.matches = matches
+
+    matches_two = target_profile.matches
+    if user_id not in matches_two:
+        matches_two.append(user_id)
+        target_profile.matches = matches_two
+
+        # Remove for each user the his likes in db - 'likes'
+        profile.likes.remove(target_user_id)
+        target_profile.likes.remove(user_id)
+
+    # Save changes to the profile
+    profile.save()
+    # Save changes to the target_profile
+    target_profile.save()
+    
+    return response.Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 # --------- Functions ---------
 
