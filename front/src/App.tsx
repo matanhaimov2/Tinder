@@ -20,6 +20,7 @@ import SetProfile from './Pages/SetProfile/setprofile';
 // Components
 import TopNav from './Components/TopNav/topnav';
 import PersistLogin from './Components/PersistLogin';
+import PageLoader from './Components/Loaders/pageLoader/pageLoader';
 
 // Hooks
 import useAxiosPrivate from "./Hooks/usePrivate"
@@ -137,7 +138,7 @@ function App() {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <PersistGate loading={<PageLoader />} persistor={persistor}>
       <div className='wrapper'>
         <Router>
           <Routes> 

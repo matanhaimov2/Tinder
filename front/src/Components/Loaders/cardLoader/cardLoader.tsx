@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 // CSS
 import './cardLoader.css';
-
-// React MUI
 
 // React Icons
 import { FaUserCircle } from "react-icons/fa";

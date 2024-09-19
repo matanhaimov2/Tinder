@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 // CSS
 import './pageLoader.css';
 
 // Images
-import tinder_icon from '../../../Assets/Images/tinder_fire_logo.png'
-
-// React MUI
-
-// Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../Redux/store';
+import tinder_icon from '../../../Assets/Images/tinder_fire_white_logo.png'
 
 function PageLoader() {
-    // Global States
-    const userData = useSelector((state: RootState) => state.auth.userData);
 
     return (
         <div className='pageLoader-wrapper'>

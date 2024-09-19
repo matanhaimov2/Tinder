@@ -8,7 +8,6 @@ import Slider from '@mui/material/Slider';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-
 // React Icons
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
@@ -31,7 +30,6 @@ function MyProfile() {
     const [ageRange, setAgeRange] = useState<number[]>([18, 21]);
     const [distance, setDistance] = useState<number>((25));
     const [interest, setInterest] = useState<string | ''>('');
-
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [isInterestOpen, setIsInterestOpen] = useState(false);
 
