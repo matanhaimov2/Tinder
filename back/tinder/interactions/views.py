@@ -11,9 +11,8 @@ def handleUserReaction(request, action):
     access_token = auth_header.split(' ')[1]
     decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
     user_id = decoded_payload.get('user_id') # 4
-
+    
     target_user_id = request.data.get('target_user_id')  # ID of user(if liked), 4 OR users(if disliked), [2,4,7]
-    print('hodss', target_user_id)
     
     try:
         profile = Profile.objects.get(user_id=user_id)
@@ -42,7 +41,6 @@ def handleUserReaction(request, action):
         for id in target_user_id:
             # Add target_user_id to user_id blacklist             
             if id not in profile.blacklist:
-                print('hod', id)
                 profile.blacklist.append(id)
             
 
@@ -99,7 +97,7 @@ def verifyMatch(request):
 
 @rest_decorators.api_view(["GET"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
-def getAvailablebMatches(request):
+def getAvailableMatches(request):
     auth_header = request.headers.get('Authorization', None)
     access_token = auth_header.split(' ')[1]
     decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])

@@ -34,7 +34,7 @@ function Matches() {
     useEffect(() => {
         const checkForMatches = async () => {
             // Check if there any matches for logged_in user
-            const response = await axiosPrivateInstance.get('interactions/getAvailablebMatches/');
+            const response = await axiosPrivateInstance.get('interactions/getAvailableMatches/');
 
             setMatches(response.data.usersMatchesData)
         }

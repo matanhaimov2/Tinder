@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 // CSS
 import './cardProfile.css';
@@ -55,12 +55,19 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     const [loading, setLoading] = useState<boolean>(true); // Loading state
     const [dislikeSum, setDislikeSum] = useState<number[]>([]); // Stores dislikes
 
+    // Refs
+    const updatedDislikeListRef = useRef(dislikeSum); // Initialize with state value
+
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
     const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
+
+    // Configuration
+    var SaveDislikesEveryX = 3;
+
 
     // Fetch profiles from backend
     useEffect(() => {
@@ -161,43 +168,42 @@ function CardProfile({ isInEditProfile }: EditProfile) {
         }
     };
 
-    useEffect(() => {
-        console.log(userData)
-    }, [userData])
-
-
     // dislikeRequest funciton for blacklisting users
-    const dislikeRequest = async () => {
+    const dislikeRequest = async (ListOfDislikes : number[]) => {
         // Send dislike action to the backend
         const response = await axiosPrivateInstance.post('interactions/userAction/dislike/', {
-            target_user_id: dislikeSum
+            target_user_id: ListOfDislikes
         });
 
         setDislikeSum([])
     }
-
+    
     // Unload request to backend
     useEffect(() => {
         const handleUnload = () => {
             // Perform actions before the component unloads
-            dislikeRequest()
+
+            const currentDislikeList = updatedDislikeListRef.current; // Latest value in ref
+           
+            if (currentDislikeList.length > 0) {
+                dislikeRequest(currentDislikeList);
+            }
+
         };
-        window.addEventListener('unload', handleUnload);
+        window.addEventListener('beforeunload', handleUnload);
         return () => {
-            window.removeEventListener('unload', handleUnload);
+            window.removeEventListener('beforeunload', handleUnload);
         };
     }, []);
 
-    // if dislikeSum is 3 send to backend to user_id blacklist
+    // if dislikeSum is X send to backend to user_id blacklist
     useEffect(() => {
-        if (dislikeSum.length===3) {
-            dislikeRequest()
-            console.log('dislike is 3')
+        if (dislikeSum.length===SaveDislikesEveryX) {
+            dislikeRequest(dislikeSum)
         }
-        console.log(dislikeSum)
 
-        // make request if 10 dislikes
-        // if user exits website before 10 dislikes - make request right now
+        updatedDislikeListRef.current = dislikeSum;
+
     }, [dislikeSum])
 
 
