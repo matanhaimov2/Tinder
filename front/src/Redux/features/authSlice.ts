@@ -7,6 +7,7 @@ const initialState: AuthState = {
   updatedUserData: null,
   isLoggedIn: false,
   csrfToken: '',
+  didMatchOccuer: false
 };
 
 const authSlice = createSlice({
@@ -28,8 +29,11 @@ const authSlice = createSlice({
     setCsrfToken(state, action: PayloadAction<string>) {
       state.csrfToken = action.payload;
     },
+    setDidMatchOccuer(state, action: PayloadAction<boolean>) {
+      state.didMatchOccuer = action.payload;
+    }
   },
 });
 
-export const { setAccessToken, setUserData, setUpdatedUserData, setIsLoggedIn, setCsrfToken } = authSlice.actions;
+export const { setAccessToken, setUserData, setUpdatedUserData, setIsLoggedIn, setCsrfToken, setDidMatchOccuer } = authSlice.actions;
 export default authSlice.reducer;

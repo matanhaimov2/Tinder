@@ -47,7 +47,7 @@ const useLocation = (initialValue: string) => {
                 }
             });
         }
-    }, []);
+    }, [inputRef.current]);
 
     return { location, setLocation, coordinates, inputRef, options };
 };

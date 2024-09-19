@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2'
 
 // CSS
 import './editCard.css';
 
 // React MUI
-import Sheet from '@mui/joy/Sheet';
 import FormControl from '@mui/joy/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import CircularProgress from '@mui/material/CircularProgress';
-import Alert from '@mui/material/Alert';
-import { Button, IconButton, Box } from '@mui/material';
+import { IconButton, Box } from '@mui/material';
 import { AddAPhoto, Delete } from '@mui/icons-material';
 
 // Redux
@@ -32,7 +30,7 @@ type SaveData = {
 
 type Image = string | File;
 
-function EditCard({isSaveUpdates, setIsSaveUpdates}: SaveData) {
+function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
     const dispatch = useDispatch<AppDispatch>();
 
     // States
@@ -40,8 +38,6 @@ function EditCard({isSaveUpdates, setIsSaveUpdates}: SaveData) {
     const [bio, setBio] = useState<string | ''>('');
     const [age, setAge] = useState<number | ''>('');
     const [gender, setGender] = useState<string | ''>('');
-
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
@@ -110,29 +106,51 @@ function EditCard({isSaveUpdates, setIsSaveUpdates}: SaveData) {
     // Handle save updatedData
     const handleSaveUpdates = async () => {
         const uploadedImages: string[] = [];
-    
+
         for (const image of images) {
             if (image instanceof File) {
                 const formData = new FormData();
                 formData.append('image', image);
-    
+
                 try {
                     const response = await sendImagesToImgbb(formData);
                     if (response && response.data && response.data.url) {
                         uploadedImages.push(response.data.url);
                     } else {
-                        // add an alert
-                        setErrorMessage('Failed to upload some images.');
+                        // Raise an error alert
+                        await Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to upload some images. Please try again.',
+                            icon: 'error',
+                            // background: '#000000',
+                            // color: '#ffffff'
+                            // adjusment for light/dark mode is missing
+                        })
+
+                        setIsSaveUpdates(false)
+                        return;
                     }
                 } catch (error) {
-                    // add an alert
-                    setErrorMessage('Failed to upload some images.');
+                    console.error(error);
+
+                    // Raise an error alert
+                    await Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to upload some images. Please try again.',
+                        icon: 'error',
+                        // background: '#000000',
+                        // color: '#ffffff'
+                        // adjusment for light/dark mode is missing
+                    })
+
+                    setIsSaveUpdates(false)
+                    return;
                 }
             } else if (typeof image === 'string') {
                 uploadedImages.push(image);
             }
         }
-    
+
         if (userData) {
             const data = {
                 ...userData,
@@ -142,32 +160,49 @@ function EditCard({isSaveUpdates, setIsSaveUpdates}: SaveData) {
                 age: age || userData.age,
                 gender: gender || userData.gender
             };
-    
+
             dispatch(setUpdatedUserData(data)); // Update Redux state with new data
-    
+
             try {
                 const response = await axiosPrivateInstance.post('profiles/modifyProfile/', data);
-    
+
                 if (response) {
                     const userData = await axiosPrivateInstance.get('profiles/getUserData/');
-    
+
                     if (userData) {
                         dispatch(setUserData(userData.data.userData));
-                        // add a success alert
-                        alert('profile has been updated')
-                        // navigate('/home')
+
+                        // Raise a success alert
+                        await Swal.fire({
+                            title: "Profile Updated!",
+                            text: "Your profile has been successfully updated.",
+                            icon: "success",
+                            confirmButtonText: "Great!",
+                            // background: '#000000',
+                            // color: '#ffffff'
+                            // adjusment for light/dark mode is missing
+                        });
                     }
                 }
             } catch (error) {
                 console.error(error);
-                setErrorMessage('An error occurred. Please try again.');
+
+                // Raise an error alert
+                await Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred. Please try again.',
+                    icon: 'error',
+                    // background: '#000000',
+                    // color: '#ffffff'
+                    // adjusment for light/dark mode is missing
+                })
             }
-    
+
             // Reset save state
             setIsSaveUpdates(false);
         }
     };
-    
+
     // Enabling save updated data 
     useEffect(() => {
         // if 'save' is pressed - handle save

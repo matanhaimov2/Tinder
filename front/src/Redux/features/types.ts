@@ -41,5 +41,6 @@ export interface AuthState {
     updatedUserData: UpdatedUserData | null;
     isLoggedIn: boolean;
     csrfToken: string | null;
+    didMatchOccuer: boolean;
 }
   

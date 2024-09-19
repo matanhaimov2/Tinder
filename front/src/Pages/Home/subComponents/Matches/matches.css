@@ -1,0 +1,37 @@
+.matches-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns, each taking up equal space */
+    gap: 1rem; /* Adds space between items */
+    width: 100%;
+    direction: rtl;
+    color: white;
+}
+
+.matches-circular {
+    position: absolute;
+    top: 30%;
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
+
+}
+
+.matches-box-wrapper {
+    display: flex;
+    width: 100%; /* Full width within each grid cell */
+    height: 150px; /* Set a fixed height or use percentage relative to container */
+    justify-content: start;
+    align-items: end;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+}
+
+.matches-box-wrapper:hover {
+    transition: 0.5s ease;
+    transform: scale(1.1);
+}

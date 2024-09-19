@@ -80,8 +80,10 @@ function MyProfile() {
                 ageRange: ageRange,
                 location: location || userData.location,
                 interested_in: interest || userData.interested_in,
+                latitude: coordinates?.lat || userData.latitude,
+                longitude: coordinates?.lng || userData.longitude 
             };
-    
+                
             dispatch(setUpdatedUserData(data));
         }
     }, [distance, ageRange, interest, location, dispatch]);

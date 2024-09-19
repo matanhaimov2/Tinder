@@ -76,7 +76,7 @@ const PrivateRoutes = () => {
         const { data } = await axiosPrivateInstance.get('users/verify/')
         dispatch(setIsLoggedIn(true));
 
-        console.log(data)
+        // console.log(data)
 
       } catch (error:any) {
         dispatch(setIsLoggedIn(false));

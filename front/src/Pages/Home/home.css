@@ -60,11 +60,11 @@
 
 /* Right Side - Main (content) */
 .home-side-content-wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 90%;
-    background: black;
-
+    background: #111418;
 }
 
 .home-side-content-title-wrapper {
@@ -77,4 +77,11 @@
     display: flex;
     flex-direction: row;
     justify-content: end;
+}
+
+.home-side-content-details {
+    width: 95%;
+    height: 100%;
+    padding-top: 5%;
+    margin: auto;
 }

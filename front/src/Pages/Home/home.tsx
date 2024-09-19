@@ -21,15 +21,17 @@ import MyProfile from '../../Components/MyProfile/myProfile';
 import EditProfile from '../../Components/EditProfile/editProfile';
 import CardProfile from '../../Components/CardProfile/cardProfile';
 
+// Sub Components
+import Matches from './subComponents/Matches/matches';
+import Messages from './subComponents/Messages/messages';
 
 export default function Home() {
     // States
     const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage visibility
     const [navValue, setNavValue] = useState(2); // Index for nav (Matches/Messages)
 
-
+    // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
-    // console.log(userData, 'damn')
 
     // Toggle profile visibility
     const handleProfileClick = () => {
@@ -82,35 +84,36 @@ export default function Home() {
                                             >
 
                                                 <Tab label="Messages" value="1" sx={{
-                                                        fontWeight: '600',
-                                                        color: 'white', // Default color for inactive tabs
-                                                        textTransform: 'none', // Disable uppercase transformation
-                                                        '&.Mui-selected': {
-                                                            color: 'white', // Set white color for the active tab
-                                                        },
-                                                    }}
+                                                    fontWeight: '600',
+                                                    color: 'white', // Default color for inactive tabs
+                                                    textTransform: 'none', // Disable uppercase transformation
+                                                    '&.Mui-selected': {
+                                                        color: 'white', // Set white color for the active tab
+                                                    },
+                                                }}
                                                 />
                                                 <Tab label="Matches" value="2" sx={{
-                                                        fontWeight: '600',
-                                                        color: 'white', // Default color for inactive tabs
-                                                        textTransform: 'none', // Disable uppercase transformation
-                                                        '&.Mui-selected': {
-                                                            color: 'white', // Set white color for the active tab
-                                                        },
-                                                    }} 
+                                                    fontWeight: '600',
+                                                    color: 'white', // Default color for inactive tabs
+                                                    textTransform: 'none', // Disable uppercase transformation
+                                                    '&.Mui-selected': {
+                                                        color: 'white', // Set white color for the active tab
+                                                    },
+                                                }}
                                                 />
                                             </TabList>
                                         </Box>
                                     </div>
-
-                                    {navValue===1 ? (
-                                        <div> Messages Here </div>
-                                    ) : (
-                                        <div> Matches Here </div>
-                                    )}
-
                                 </TabContext>
-                            </div> 
+                            </div>
+
+                            <div className='home-side-content-details'>
+                                {navValue === 1 ? (
+                                    <Messages />
+                                ) : (
+                                    <Matches />
+                                )}
+                            </div>
                         </>
                     ) : (
                         <MyProfile />

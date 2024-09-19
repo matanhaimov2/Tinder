@@ -14,17 +14,17 @@ import { TiDelete, TiHeart } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
 
 // Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../../Redux/store';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../Redux/store';
-import { setUserData } from "../../Redux/features/authSlice";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../Redux/store';
+import { setDidMatchOccuer } from "../../Redux/features/authSlice";
 
 // Hooks
 import useAxiosPrivate from '../../Hooks/usePrivate';
 
-// Props Interfaces
+// Components
+import CardLoader from '../Loaders/cardLoader/cardLoader';
+
+// Interfaces
 interface UserProfile {
     user_id: number;
     images: string[];
@@ -35,10 +35,9 @@ interface UserProfile {
     bio: string;
     location: string;
     distance: number;
-    // matches: number[]
-    // likes: number[]
 }
 
+// Props Interfaces
 interface EditProfile {
     isInEditProfile: boolean;
 }
@@ -54,11 +53,11 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     const [userImagesIndex, setUserImagesIndex] = useState(0); // Index for swiping through current user's images
     const [errorMessage, setErrorMessage] = useState<string>(); // error message
     const [loading, setLoading] = useState<boolean>(true); // Loading state
-    const [dislikeSum, setDislikeSum] = useState<number[]>([]);
+    const [dislikeSum, setDislikeSum] = useState<number[]>([]); // Stores dislikes
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
-    // console.log(userData)
+    const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
@@ -129,14 +128,6 @@ function CardProfile({ isInEditProfile }: EditProfile) {
         setUserImagesIndex(parseInt(newValue, 10)); // parseInt(newValue, 10) will convert it to the number, e.g: '1' => 1.
     };
 
-    // LOGGER
-    useEffect(() => {
-        // console.log('UserIndex: ', usersIndex)
-        // console.log('CurrentUser Data: ', currentUser)
-        // console.log('User Array Img:', currentUserImages)
-
-    }, [usersIndex, currentUser])
-
     const handleUserAction = async (action: 'like' | 'dislike') => {
         try {
             // Move to the next user in the list
@@ -144,7 +135,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
             if (action === 'like') {
                 // Send like action to the backend
-                const response = await axiosPrivateInstance.post(`profiles/userAction/${action}/`, {
+                const response = await axiosPrivateInstance.post(`interactions/userAction/${action}/`, {
                     target_user_id: currentUser?.user_id
                 });
             }
@@ -157,10 +148,11 @@ function CardProfile({ isInEditProfile }: EditProfile) {
             if (currentUser?.user_id) {
                 if (userData?.likes.includes(currentUser?.user_id)) {
 
-                    const response = await axiosPrivateInstance.post(`profiles/verifyMatch/`, {
+                    const response = await axiosPrivateInstance.post(`interactions/verifyMatch/`, {
                         target_user_id: currentUser?.user_id
                     });
 
+                    dispatch(setDidMatchOccuer(!didMatchOccuer))
                     console.log('MATCH')
                 }
             }
@@ -177,11 +169,11 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     // dislikeRequest funciton for blacklisting users
     const dislikeRequest = async () => {
         // Send dislike action to the backend
-        const response = await axiosPrivateInstance.post('profiles/userAction/dislike/', {
+        const response = await axiosPrivateInstance.post('interactions/userAction/dislike/', {
             target_user_id: dislikeSum
         });
 
-        // setDislikeSum([])
+        setDislikeSum([])
     }
 
     // Unload request to backend
@@ -215,7 +207,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
                 {/* basically, if !loading && currentUser => display content, elif, !loading && !currentUser => display errorMessage */}
                 {loading ? (
-                    <span style={{ color: 'white' }}>Loading...</span> // loading ui here!
+                    <div style={{ width:'100%', height: '100%', color: 'white' }}><CardLoader /></div> // loading ui here!
                 ) : currentUser ? (
                     <div className='cardProfile-user-wrapper' style={{ backgroundImage: currentUserImages ? `url(${currentUserImages[userImagesIndex]})` : 'none' }}>
                         <div className='cardProfile-user-images-nav-wrapper'>

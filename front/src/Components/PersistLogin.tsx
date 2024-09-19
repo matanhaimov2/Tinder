@@ -5,9 +5,13 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
 
+// Components
+import PageLoader from './Loaders/pageLoader/pageLoader';
+
 // Hooks
 import useAxiosPrivate from '../Hooks/usePrivate';
 import useRefreshToken from '../Hooks/useRefreshToken';
+
 
 export default function PersistLogin() {
     const refresh = useRefreshToken();
@@ -35,7 +39,7 @@ export default function PersistLogin() {
                 await refresh();
                 const { data } = await axiosPrivate.get('users/verify/');
                 
-                console.log(data)
+                // console.log(data)
             } catch (error: any) {
                 console.log(error?.response);
                 
@@ -59,5 +63,5 @@ export default function PersistLogin() {
         };
     }, [accessToken, refresh, axiosPrivate]);
 
-    return loading ? <>Loading</> : <Outlet />;
+    return loading ? <PageLoader/> : <Outlet />;
 }
