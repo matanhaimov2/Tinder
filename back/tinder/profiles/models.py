@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=150, blank=True, null=True)
+    username = models.CharField(max_length=150, blank=True, null=True)
     isFirstLogin = models.BooleanField(default=True)
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], null=True, blank=True)
     age = models.PositiveIntegerField(blank=True, null=True)
@@ -19,6 +20,7 @@ class Profile(models.Model):
     likes = models.JSONField(default=list)
     matches = models.JSONField(default=list)
     blacklist = models.JSONField(default=list)
+    room_id = models.JSONField(default=list)
 
     class Meta:
         db_table = 'users_profile'  # Ensures the table is named 'profile'

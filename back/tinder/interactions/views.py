@@ -1,8 +1,16 @@
 from django.conf import settings
-from rest_framework import response, decorators as rest_decorators, permissions as rest_permissions, status
+from rest_framework import response, decorators as rest_decorators, permissions as rest_permissions, status, viewsets
+from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser
 from profiles.models import Profile
 import jwt
+from rest_framework.response import Response
+from django.http import JsonResponse
+from rest_framework.permissions import IsAuthenticated
+import json
 
+from .models import Chat
+from .serializers import ChatSerializer
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
@@ -74,14 +82,18 @@ def verifyMatch(request):
 
 
     matches = profile.matches
+    room_id = profile.room_id
     if target_user_id not in matches:
         matches.append(target_user_id)
+        room_id.append(f"match_{user_id}_{target_user_id}")
         profile.matches = matches
 
     matches_two = target_profile.matches
+    room_id_two = target_profile.room_id
     if user_id not in matches_two:
         matches_two.append(user_id)
         target_profile.matches = matches_two
+        room_id_two.append(f"match_{user_id}_{target_user_id}")
 
         # Remove for each user the his likes in db - 'likes'
         profile.likes.remove(target_user_id)
@@ -124,9 +136,61 @@ def getAvailableMatches(request):
         data = {
             "user_id": id,
             "first_name": target_Profile.first_name,
-            "image": target_Profile.images[0] if target_Profile.images and len(target_Profile.images) > 0 else None
+            "image": target_Profile.images[0] if target_Profile.images and len(target_Profile.images) > 0 else None,
+            "room_id": target_Profile.room_id
         }
 
         usersMatches.append(data)
 
     return response.Response({'usersMatchesData': usersMatches}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def room(request, room_id):
+    auth_header = request.headers.get('Authorization', None)
+    access_token = auth_header.split(' ')[1]
+    decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+    user_id = decoded_payload.get('user_id')
+
+    # Fetch the profile
+    try:
+        profile = Profile.objects.get(user_id=user_id)
+    except Profile.DoesNotExist:
+        return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    rooms = profile.room_id
+    print('current profile rooms', rooms)
+    print('target room_id', room_id)
+
+    if room_id in rooms:
+        if request.method == "GET":
+            messages = Chat.objects.filter(room_id=room_id).order_by('-id')  # Order by most recent first
+            serializer = ChatSerializer(messages, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if request.method == "POST":
+            print(request.POST, request.data, sep="\n")
+            # room = Room.objects.get(name=name, password=password)
+            try:
+                message = request.data.get('message')
+            except:
+                message = ""
+            try:
+                image = request.data.get('image')
+                print(image)
+                if image == "undefined":
+                    image = None
+            except:
+                image = None
+
+            chat = Chat.objects.create(user_id=user_id, room_id=room_id, message=message, image=image)
+            chat.save()
+            return JsonResponse({"status": "201"})
+        
+    return JsonResponse({"status": "201"})
+
+    # if request.method == "DELETE":
+    #     room = Room.objects.get(name=name, password=password)
+    #     room.delete()

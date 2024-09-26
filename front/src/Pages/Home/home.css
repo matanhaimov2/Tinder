@@ -84,4 +84,5 @@
     height: 100%;
     padding-top: 5%;
     margin: auto;
+    overflow-y: auto; /* when there're too match matches */
 }

@@ -8,6 +8,7 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             user=instance,
-            first_name=instance.first_name  # Pass the first_name from the User model
+            first_name=instance.first_name,  # Pass the first_name from the User model
+            username=instance.username
             # Leave other fields empty as they will be set to their default values
         )

@@ -126,7 +126,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
             setErrorMessage('No More Potential Matches, try to adjust your preferences');
         }
 
-        console.log(usersProfilesData)
+        // console.log(usersProfilesData)
 
     }, [usersProfilesData, usersIndex])
 
@@ -152,7 +152,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                 }
             }
 
-            if (currentUser?.user_id) {
+            if (currentUser?.user_id) { // PROBLEM - matches doesnt work on real time
                 if (userData?.likes.includes(currentUser?.user_id)) {
 
                     const response = await axiosPrivateInstance.post(`interactions/verifyMatch/`, {

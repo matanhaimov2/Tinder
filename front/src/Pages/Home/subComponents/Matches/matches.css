@@ -12,7 +12,6 @@
     top: 30%;
     left: 50%; 
     transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
-
 }
 
 .matches-box-wrapper {

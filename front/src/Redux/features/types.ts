@@ -1,6 +1,7 @@
 export interface UserData {
     id: number;
     user_id: number;
+    username: string;
     first_name: string;
     isFirstLogin: boolean;
     gender: string;
