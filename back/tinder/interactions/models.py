@@ -1,13 +1,22 @@
 from unittest.util import _MAX_LENGTH
 from django.db import models
 from django_resized import ResizedImageField
-from django.contrib.auth.models import User
 
-class Chat(models.Model):
-    room_id = models.CharField(max_length=255, unique=False, blank=False, default="default_room")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, related_name="chatUser")
-    message = models.TextField(blank=True)
+class Room(models.Model):
+    room_id = models.CharField(max_length=255, unique=True)
+    users = models.ManyToManyField('auth.User')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "chat_room"
+
+class Message(models.Model):
+    username = models.CharField(max_length=255)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     image = ResizedImageField(force_format='WEBP', size=None,scale=0.5, quality=75, upload_to='images', blank=True, null=True)
+    room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
 
-    # def __str__(self):
-    #     return str(self.room)
+    class Meta:
+        db_table = "chat_message"
+        ordering = ('timestamp',)

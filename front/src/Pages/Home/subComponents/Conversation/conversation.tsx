@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FormEvent, ChangeEventHandler, } from 'react';
+import { w3cwebsocket as W3CWebSocket } from 'websocket';
 
 // CSS
 import './conversation.css';
@@ -31,6 +32,10 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
     // States
     const [messages, setMessages] = useState<any[]>([]); // Replace `any` with the appropriate message type if available
     const [loading, setLoading] = useState<boolean>(true); // Loading state
+    const [socket, setSocket] = useState<WebSocket | null>(null); // Typed as WebSocket or null
+    const [message, setMessage] = useState<string>("");
+    const [selectedImage, setSelectedImage] = useState<File>();
+
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
@@ -38,48 +43,80 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
 
-    // Fetch messages to conversation
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axiosPrivateInstance.get(`interactions/room/${room_id}`);
-                console.log(response)
-                setMessages(response.data)
+        // Connect to the WebSocket server with the username as a query parameter
+        const newSocket = new WebSocket(`ws://localhost:8000/ws/chat/${room_id}/`);
+        setSocket(newSocket);
+
+        newSocket.onopen = () => console.log("WebSocket connected");
+        newSocket.onclose = () => {
+            setMessages([])
+            console.log("WebSocket disconnected")
+        };
+
+        // Clean up the WebSocket connection when the component unmounts
+        return () => {
+            newSocket.close();
+        };
+    }, [room_id]);
+
+    useEffect(() => {
+        if (socket) {
+            console.log('is in??')
+            socket.onmessage = (event) => {
+                console.log('is in??')
+                const data = JSON.parse(event.data);
+                setMessages((prevMessages) => [...prevMessages, data]);
                 setLoading(false)
-            } catch (err) {
-                console.error(err);
+            };
+        }
+    }, [socket]);
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (message && socket) {
+            const data = {
+                message: message,
+                username: userData?.username,
+            };
+
+            // Send the image data if available - Problem
+            const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+            
+            if (fileInput?.files && fileInput.files.length > 0) {
+                const imageFile = fileInput.files[0];
+                const formData = new FormData();
+                formData.append("message", message);
+                formData.append("image", imageFile);
+
+                // Send the data as FormData if there's an image
+                socket.send(JSON.stringify({
+                    ...data,
+                    image: URL.createObjectURL(imageFile), // Just for preview (you may want to handle this differently)
+                }));
+            } else {
+                socket.send(JSON.stringify(data));
             }
+
+            setMessage("");
         }
-        // const timer = setInterval(() => { fetchData() }, 1000)
-        fetchData()
-        // return () => clearInterval(timer)
-    }, [room_id])
+    };
 
-    // Send messages
-    const Send = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    // Logger
+    useEffect(() => {
+        console.log(messages)
+        console.log(selectedImage)
+    }, [messages, selectedImage])
 
-        const form = e.currentTarget as HTMLFormElement; // Ensure it's recognized as an HTML form
-
-        let data = new FormData()
-
-        data.append("message", e.currentTarget.message.value)
-        data.append("image", e.currentTarget.image.files[0])
-
-        const response = await axiosPrivateInstance.post(`interactions/room/${room_id}`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data', // Ensure the correct content type
-            },
-        });
-
-        console.log(response)
-
-        form.reset();
-        let messagesContainer = document.getElementById("messagesContainer");
-        if (messagesContainer) {
-            messagesContainer.scrollTo(0, 0);
-        }
-    }
+    // Handle uploaded image change
+    const handleFileChange: ChangeEventHandler<HTMLInputElement> = (
+        event
+    ) => {
+        const file = event.target.files as FileList;
+        setSelectedImage(file?.[0]);
+    };
 
     return (
         <div className='conversation-wrapper'>
@@ -103,9 +140,9 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
                         </div>
                     ) : messages.length > 0 ? (
                         messages.map((message, i) => (
-                            <div className={`${userData?.username === message.user ? 'owner' : 'another'}`} key={message.id}>
+                            <div className={`${userData?.username === message.username ? 'owner' : 'another'}`} key={message.id}>
                                 <div>
-                                    {userData?.username !== message.user && (
+                                    {userData?.username !== message.username && (
                                         <>
                                             {user_img ? (
                                                 <img src={user_img} className='conversation-circle-img' alt="User Image" />
@@ -116,7 +153,7 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
                                     )}
                                 </div>
 
-                                <div className={`${userData?.username === message.user ? 'content-owner' : 'content-another'}`}>
+                                <div className={`${userData?.username === message.username ? 'content-owner' : 'content-another'}`}>
                                     {message.message && (
                                         <p className='content-message'>{message.message}</p>
                                     )}
@@ -140,8 +177,8 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
 
             <div className='conversation-underline-separator' /> {/* underline separator */}
 
-            <form className='conversation-send-wrapper' onSubmit={(e) => Send(e)}>
-                <input type="file" id="fileInput" name="image" />
+            <form className='conversation-send-wrapper' onSubmit={handleSubmit}>
+                <input type="file" id="fileInput" name="image" onChange={handleFileChange} />
                 {/* <div className="file-upload-wrapper">
                     <input type="file" style={{display: 'none'}} id="fileInput" name="image" />
                     
@@ -149,7 +186,7 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
                         <FaRegImages size={40} /> 
                     </label>
                 </div> */}
-                <input type="text" className='conversation-send-text' name="message" placeholder="Type a message" />
+                <input type="text" className='conversation-send-text' name="message" placeholder="Type a message" value={message} onChange={(event) => setMessage(event.target.value)} />
                 <button type='submit' className='conversation-send-submit' value="Send"> SEND </button>
             </form>
         </div>
