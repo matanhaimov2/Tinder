@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEventHandler} from 'react';
+import React, { useEffect, useState, ChangeEventHandler } from 'react';
 
 // CSS
 import './conversation.css';
@@ -81,7 +81,7 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
 
             // Send the image data if available - Problem
             const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-            
+
             if (fileInput?.files && fileInput.files.length > 0) {
                 const imageFile = fileInput.files[0];
                 const formData = new FormData();
@@ -115,6 +115,29 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
         setSelectedImage(file?.[0]);
     };
 
+    // Function to format the timestamp - hh-mm-am/pm
+    const formatTimestamp = (timestamp: string) => {
+        const date = new Date(timestamp);
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+        return `${hours}:${minutesStr} ${ampm}`;
+    };
+
+    // Function to format the date - mm/dd/yyyy
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        };
+        return date.toLocaleDateString('en-US', options);
+    };
+
     return (
         <div className='conversation-wrapper'>
             <div className='conversation-topnav-wrapper'>
@@ -136,34 +159,61 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
                             <CircularProgress sx={{ color: '#d43e73 ' }} />
                         </div>
                     ) : messages.length > 0 ? (
-                        messages.map((message, i) => (
-                            <div className={`${userData?.username === message.username ? 'owner' : 'another'}`} key={message.id}>
-                                <div>
-                                    {userData?.username !== message.username && (
-                                        <>
-                                            {user_img ? (
-                                                <img src={user_img} className='conversation-circle-img' alt="User Image" />
-                                            ) : (
-                                                <FaUserCircle className='conversation-circle-img' />
+                        messages.map((message, i) => {
+                            // Format current message's date
+                            const currentMessageDate = new Date(message.timestamp).toLocaleDateString();
+
+                            // Format the previous message's date if it exists
+                            const previousMessage = messages[i - 1];
+                            const previousMessageDate = previousMessage
+                                ? new Date(previousMessage.timestamp).toLocaleDateString()
+                                : null;
+
+                            // Show date if it's the first message or the date has changed
+                            const showDate = i === 0 || currentMessageDate !== previousMessageDate;
+
+                            return (
+                                <>
+                                    {/* Date divider */}
+                                    {showDate && (
+                                        <div className="conversation-date-divider">
+                                            {formatDate(message.timestamp)}
+                                        </div>
+                                    )}
+
+                                    <div className={`${userData?.username === message.username ? 'owner' : 'another'}`} key={message.id}>
+                                        <div>
+                                            {userData?.username !== message.username && (
+                                                <>
+                                                    {user_img ? (
+                                                        <img src={user_img} className='conversation-circle-img' alt="User Image" />
+                                                    ) : (
+                                                        <FaUserCircle className='conversation-circle-img' />
+                                                    )}
+                                                </>
                                             )}
-                                        </>
-                                    )}
-                                </div>
+                                        </div>
 
-                                <div className={`${userData?.username === message.username ? 'content-owner' : 'content-another'}`}>
-                                    {message.message && (
-                                        <p className='content-message'>{message.message}</p>
-                                    )}
+                                        <div className={`${userData?.username === message.username ? 'content-owner' : 'content-another'}`}>
+                                            {message.message && (
+                                                <p className='content-message'>{message.message}</p>
+                                            )}
 
-                                    {/* Display the image if exists */}
-                                    {message.image ? (
-                                        <img className='conversation-image-file' src={`http://localhost:8000${message.image}`} loading="lazy" width={300} height={150} />
-                                    ) : (
-                                        ''
-                                    )}
-                                </div>
-                            </div>
-                        ))
+                                            {/* Display the image if exists */}
+                                            {message.image ? (
+                                                <img className='conversation-image-file' src={`http://localhost:8000${message.image}`} loading="lazy" width={300} height={150} />
+                                            ) : (
+                                                ''
+                                            )}
+
+                                            <p className={`${userData?.username === message.username ? 'content-timestamp-left' : 'content-timestamp-right'}`}>{formatTimestamp(message.timestamp)}</p>
+
+                                        </div>
+                                    </div>
+                                </>
+
+                            )
+                        })
                     ) : (
                         <div className='conversation-start-chat-title'>
                             <span> !Say hi to get the conversation going </span>

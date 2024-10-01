@@ -132,14 +132,11 @@ def getAvailableMatches(request):
 
         # Check if any room_id contains the current user_id
         valid_room_ids = [room_id for room_id in target_Profile.room_id if str(user_id) in room_id.split('_')]
-        print('valid:', valid_room_ids)
+        # print('valid:', valid_room_ids)
 
         room_id = valid_room_ids[0]
 
-        # latest_message = Message.objects.filter(room_id=room_id).order_by('-timestamp').first()
-        # print(latest_message)
         latest_message = Message.objects.filter(room__room_id=room_id).order_by('-timestamp').first()
-        print(f"Latest message for room_id {room_id}: {latest_message}")
 
         # Prepare the latest message data
         latest_message_content = latest_message.content if latest_message else None

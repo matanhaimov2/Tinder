@@ -54,7 +54,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Step 5 Explanation: This method retrieves all messages associated with 
         # the room_id from the database. It returns a list of dictionaries containing
         # the username, content, and timestamp of each message.
-        print('nurds')
         return list(Message.objects.filter(room__room_id=self.room_name).values('id', 'username', 'content', 'timestamp', 'image'))
 
     async def send_existing_messages(self, messages):

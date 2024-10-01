@@ -7,12 +7,15 @@ urlpatterns = [
     path("getAvailableMatches/", getAvailableMatches, name="getAvailableMatches"),
 ]
 
+# Tasks:
+# dark mode light mode - 
+# responsivnes - 
+# fix error where needed -
+
+# Conversation:
 # WebSockets secured authenticate - ?
-# send image (bonus: icon)- ?
+# add scroller styling
 # handle different matches/rooms
-# dark mode light mode
-# responsivnes
 # unmatch option
-# fix error where needed
-# display timestamp on each message
+# send image (bonus: icon)- ?
 # real time matches doesnt work

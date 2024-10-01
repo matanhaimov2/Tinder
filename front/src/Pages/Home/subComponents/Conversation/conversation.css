@@ -61,6 +61,12 @@
     transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
 }
 
+.conversation-date-divider {
+    display: flex;
+    justify-content: center;
+    color: grey;
+}
+
 .owner {
     border-radius: 12px;
     width: fit-content;
@@ -95,14 +101,14 @@
 .content-another {
     background-color: #21262e;
     border-radius: 5px;
-    text-align: end;
+    text-align: left;
     padding-inline: 5%;
 }
 
 .content-message {
-    padding-inline: 1%;
+    padding-inline: 5px;
     max-width: 100%;
-    padding: 10px;
+    /* padding: 10px; */
     margin: 5px 0;
     border-radius: 10px;
     word-wrap: break-word;
@@ -114,6 +120,19 @@
 .conversation-image-file {
     width: auto;
     height: 100px;
+}
+
+.content-timestamp-left {
+    font-size: 70%;
+    margin: unset;
+    padding: 5px;
+}
+
+.content-timestamp-right {
+    font-size: 70%;
+    margin: unset;
+    padding: 5px;
+    direction: ltr;
 }
 
 .conversation-start-chat-title {
