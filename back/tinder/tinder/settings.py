@@ -45,9 +45,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
-    'channels', 
     'django_resized',
-
+    # 'daphne', 
+    'channels', 
 
     # Apps
     'users',
@@ -71,7 +71,7 @@ ASGI_APPLICATION = 'tinder.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     }
 }
 

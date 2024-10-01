@@ -56,6 +56,11 @@ function Matches() {
 
     // Open conversation component
     const openConversation = (user_id: number, correctRoomId: string, selectedUserImg: string) => {
+        // Close the current conversation if open
+        if (isConversationOpen) {
+            setIsConversationOpen(false);
+        }
+        
         setSelectedRoomId(correctRoomId);
         setSelectedUserId(user_id);
         setSelectedUserImg(selectedUserImg)
