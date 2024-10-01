@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne' , 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,10 +43,16 @@ INSTALLED_APPS = [
     # Modules
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'django_resized',
+    # 'daphne', 
+    'channels', 
 
     # Apps
     'users',
+    'profiles',
+    'interactions'
 ]
 
 MIDDLEWARE = [
@@ -58,6 +65,15 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
+
+ASGI_APPLICATION = 'tinder.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
 
 ROOT_URLCONF = 'tinder.urls'
 
@@ -86,7 +102,6 @@ CORS_ALLOWED_ORIGINS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'users.authenticate.CustomAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -95,10 +110,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
+    'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
@@ -175,10 +190,10 @@ WSGI_APPLICATION = 'tinder.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tinder_db_her1',  # The database name
-        'USER': 'tinder_db_her1_user',  # Your PostgreSQL user
-        'PASSWORD': 'PYWHciSEiv8EXBMf2h0hxpPDaOvhG6XX',  # Your PostgreSQL password
-        'HOST': 'dpg-cr46ktjv2p9s73cmtad0-a.oregon-postgres.render.com',  # The host address of your PostgreSQL server
+        'NAME': 'tinder_db_23pj',  # The database name
+        'USER': 'tinder_db_23pj_user',  # Your PostgreSQL user
+        'PASSWORD': '6h0vsyVpV30b6noA4I5N8duqdkWipXcd',  # Your PostgreSQL password
+        'HOST': 'dpg-crntqr23esus73bsrb90-a.oregon-postgres.render.com',  # The host address of your PostgreSQL server
         'PORT': '5432',  # The default port for PostgreSQL
     }
 }
@@ -218,6 +233,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

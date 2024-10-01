@@ -1,0 +1,46 @@
+.myProfile-wrapper {
+    direction: rtl;
+}
+
+.myProfile-discovery-title {
+    display: block;
+    color: #b9bfc8;
+    padding: 3%;
+}
+
+.myProfile-divs-wrapper {
+    background: #111418;
+    padding: 4% 3%
+}
+
+.myProfile-organize-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.myProfile-underline-separator {
+    height: 1px;
+    background-color: grey;
+}
+
+.myProfile-arrow-wrapper {
+    display: flex;
+    align-items: center;
+    direction: ltr;
+}
+
+.myProfile-arrow-icon {
+    color: #7c8591;
+    cursor: pointer;
+}
+.myProfile-arrow-icon:hover {
+    color: #ff4458;
+}
+
+div#interest-select {
+    width: 7vw; /* try to understand why percentage doesnt work */
+    padding: unset;
+    padding-block: 3%;
+}

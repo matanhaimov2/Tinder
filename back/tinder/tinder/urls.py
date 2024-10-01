@@ -16,10 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
+from django.conf.urls.static import static
+from interactions.routing import websocket_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    # path('token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-]
+    path('profiles/', include('profiles.urls')),
+    path('interactions/', include('interactions.urls')),
+    path('ws/', include(websocket_urlpatterns)),
+    
+] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

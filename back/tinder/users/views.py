@@ -3,9 +3,11 @@ from django.conf import settings
 from django.middleware import csrf
 from rest_framework import exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
 from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
-from users import serializers, models
+from rest_framework_simplejwt.exceptions import TokenError
+from users import serializers
 from .serializers import UserSerializer
 from rest_framework import status
+
 
 def get_user_tokens(user):
     refresh = tokens.RefreshToken.for_user(user)
@@ -76,16 +78,17 @@ def login(request):
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def logout(request):
     try:
-        refreshToken = request.COOKIES.get(
-            settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        refreshToken = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
         token = tokens.RefreshToken(refreshToken)
         token.blacklist()
 
         res = response.Response()
+   
         res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
         res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
         res.delete_cookie("X-CSRFToken")
         res.delete_cookie("csrftoken")
+   
         res["X-CSRFToken"]=None
         
         return res
@@ -138,7 +141,31 @@ class CookieTokenRefreshView(jwt_views.TokenRefreshView):
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
 def verify(request):
     try:
-        return response.Response({'Success': 'User authorized'}, status=status.HTTP_201_CREATED)
+        # Retrieve the refresh token from the request's cookies or headers
+        refreshToken = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        
+        # Try to validate the refresh token
+        token = tokens.RefreshToken(refreshToken)
+        
+        # If no exception is raised, the token is not blacklisted
+        return response.Response({'Success': 'User authorized'}, status=status.HTTP_200_OK)
+    
+    except TokenError:
+        # If the token is blacklisted or invalid, a TokenError is raised
+        return response.Response({'Error': 'Token is invalid or blacklisted'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    except Exception as e:
+        # Handle any other errors that may occur
+        return response.Response({'Error': f'Something went wrong: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# Health Check
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([])
+def healthCheck(request):
+    try:
+        return response.Response({'status': True}, status=status.HTTP_201_CREATED)
     except:
-        return response.Response({'Error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response({'status': False}, status=status.HTTP_400_BAD_REQUEST)
     

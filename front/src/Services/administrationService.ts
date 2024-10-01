@@ -3,14 +3,12 @@ import axios from "axios";
 // Global Veribales
 import { SERVER_URL } from "../Assets/GlobalVeriables";
 
-// -- Health Check
+// Health Check
 const healthCheck = async () => {
     try {
-        // Sends to back email and password to see if correct
-        const response = await axios.get(SERVER_URL + "/healthCheck")
-        console.log(response);
-
-        return response.data.res
+        const response = await axios.post(SERVER_URL + "/users/healthCheck/")
+      
+        return response.data.status
     }
     catch (err) {
         return false;
