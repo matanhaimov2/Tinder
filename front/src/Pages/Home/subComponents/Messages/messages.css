@@ -1,3 +1,45 @@
 .messages-wrapper {
+    display: flex;
+    flex-direction: column;
     color: white;
+    gap: 5px;
+    direction: rtl;
 }
+
+.messages-circular {
+    position: absolute;
+    top: 30%;
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
+}
+
+.messages-inner-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 6%;
+    width: 100%;
+    cursor: pointer;
+}
+
+.messages-circle-img {
+    width: 78px;
+    height: 78px;
+    border-radius: 50px;
+}
+
+
+.messages-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-block: 1%;}
+
+.messages-content-name {
+    font-weight: 600;
+    font-size: 120%;
+}
+
+.messages-content-text {
+    color: grey;
+}
+

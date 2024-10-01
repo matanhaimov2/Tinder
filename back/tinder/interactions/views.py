@@ -7,6 +7,7 @@ import jwt
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
+from .models import Message
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
@@ -129,11 +130,28 @@ def getAvailableMatches(request):
         except Profile.DoesNotExist:
             return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        # Check if any room_id contains the current user_id
+        valid_room_ids = [room_id for room_id in target_Profile.room_id if str(user_id) in room_id.split('_')]
+        print('valid:', valid_room_ids)
+
+        room_id = valid_room_ids[0]
+
+        # latest_message = Message.objects.filter(room_id=room_id).order_by('-timestamp').first()
+        # print(latest_message)
+        latest_message = Message.objects.filter(room__room_id=room_id).order_by('-timestamp').first()
+        print(f"Latest message for room_id {room_id}: {latest_message}")
+
+        # Prepare the latest message data
+        latest_message_content = latest_message.content if latest_message else None
+        latest_message_timestamp = latest_message.timestamp.isoformat() if latest_message else None
+        
         data = {
             "user_id": id,
             "first_name": target_Profile.first_name,
             "image": target_Profile.images[0] if target_Profile.images and len(target_Profile.images) > 0 else None,
-            "room_id": target_Profile.room_id
+            "room_id": room_id,
+            "latest_message": latest_message_content,
+            "latest_message_timestamp": latest_message_timestamp  
         }
 
         usersMatches.append(data)

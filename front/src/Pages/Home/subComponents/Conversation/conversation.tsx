@@ -21,13 +21,12 @@ import useAxiosPrivate from '../../../../Hooks/usePrivate';
 
 // Props Interfaces
 interface ConversationProps {
-    match_user_id: number;
     room_id: string;
     user_img: string | null;
     setIsConversationOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen }: ConversationProps) {
+function Conversation({ room_id, user_img, setIsConversationOpen }: ConversationProps) {
 
     // States
     const [messages, setMessages] = useState<any[]>([]); // Replace `any` with the appropriate message type if available
@@ -42,7 +41,6 @@ function Conversation({ match_user_id, room_id, user_img, setIsConversationOpen 
 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
-
 
     useEffect(() => {
         // Connect to the WebSocket server with the username as a query parameter

@@ -85,4 +85,5 @@
     padding-top: 5%;
     margin: auto;
     overflow-y: auto; /* when there're too match matches */
+    overflow-x: hidden; /* when hovering transition pops out overflow-x*/
 }

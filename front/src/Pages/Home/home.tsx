@@ -25,13 +25,49 @@ import CardProfile from '../../Components/CardProfile/cardProfile';
 import Matches from './subComponents/Matches/matches';
 import Messages from './subComponents/Messages/messages';
 
+// Hooks
+import useAxiosPrivate from '../../Hooks/usePrivate';
+
+// Interfaces
+interface UserMatch {
+    user_id: number;
+    image: string;
+    first_name: string;
+    room_id: string;
+    latest_message: string | null;
+    latest_message_timestamp: string | null;
+}
+
 export default function Home() {
     // States
+    const [matches, setMatches] = useState<UserMatch[]>();
+    const [messages, setMessages] = useState<UserMatch[]>();
     const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage visibility
     const [navValue, setNavValue] = useState(2); // Index for nav (Matches/Messages)
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
+    const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
+
+    // Use Private hook
+    const axiosPrivateInstance = useAxiosPrivate()
+
+    // Fetch matches from backend
+    useEffect(() => {
+        const checkForMatches = async () => {
+            // Check if there any matches for logged_in user
+            const response = await axiosPrivateInstance.get('interactions/getAvailableMatches/');
+
+            // Filter out matches with null latest_message
+            const filteredMatches = response.data.usersMatchesData.filter((match: UserMatch)=> match.latest_message !== null);
+        
+            setMatches(response.data.usersMatchesData)
+            setMessages(filteredMatches)
+        }
+
+        checkForMatches();
+
+    }, [didMatchOccuer])
 
     // Toggle profile visibility
     const handleProfileClick = () => {
@@ -42,6 +78,10 @@ export default function Home() {
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setNavValue(parseInt(newValue, 10));
     };
+
+    useEffect(() => {
+        console.log(matches)
+    }, [matches])
 
     return (
         <div className='home-wrapper'>
@@ -109,9 +149,9 @@ export default function Home() {
 
                             <div className='home-side-content-details'>
                                 {navValue === 1 ? (
-                                    <Messages />
+                                    <Messages messages={messages}/>
                                 ) : (
-                                    <Matches />
+                                    <Matches matches={matches}/>
                                 )}
                             </div>
                         </>

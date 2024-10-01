@@ -12,4 +12,7 @@ urlpatterns = [
 # handle different matches/rooms
 # dark mode light mode
 # responsivnes
+# unmatch option
 # fix error where needed
+# display timestamp on each message
+# real time matches doesnt work

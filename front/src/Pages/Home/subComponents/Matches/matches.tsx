@@ -6,13 +6,6 @@ import './matches.css';
 // React MUI
 import CircularProgress from '@mui/material/CircularProgress';
 
-// Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../Redux/store';
-
-// Hooks
-import useAxiosPrivate from '../../../../Hooks/usePrivate';
-
 // Components
 import Conversation from '../Conversation/conversation';
 
@@ -21,65 +14,35 @@ interface UserMatch {
     user_id: number;
     image: string;
     first_name: string;
-    room_id: string[]
+    room_id: string;
+    latest_message: string | null;
+    latest_message_timestamp: string | null;
 }
 
-function Matches() {
+interface UserMatchProps {
+    matches?: UserMatch[];
+}
+
+function Matches({ matches }: UserMatchProps) {
 
     // States
-    const [matches, setMatches] = useState<UserMatch[]>();
     const [isConversationOpen, setIsConversationOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
     const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [selectedUserImg, setSelectedUserImg] = useState<string | null>(null);
 
-
-    // Global States
-    const userData = useSelector((state: RootState) => state.auth.userData);
-    const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
-
-    // Use Private hook
-    const axiosPrivateInstance = useAxiosPrivate()
-
-    // Fetch matches from backend
-    useEffect(() => {
-        const checkForMatches = async () => {
-            // Check if there any matches for logged_in user
-            const response = await axiosPrivateInstance.get('interactions/getAvailableMatches/');
-            // console.log(response)
-            setMatches(response.data.usersMatchesData)
-        }
-
-        checkForMatches();
-
-    }, [didMatchOccuer])
-
     // Open conversation component
-    const openConversation = (user_id: number, correctRoomId: string, selectedUserImg: string) => {
+    const openConversation = (user_id: number, room_id: string, selectedUserImg: string) => {
         // Close the current conversation if open
         if (isConversationOpen) {
             setIsConversationOpen(false);
         }
         
-        setSelectedRoomId(correctRoomId);
+        setSelectedRoomId(room_id);
         setSelectedUserId(user_id);
         setSelectedUserImg(selectedUserImg)
         setIsConversationOpen(true);
     };
-
-    // Checks out of the 2 patterns the correct one and sends to openConversation
-    const HandleRoomPattern = async (selectedUserId: number, room_ids: string[], selectedUserImg: string) => {
-        // Look for both possible room_id patterns
-        const roomIdPattern1 = `match_${userData?.user_id}_${selectedUserId}`;
-        const roomIdPattern2 = `match_${selectedUserId}_${userData?.user_id}`;
-
-        // Find the correct room_id that matches either pattern
-        const correctRoomId = room_ids.find(
-            (room_id) => room_id === roomIdPattern1 || room_id === roomIdPattern2
-        );
-
-        if (correctRoomId) openConversation(selectedUserId, correctRoomId, selectedUserImg)
-    }
 
     return (
         <div className='matches-wrapper'>
@@ -92,7 +55,7 @@ function Matches() {
                     {matches.map((match) => (
                         <div key={match.user_id}>
                             <div
-                                onClick={() => HandleRoomPattern(match.user_id, match.room_id, match.image)}
+                                onClick={() => openConversation(match.user_id, match.room_id, match.image)}
                                 className='matches-box-wrapper'
                                 style={{
                                     backgroundColor: match.image ? 'transparent' : 'black',
@@ -104,7 +67,6 @@ function Matches() {
 
                             {isConversationOpen && selectedRoomId && selectedUserId && (
                                 <Conversation
-                                    match_user_id={selectedUserId}
                                     room_id={selectedRoomId} 
                                     user_img={selectedUserImg}
                                     setIsConversationOpen={setIsConversationOpen}
