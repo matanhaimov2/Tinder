@@ -1,5 +1,4 @@
-import React, { useEffect, useState, FormEvent, ChangeEventHandler, } from 'react';
-import { w3cwebsocket as W3CWebSocket } from 'websocket';
+import React, { useEffect, useState, ChangeEventHandler} from 'react';
 
 // CSS
 import './conversation.css';
