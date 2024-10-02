@@ -24,27 +24,22 @@ interface UserMatchProps {
 }
 
 function Messages({ messages }: UserMatchProps) {
+    
     // States
     const [isConversationOpen, setIsConversationOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [selectedUserImg, setSelectedUserImg] = useState<string | null>(null);
-
-    useEffect(() => {
-        console.log(messages)
-    }, [messages])
 
     // Open conversation component
     const openConversation = (user_id: number, room_id: string, selectedUserImg: string) => {
-        // Close the current conversation if open
-        if (isConversationOpen) {
-            setIsConversationOpen(false);
-        }
 
-        setSelectedRoomId(room_id);
-        setSelectedUserId(user_id);
-        setSelectedUserImg(selectedUserImg)
-        setIsConversationOpen(true);
+        // console.log('new conversation starts')
+
+        if(room_id && user_id && selectedUserImg) {
+            setSelectedRoomId(room_id);
+            setSelectedUserImg(selectedUserImg);    
+            setIsConversationOpen(true);
+        }
     };
 
     return (
@@ -73,18 +68,22 @@ function Messages({ messages }: UserMatchProps) {
                                 </div>
                             </div>
 
-                            {isConversationOpen && selectedRoomId && selectedUserId && (
+                            {isConversationOpen && (
                                 <Conversation
-                                    room_id={selectedRoomId}
+                                    room_id={selectedRoomId!}
                                     user_img={selectedUserImg}
                                     setIsConversationOpen={setIsConversationOpen}
+                                    isLoadMessages={true}
                                 />
                             )}
                         </div>
                     ))}
                 </>
             ) : (
-                <div>No messages found</div>
+                <div className='messages-error-wrapper'>
+                    <span> Start chatting </span>
+                    <span> with your matches</span>
+                </div>
             )}
 
         </div>

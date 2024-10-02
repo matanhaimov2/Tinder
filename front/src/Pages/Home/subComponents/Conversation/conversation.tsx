@@ -15,17 +15,15 @@ import { FaRegImages } from 'react-icons/fa'; // Importing an image icon (you ca
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../Redux/store';
 
-// Hooks
-import useAxiosPrivate from '../../../../Hooks/usePrivate';
-
 // Props Interfaces
 interface ConversationProps {
     room_id: string;
     user_img: string | null;
     setIsConversationOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    isLoadMessages: boolean;
 }
 
-function Conversation({ room_id, user_img, setIsConversationOpen }: ConversationProps) {
+function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages }: ConversationProps) {
 
     // States
     const [messages, setMessages] = useState<any[]>([]); // Replace `any` with the appropriate message type if available
@@ -34,46 +32,53 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
     const [message, setMessage] = useState<string>("");
     const [selectedImage, setSelectedImage] = useState<File>();
 
-
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
 
-    // Use Private hook
-    const axiosPrivateInstance = useAxiosPrivate()
-
     useEffect(() => {
+
         // Connect to the WebSocket server with the username as a query parameter
         const newSocket = new WebSocket(`ws://localhost:8000/ws/chat/${room_id}/`);
         setSocket(newSocket);
 
-        newSocket.onopen = () => console.log("WebSocket connected");
+        newSocket.onopen = () => {
+            console.log("WebSocket connected")
+            
+            // Load messages if there's already a chat history
+            if(!isLoadMessages) {         
+                setLoading(false);
+            }
+        };
+
         newSocket.onclose = () => {
-            setMessages([])
             console.log("WebSocket disconnected")
+
+            setMessages([])
+            setLoading(true);
         };
 
         // Clean up the WebSocket connection when the component unmounts
         return () => {
             newSocket.close();
+            setSocket(null);
         };
     }, [room_id]);
 
     useEffect(() => {
         if (socket) {
-            console.log('is in??')
             socket.onmessage = (event) => {
-                console.log('is in??')
                 const data = JSON.parse(event.data);
                 setMessages((prevMessages) => [...prevMessages, data]);
                 setLoading(false)
             };
         }
     }, [socket]);
-
+    
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (message && socket) {
+
             const data = {
                 message: message,
                 username: userData?.username,
@@ -100,12 +105,6 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
             setMessage("");
         }
     };
-
-    // Logger
-    useEffect(() => {
-        console.log(messages)
-        console.log(selectedImage)
-    }, [messages, selectedImage])
 
     // Handle uploaded image change
     const handleFileChange: ChangeEventHandler<HTMLInputElement> = (
@@ -173,7 +172,7 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
                             const showDate = i === 0 || currentMessageDate !== previousMessageDate;
 
                             return (
-                                <>
+                                <div className='conversation-messages-container' key={message.id}>
                                     {/* Date divider */}
                                     {showDate && (
                                         <div className="conversation-date-divider">
@@ -181,7 +180,7 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
                                         </div>
                                     )}
 
-                                    <div className={`${userData?.username === message.username ? 'owner' : 'another'}`} key={message.id}>
+                                    <div className={`${userData?.username === message.username ? 'owner' : 'another'}`}>
                                         <div>
                                             {userData?.username !== message.username && (
                                                 <>
@@ -210,7 +209,7 @@ function Conversation({ room_id, user_img, setIsConversationOpen }: Conversation
 
                                         </div>
                                     </div>
-                                </>
+                                </div>
 
                             )
                         })

@@ -51,7 +51,6 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     const [currentUserImages, setCurrentUserImages] = useState<string[]>([]); // Current user displayed
     const [usersIndex, setUsersIndex] = useState(0); // Index for swiping users
     const [userImagesIndex, setUserImagesIndex] = useState(0); // Index for swiping through current user's images
-    const [errorMessage, setErrorMessage] = useState<string>(); // error message
     const [loading, setLoading] = useState<boolean>(true); // Loading state
     const [dislikeSum, setDislikeSum] = useState<number[]>([]); // Stores dislikes
 
@@ -123,7 +122,6 @@ function CardProfile({ isInEditProfile }: EditProfile) {
             setCurrentUserImages(usersProfilesData[usersIndex].images);
         } else {
             setCurrentUser(null);
-            setErrorMessage('No More Potential Matches, try to adjust your preferences');
         }
 
         // console.log(usersProfilesData)
@@ -296,7 +294,10 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                         </div>
                     </div>
                 ) : (
-                    <span style={{ color: 'white' }}> {errorMessage} </span>
+                    <div className='cardProfile-error-wrapper'>
+                        <span> No more potential matches </span>
+                        <span> try to adjust your preferences </span>
+                    </div>
                 )}
             </div>
 

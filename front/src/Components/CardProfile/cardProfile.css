@@ -77,6 +77,18 @@
     overflow-y: auto;
 }
 
+.cardProfile-error-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    color: #d43e73;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 110%;
+}
+
 .cardProfile-img-navigator-left {
     position: absolute;
     top: 0;

@@ -36,6 +36,8 @@
     font-weight: 600;
     z-index: 1;
     padding-inline: 1% 2%;
+    direction: rtl;
+    justify-content: space-between;
 }
 
 .home-side-nav-inner {
@@ -47,6 +49,7 @@
     padding: 2%;
     border-radius: 30px;
     cursor: pointer;
+    direction: ltr;
 }
 .home-side-nav-inner:hover {
     background-color: #191300;

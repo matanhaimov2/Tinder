@@ -79,13 +79,13 @@ function MyProfile() {
                 location: location || userData.location,
                 interested_in: interest || userData.interested_in,
                 latitude: coordinates?.lat || userData.latitude,
-                longitude: coordinates?.lng || userData.longitude 
+                longitude: coordinates?.lng || userData.longitude
             };
-                
+
             dispatch(setUpdatedUserData(data));
         }
     }, [distance, ageRange, interest, location, dispatch]);
-    
+
     return (
         <div className='myProfile-wrapper'>
             <span className='myProfile-discovery-title'> DISCOVERY SETTINGS </span>
@@ -243,7 +243,7 @@ function MyProfile() {
             </div>
 
             <div className='myProfile-underline-separator' /> {/* underline separator */}
-
+            
         </div>
     );
 }

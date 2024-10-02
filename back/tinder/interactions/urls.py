@@ -8,14 +8,13 @@ urlpatterns = [
 ]
 
 # Tasks:
-# dark mode light mode - 
+# dark mode light mode logic - 
 # responsivnes - 
 # fix error where needed -
 
 # Conversation:
 # WebSockets secured authenticate - ?
 # add scroller styling
-# handle different matches/rooms
 # unmatch option
 # send image (bonus: icon)- ?
-# real time matches doesnt work
+# real time matches doesnt work - dont remember if fixed?

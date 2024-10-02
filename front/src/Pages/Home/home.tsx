@@ -20,6 +20,7 @@ import { RootState } from '../../Redux/store';
 import MyProfile from '../../Components/MyProfile/myProfile';
 import EditProfile from '../../Components/EditProfile/editProfile';
 import CardProfile from '../../Components/CardProfile/cardProfile';
+import MaterialUISwitch from '../../Components/MaterialUISwitch';
 
 // Sub Components
 import Matches from './subComponents/Matches/matches';
@@ -79,10 +80,6 @@ export default function Home() {
         setNavValue(parseInt(newValue, 10));
     };
 
-    useEffect(() => {
-        console.log(matches)
-    }, [matches])
-
     return (
         <div className='home-wrapper'>
             <div className='home-main-wrapper'>
@@ -105,8 +102,13 @@ export default function Home() {
                             <FaUserCircle className='home-side-nav-img' />
                         )}
                     </div>
+                    
+                    {isProfileOpen && (
+                        <div>
+                            <MaterialUISwitch />
+                        </div>
+                    )}
                 </div>
-
 
                 <div className='home-side-content-wrapper'>
                     {!isProfileOpen ? (
@@ -151,7 +153,7 @@ export default function Home() {
                                 {navValue === 1 ? (
                                     <Messages messages={messages}/>
                                 ) : (
-                                    <Matches matches={matches}/>
+                                    <Matches matches={matches} withFilteredConv={messages}/>
                                 )}
                             </div>
                         </>

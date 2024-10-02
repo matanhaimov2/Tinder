@@ -61,6 +61,11 @@
     transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
 }
 
+.conversation-messages-container {
+    display: flex;
+    flex-direction: column;
+}
+
 .conversation-date-divider {
     display: flex;
     justify-content: center;
@@ -101,7 +106,7 @@
 .content-another {
     background-color: #21262e;
     border-radius: 5px;
-    text-align: left;
+    text-align: -webkit-left;
     padding-inline: 5%;
 }
 
@@ -133,6 +138,7 @@
     margin: unset;
     padding: 5px;
     direction: ltr;
+    width: max-content;
 }
 
 .conversation-start-chat-title {
@@ -146,7 +152,6 @@
     font-weight: bold;           
     text-align: center;             
     letter-spacing: 1px;            
-    transition: color 0.3s;         
 }
 
 /* Conversation Bottom Nav - message actions */
@@ -199,4 +204,10 @@
     border: none;
     color: white;
     cursor: pointer;
+}
+
+
+.gay {
+    display: flex;
+    flex-direction: column;
 }

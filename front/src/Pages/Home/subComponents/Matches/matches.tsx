@@ -21,28 +21,37 @@ interface UserMatch {
 
 interface UserMatchProps {
     matches?: UserMatch[];
+    withFilteredConv?: UserMatch[];
 }
 
-function Matches({ matches }: UserMatchProps) {
+function Matches({ matches, withFilteredConv }: UserMatchProps) {
 
     // States
     const [isConversationOpen, setIsConversationOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [selectedUserImg, setSelectedUserImg] = useState<string | null>(null);
+    const [isLoadMessages, setIsLoadMessages] = useState(false);
 
     // Open conversation component
     const openConversation = (user_id: number, room_id: string, selectedUserImg: string) => {
-        // Close the current conversation if open
-        if (isConversationOpen) {
-            setIsConversationOpen(false);
-        }
+
+        // console.log('new conversation starts')
         
-        setSelectedRoomId(room_id);
-        setSelectedUserId(user_id);
-        setSelectedUserImg(selectedUserImg)
-        setIsConversationOpen(true);
+        // If there is a chat history, load the messages. Otherwise skip.
+        if(withFilteredConv?.some(user => user.user_id === user_id)) {
+            setIsLoadMessages(true);
+        }
+        else {
+            setIsLoadMessages(false);
+        }
+
+        if(room_id && user_id && selectedUserImg) {
+            setSelectedRoomId(room_id);
+            setSelectedUserImg(selectedUserImg);    
+            setIsConversationOpen(true);
+        }
     };
+
 
     return (
         <div className='matches-wrapper'>
@@ -65,20 +74,23 @@ function Matches({ matches }: UserMatchProps) {
                                 {match.first_name}
                             </div>
 
-                            {isConversationOpen && selectedRoomId && selectedUserId && (
-                                <Conversation
-                                    room_id={selectedRoomId} 
-                                    user_img={selectedUserImg}
-                                    setIsConversationOpen={setIsConversationOpen}
-                                />
-                            )}
                         </div>
                     ))}
                 </>
             ) : (
-                <div>No matches found</div>
+                <div className='matches-error-wrapper'>
+                    <span> No matches found </span>
+                </div>
             )}
 
+            {isConversationOpen && (
+                <Conversation
+                    room_id={selectedRoomId!} 
+                    user_img={selectedUserImg}
+                    setIsConversationOpen={setIsConversationOpen}
+                    isLoadMessages={isLoadMessages}
+                />
+            )}
         </div>
     );
 }
