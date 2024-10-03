@@ -45,7 +45,7 @@ function Matches({ matches, withFilteredConv }: UserMatchProps) {
             setIsLoadMessages(false);
         }
 
-        if(room_id && user_id && selectedUserImg) {
+        if(room_id && user_id) {
             setSelectedRoomId(room_id);
             setSelectedUserImg(selectedUserImg);    
             setIsConversationOpen(true);

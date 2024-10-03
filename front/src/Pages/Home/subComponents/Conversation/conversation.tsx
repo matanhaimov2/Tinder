@@ -15,6 +15,12 @@ import { FaRegImages } from 'react-icons/fa'; // Importing an image icon (you ca
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../Redux/store';
 
+// Assets
+import { DOMAIN } from "../../../../Assets/GlobalVeriables";
+
+// Sub Components
+import UnMatch from './Unmatch/unMatch';
+
 // Props Interfaces
 interface ConversationProps {
     room_id: string;
@@ -36,9 +42,8 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
     const userData = useSelector((state: RootState) => state.auth.userData);
 
     useEffect(() => {
-
         // Connect to the WebSocket server with the username as a query parameter
-        const newSocket = new WebSocket(`ws://localhost:8000/ws/chat/${room_id}/`);
+        const newSocket = new WebSocket(`ws://${DOMAIN}/ws/chat/${room_id}/`);
         setSocket(newSocket);
 
         newSocket.onopen = () => {
@@ -73,7 +78,8 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
             };
         }
     }, [socket]);
-    
+  
+    // Send message
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -146,7 +152,11 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
                     <FaUserCircle className='conversation-circle-img' />
                 )}
 
-                <IoMdCloseCircleOutline className='conversation-exit-button' onClick={() => setIsConversationOpen(false)} />
+                <div className='conversation-topnav-divider'>
+                    <UnMatch room_id={room_id}/>
+
+                    <IoMdCloseCircleOutline className='conversation-exit-button' onClick={() => setIsConversationOpen(false)} />
+                </div>
             </div>
 
             <div className='conversation-underline-separator' /> {/* underline separator */}

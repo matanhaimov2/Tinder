@@ -29,6 +29,12 @@
     border-radius: 50px;
 }
 
+.conversation-topnav-divider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .conversation-exit-button {
     width: 40px;
     height: 40px;
@@ -204,10 +210,4 @@
     border: none;
     color: white;
     cursor: pointer;
-}
-
-
-.gay {
-    display: flex;
-    flex-direction: column;
 }

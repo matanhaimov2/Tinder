@@ -7,7 +7,7 @@ import jwt
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
-from .models import Message
+from .models import Message, Room
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
@@ -154,3 +154,69 @@ def getAvailableMatches(request):
         usersMatches.append(data)
 
     return response.Response({'usersMatchesData': usersMatches}, status=status.HTTP_200_OK)
+
+
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+def unmatchUser(request):
+    auth_header = request.headers.get('Authorization', None)
+    access_token = auth_header.split(' ')[1]
+    decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+    user_id = decoded_payload.get('user_id')
+
+    # Extract data
+    room_id = request.data.get('room_id')
+
+    # Split the room_id and extract the two user IDs
+    _, id1, id2 = room_id.split('_')
+
+    # Find the second user ID (the one that is not user_id)
+    target_user_id = int(id2) if int(id1) == user_id else int(id1)
+
+    # Fetch the profile
+    try:
+        profile = Profile.objects.get(user_id=user_id)
+    except Profile.DoesNotExist:
+        return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Fetch the target_profile
+    try:
+        target_Profile = Profile.objects.get(user_id=target_user_id)
+    except Profile.DoesNotExist:
+        return response.Response({'error': 'target_Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    try:
+        # Remove target_user_id from user_id matches
+        profile.matches.remove(target_user_id)
+        profile.room_id.remove(room_id)
+
+        # Remove user_id from target_user_id matches
+        target_Profile.matches.remove(user_id)
+        target_Profile.room_id.remove(room_id)
+
+        # Save changes to the profiles
+        profile.save()
+        target_Profile.save() 
+
+        # Fetch the Room
+        try:
+            room = Room.objects.get(room_id=room_id)
+
+            # Fetch and delete all messages related to the room
+            messages = Message.objects.filter(room_id=room.pk)
+            
+            # Check if there are any messages to delete
+            if messages.exists():
+                messages.delete()  # Delete all messages related to the room
+
+            # Now delete the room
+            room.delete()
+
+            return response.Response({'success': 'Room and messages deleted'}, status=status.HTTP_200_OK)
+
+        except Room.DoesNotExist:
+            return response.Response({'error': 'Room not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        # Log the error message for debugging
+        print(f"An error occurred: {e}")
+        return response.Response({'error': 'An error occurred while processing the unmatch request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

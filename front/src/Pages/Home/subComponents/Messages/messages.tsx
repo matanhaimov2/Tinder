@@ -35,7 +35,7 @@ function Messages({ messages }: UserMatchProps) {
 
         // console.log('new conversation starts')
 
-        if(room_id && user_id && selectedUserImg) {
+        if(room_id && user_id) {
             setSelectedRoomId(room_id);
             setSelectedUserImg(selectedUserImg);    
             setIsConversationOpen(true);
