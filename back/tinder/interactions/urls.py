@@ -10,10 +10,11 @@ urlpatterns = [
 
 # Tasks:
 # dark mode light mode logic - 
-# responsivnes - 
-# fix error where needed -
+# responsivnes (in the end)- 
+# fix error where needed (google api) -
 # on match pop
 # fix images inserted in setProfile & editCard
+# try to understand db import (backup)
 
 # Conversation:
 # WebSockets secured authenticate - ?

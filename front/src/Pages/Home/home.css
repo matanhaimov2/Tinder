@@ -90,3 +90,13 @@
     overflow-y: auto; /* when there're too match matches */
     overflow-x: hidden; /* when hovering transition pops out overflow-x*/
 }
+
+.light-mode {
+    background-color: #ffffff; /* Light background */
+    color: #000000; /* Dark text */
+}
+
+.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: #ffffff; /* Light text */
+}

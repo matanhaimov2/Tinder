@@ -145,10 +145,10 @@ function MyProfile() {
                     max={161}
                     valueLabelDisplay="auto"  // This will show the value in km
                     sx={{
-                        color: '#FF3D00',  // Adjust the slider color (similar to Tinder's primary color)
+                        color: '#ff4458',  // Adjust the slider color (similar to Tinder's primary color)
                         '& .MuiSlider-thumb': {
                             borderRadius: '50%',
-                            backgroundColor: '#FF3D00',
+                            backgroundColor: '#ff4458',
                         },
                         '& .MuiSlider-rail': {
                             opacity: 0.5,
@@ -218,10 +218,10 @@ function MyProfile() {
                     valueLabelDisplay="auto"
                     min={18}
                     sx={{
-                        color: '#FF3D00',  // Adjust the slider color (similar to Tinder's primary color)
+                        color: '#ff4458',  // Adjust the slider color (similar to Tinder's primary color)
                         '& .MuiSlider-thumb': {
                             borderRadius: '50%',
-                            backgroundColor: '#FF3D00',
+                            backgroundColor: '#ff4458',
                         },
                         '& .MuiSlider-rail': {
                             opacity: 0.5,

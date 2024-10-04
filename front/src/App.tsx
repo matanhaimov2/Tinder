@@ -79,7 +79,7 @@ const PrivateRoutes = () => {
 
         // console.log(data)
 
-      } catch (error:any) {
+      } catch (error: any) {
         dispatch(setIsLoggedIn(false));
       }
     }
@@ -94,7 +94,7 @@ const PrivateRoutes = () => {
           <Route path='/' element={<PersistLogin />}>
             <Route path="/home" element={home()} />
             <Route path="/setprofile" element={setprofile()} />
-            
+
             {/* Page Doesnt Exists */}
             <Route path='*' element={<div>404 doesnt exists</div>} />
           </Route>
@@ -139,24 +139,23 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={<PageLoader />} persistor={persistor}>
-      <div className='wrapper'>
-        <Router>
-          <Routes> 
-            {/* Routes With Topnav */}
-            <Route path='/' element={<ComponentsWithNav />} />
+        <div className='wrapper'>
+          <Router>
+            <Routes>
+              {/* Routes With Topnav */}
+              <Route path='/' element={<ComponentsWithNav />} />
 
-            {/* Private Routes */}
-            <Route path='/*' element={<PrivateRoutes />} />
+              {/* Private Routes */}
+              <Route path='/*' element={<PrivateRoutes />} />
 
-            {/* Backend Disabled */}
-            <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
+              {/* Backend Disabled */}
+              <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
 
-            {/* Page Doesnt Exists */}
-            <Route path='*' element={<div>404 doesnt exists</div>} />
-          </Routes>
-
-        </Router>
-      </div>
+              {/* Page Doesnt Exists */}
+              <Route path='*' element={<div>404 doesnt exists</div>} />
+            </Routes>
+          </Router>
+        </div>
       </PersistGate>
     </Provider>
 

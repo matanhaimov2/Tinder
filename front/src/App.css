@@ -81,3 +81,26 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+/* App.css */
+:root {
+  --background-color: white;
+  --text-color: black;
+}
+
+.dark {
+  --background-color: #121212; /* Dark background */
+  --text-color: white; /* Light text */
+}
+
+.light {
+  --background-color: white; /* Light background */
+  --text-color: black; /* Dark text */
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
