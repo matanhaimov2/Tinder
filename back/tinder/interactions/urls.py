@@ -9,13 +9,13 @@ urlpatterns = [
 ]
 
 # Tasks:
-# Conversation:
 # send image (bonus: icon)- ?
 # real time matches doesnt work - dont remember if fixed?
 # load 10 messages max everytime
-# text size - another - width!
+# text size - another profile - width!
+# in PhoneMatches fix overflow x so user will be able to scroll.
+# bio cardProfile overflow
 
 # not important:
 # try to understand db import (backup)
 # fix error where needed (google api) -
-# bio cardProfile overflow

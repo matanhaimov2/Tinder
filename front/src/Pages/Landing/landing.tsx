@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useMediaQuery } from 'react-responsive'
+import React, { useState } from 'react';
 
 // CSS
 import './landing.css';
@@ -12,9 +11,6 @@ function Landing () {
     // States
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
-    // Handle responsive
-    const isTabletOrPhone = useMediaQuery({ query: '(max-width: 860px)' })
-    
     return (
         <div className='landing-wrapper'>
             <div className='landing-title-wrapper'>

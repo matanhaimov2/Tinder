@@ -241,4 +241,8 @@
     .conversation-send-submit {
         flex: 2;
     }
+
+    .owner {
+        max-width: 40vw;
+    }
 }
