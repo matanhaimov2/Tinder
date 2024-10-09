@@ -4,11 +4,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+// Components
+import { ThemeProvider } from './Components/ThemeContext';
+
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
 root.render(
-  <App />
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

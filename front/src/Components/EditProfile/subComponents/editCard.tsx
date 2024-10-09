@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import Swal from 'sweetalert2'
-
-// CSS
-import './editCard.css';
 
 // React MUI
 import FormControl from '@mui/joy/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { IconButton, Box } from '@mui/material';
 import { AddAPhoto, Delete } from '@mui/icons-material';
+import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../../../Redux/store';
-import { setUpdatedUserData, setUserData } from '../../../../Redux/features/authSlice';
+import { RootState, AppDispatch } from '../../../Redux/store';
+import { setUpdatedUserData, setUserData } from '../../../Redux/features/authSlice';
 
 // Hooks
-import useAxiosPrivate from '../../../../Hooks/usePrivate';
+import useAxiosPrivate from '../../../Hooks/usePrivate';
 
 // Services
-import { sendImagesToImgbb } from '../../../../Services/profileService';
+import { sendImagesToImgbb } from '../../../Services/profileService';
 
 type SaveData = {
     isSaveUpdates: boolean;
@@ -56,7 +54,7 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
         }
     }, [userData]);
 
-    const handleBioChange = (event: SelectChangeEvent<string>) => {
+    const handleBioChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setBio(event.target.value);
     };
 
@@ -215,11 +213,11 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
     const ages = Array.from({ length: 82 }, (_, i) => i + 18); // Creates an array from 18 to 99
 
     return (
-        <div className='editCard-wrapper'>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
 
             {/* Images Input */}
             <div className='setprofile-upload-images-wrapper'>
-                <InputLabel id="age-select-label" sx={{ color: 'white' }}>Images</InputLabel>
+                <span id="age-select-label">Images</span>
 
                 <div className='setprofile-upload-images-sub-wrapper'>
                     {[...Array(3)].map((_, index) => (
@@ -231,9 +229,9 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
                                         alt={`img-${index}`}
                                         className="setprofile-upload-uploaded-image"
                                     />
-                                    <IconButton onClick={() => handleRemoveImage(index)} className="setprofile-upload-remove-image-button">
+                                    <div onClick={() => handleRemoveImage(index)} className="setprofile-upload-remove-image-button">
                                         <Delete />
-                                    </IconButton>
+                                    </div>
                                 </>
                             ) : (
                                 <IconButton component="label" className="setprofile-upload-add-image-button">
@@ -260,9 +258,9 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
                                         alt={`img-${index + 3}`}
                                         className="setprofile-upload-uploaded-image"
                                     />
-                                    <IconButton onClick={() => handleRemoveImage(index + 3)} className="setprofile-upload-remove-image-button">
+                                    <div onClick={() => handleRemoveImage(index + 3)} className="setprofile-upload-remove-image-button">
                                         <Delete />
-                                    </IconButton>
+                                    </div>
                                 </>
                             ) : (
                                 <IconButton component="label" className="setprofile-upload-add-image-button">
@@ -281,26 +279,46 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
             </div>
 
             {/* Bio Input */}
-            <FormControl sx={{ width: '100%' }}>
-                <InputLabel id="bio-input" sx={{ color: 'white' }}>Bio</InputLabel>
-                <input
+            <FormControl sx={{ width: '100%', gap: '5px' }}>
+                <span id="bio-input">Bio</span>
+                <TextField
                     id="bio-input"
-                    type="text"
                     placeholder="Tell us about yourself"
-                    style={{ padding: '6% 2%', borderRadius: '4px' }}
+                    variant="outlined" // Can also be 'filled' or 'standard'
+                    multiline
+                    rows={4} // Adjust this for the height of the TextField
                     value={bio}
                     onChange={handleBioChange}
+                    sx={{
+                        background: 'white', '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                border: 'none', // Disable the outline
+                            },
+                        },
+                    }}
                     required
                 />
             </FormControl>
 
             {/* Age & Gender Input */}
             <div className='setprofile-content-wrapper'>
-                <FormControl required sx={{ width: '50%' }}>
-                    <InputLabel id="age-select-label" sx={{ color: 'white' }}>Age</InputLabel>
+                {/* Age Input */}
+                <FormControl required sx={{ width: '50%', gap: '5px' }}>
+                    <span id="age-select-label">Age</span>
                     <Select
-                        sx={{ background: 'white' }}
-                        labelId="age-select-label"
+                        sx={{
+                            background: 'white',
+                            border: 'none',            // Removes border
+                            outline: 'none',           // Removes outline
+                            boxShadow: 'none',         // Removes box-shadow when focused
+                            '& fieldset': {            // Removes the border when focused
+                                border: 'none'
+                            },
+                            '&:focus-visible': {       // Removes default focus behavior
+                                outline: 'none',
+                                boxShadow: 'none'
+                            }
+                        }} labelId="age-select-label"
                         id="age-select"
                         label="Age"
                         value={age}
@@ -315,10 +333,23 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
                     </Select>
                 </FormControl>
 
-                <FormControl required sx={{ width: '50%' }}>
-                    <InputLabel id="gender-select-label" sx={{ color: 'white' }}>Gender</InputLabel>
+                {/* Gender Input */}
+                <FormControl required sx={{ width: '50%', gap: '5px' }}>
+                    <span id="gender-select-label">Gender</span>
                     <Select
-                        sx={{ background: 'white' }}
+                        sx={{
+                            background: 'white',
+                            border: 'none',            // Removes border
+                            outline: 'none',           // Removes outline
+                            boxShadow: 'none',         // Removes box-shadow when focused
+                            '& fieldset': {            // Removes the border when focused
+                                border: 'none'
+                            },
+                            '&:focus-visible': {       // Removes default focus behavior
+                                outline: 'none',
+                                boxShadow: 'none'
+                            }
+                        }}
                         labelId="gender-select-label"
                         id="gender-select"
                         label="Gender"
@@ -331,6 +362,17 @@ function EditCard({ isSaveUpdates, setIsSaveUpdates }: SaveData) {
                         <MenuItem value={'other'}>Other</MenuItem>
                     </Select>
                 </FormControl>
+            </div>
+
+            <div className='editProfile-save-wrapper'>
+
+                {!isSaveUpdates ? (
+                    <button className='editProfile-save-button' onClick={() => setIsSaveUpdates(true)}> Save </button>
+                ) : (
+                    <div>
+                        <CircularProgress sx={{ color: '#d43e73 ' }} />
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useSpring, animated } from 'react-spring';
+import { useGesture } from 'react-use-gesture'; // Add useGesture for gesture handling
 
 // CSS
 import './cardProfile.css';
@@ -23,6 +25,8 @@ import useAxiosPrivate from '../../Hooks/usePrivate';
 
 // Components
 import CardLoader from '../Loaders/cardLoader/cardLoader';
+import { useTheme } from '../ThemeContext';
+import MatchPopUp from './subComponents/matchPopUp/matchPopUp';
 
 // Interfaces
 interface UserProfile {
@@ -53,6 +57,8 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     const [userImagesIndex, setUserImagesIndex] = useState(0); // Index for swiping through current user's images
     const [loading, setLoading] = useState<boolean>(true); // Loading state
     const [dislikeSum, setDislikeSum] = useState<number[]>([]); // Stores dislikes
+    const [isMatchPop, setIsMatchPop] = useState<boolean>(false); // Pop up match if match occuer
+    const [userDetailsProps, setUserDetailsProps] = useState<{ first_name: string; user_img: string } | undefined>(undefined); // User details for matchPopUp component
 
     // Refs
     const updatedDislikeListRef = useRef(dislikeSum); // Initialize with state value
@@ -60,13 +66,15 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
     const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
+    const { theme } = useTheme();
+
+    const [{ x, opacity }, set] = useSpring(() => ({ x: 0, opacity: 1 }));
 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
 
     // Configuration
     var SaveDislikesEveryX = 3;
-
 
     // Fetch profiles from backend
     useEffect(() => {
@@ -120,6 +128,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
         if (usersProfilesData.length > 0 && usersProfilesData[usersIndex]) {
             setCurrentUser(usersProfilesData[usersIndex]);
             setCurrentUserImages(usersProfilesData[usersIndex].images);
+            set({ x: 0, opacity: 1 }); // Reset animation state
         } else {
             setCurrentUser(null);
         }
@@ -153,12 +162,20 @@ function CardProfile({ isInEditProfile }: EditProfile) {
             if (currentUser?.user_id) { // PROBLEM - matches doesnt work on real time
                 if (userData?.likes.includes(currentUser?.user_id)) {
 
-                    const response = await axiosPrivateInstance.post(`interactions/verifyMatch/`, {
+                    // Handle pop up match
+                    let user_data = {
+                        first_name: currentUser?.firstname || '',
+                        user_img: currentUser?.images[0] || ''
+                    };
+
+                    setUserDetailsProps(user_data)
+                    setIsMatchPop(true)
+
+                    await axiosPrivateInstance.post(`interactions/verifyMatch/`, {
                         target_user_id: currentUser?.user_id
                     });
 
                     dispatch(setDidMatchOccuer(!didMatchOccuer))
-                    console.log('MATCH')
                 }
             }
         } catch (error) {
@@ -167,22 +184,22 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     };
 
     // dislikeRequest funciton for blacklisting users
-    const dislikeRequest = async (ListOfDislikes : number[]) => {
+    const dislikeRequest = async (ListOfDislikes: number[]) => {
         // Send dislike action to the backend
         const response = await axiosPrivateInstance.post('interactions/userAction/dislike/', {
             target_user_id: ListOfDislikes
         });
-
+        
         setDislikeSum([])
     }
-    
+
     // Unload request to backend
     useEffect(() => {
         const handleUnload = () => {
             // Perform actions before the component unloads
 
             const currentDislikeList = updatedDislikeListRef.current; // Latest value in ref
-           
+
             if (currentDislikeList.length > 0) {
                 dislikeRequest(currentDislikeList);
             }
@@ -196,7 +213,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
     // if dislikeSum is X send to backend to user_id blacklist
     useEffect(() => {
-        if (dislikeSum.length===SaveDislikesEveryX) {
+        if (dislikeSum.length === SaveDislikesEveryX) {
             dislikeRequest(dislikeSum)
         }
 
@@ -204,6 +221,25 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
     }, [dislikeSum])
 
+    // Make swiping animation
+    const bind = useGesture({
+        onDrag: ({ active, movement: [mx], memo = x.get() }) => {
+            if (active) {
+                // Set x to the current movement position
+                set({ x: memo + mx, opacity: 1 - Math.abs(mx) / 500 }); // Adjust opacity based on swipe distance
+                return memo; // return memoized x position
+            } else {
+                // Check if the swipe exceeds the threshold
+                const direction = mx > 100 ? 'like' : mx < -100 ? 'dislike' : null;
+                if (direction) {
+                    handleUserAction(direction);
+                }
+                // Reset the animation
+                set({ x: 0, opacity: 1 });
+                return 0; // Reset memo
+            }
+        },
+    });
 
     return (
         <div className={`cardProfile-wrapper ${isInEditProfile ? 'cardProfile-wrapper-ifEdit' : ''}`}>
@@ -211,9 +247,20 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
                 {/* basically, if !loading && currentUser => display content, elif, !loading && !currentUser => display errorMessage */}
                 {loading ? (
-                    <div style={{ width:'100%', height: '100%', color: 'white' }}><CardLoader /></div> // loading ui here!
+                    <div style={{ width: '100%', height: '100%' }}><CardLoader /></div> // loading ui here!
                 ) : currentUser ? (
-                    <div className='cardProfile-user-wrapper' style={{ backgroundImage: currentUserImages ? `url(${currentUserImages[userImagesIndex]})` : 'none' }}>
+                    <animated.div
+                            {...(isInEditProfile ? {} : bind())}  // Add condition here
+                            style={{
+                            transform: x.to((x) => `translateX(${x}px)`),
+                            opacity,
+                            backgroundImage: currentUserImages.length > 0 ? `url(${currentUserImages[userImagesIndex]})` : 'none',
+                            backgroundColor: currentUserImages.length > 0 ? '' : 'black',
+                            width: '100%', // Adjust as needed
+                            height: '100%', // Adjust as needed
+                        }}
+                        className='cardProfile-user-wrapper'
+                    >
                         <div className='cardProfile-user-images-nav-wrapper'>
                             <Box sx={{ width: '100%', typography: 'body1' }}>
                                 <TabContext value={userImagesIndex.toString()}>
@@ -292,7 +339,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                                 <span className='cardProfile-details-bio'> {currentUser.bio} </span>
                             </div>
                         </div>
-                    </div>
+                    </animated.div>
                 ) : (
                     <div className='cardProfile-error-wrapper'>
                         <span> No more potential matches </span>
@@ -306,16 +353,19 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                     <div style={{ height: '1px', backgroundColor: 'grey' }} /> {/* underline separator */}
 
                     <div className='cardProfile-nav-card'>
-                        <div className="tinder-button heart-button">
+                        <div className="tinder-button heart-button" style={{ backgroundColor: theme === 'dark' ? 'black' : 'white' }}>
                             <TiHeart className="icon" onClick={() => handleUserAction('like')} />
                         </div>
-                        <div className="tinder-button dislike-button">
+                        <div className="tinder-button dislike-button" style={{ backgroundColor: theme === 'dark' ? 'black' : 'white' }}>
                             <TiDelete className="icon" onClick={() => handleUserAction('dislike')} />
                         </div>
                     </div>
                 </>
             )}
 
+            {isMatchPop && userDetailsProps && (
+                <MatchPopUp setIsMatchPop={setIsMatchPop} user_details={userDetailsProps}/>
+            )}
         </div>
     );
 }

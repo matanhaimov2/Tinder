@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEventHandler } from 'react';
+import React, { useEffect, useState, useRef, ChangeEventHandler } from 'react';
 
 // CSS
 import './conversation.css';
@@ -18,18 +18,22 @@ import { RootState } from '../../../../Redux/store';
 // Assets
 import { DOMAIN } from "../../../../Assets/GlobalVeriables";
 
+// Components
+import { useTheme } from '../../../../Components/ThemeContext';
+
 // Sub Components
 import UnMatch from './Unmatch/unMatch';
 
 // Props Interfaces
 interface ConversationProps {
     room_id: string;
+    first_name: string | null;
     user_img: string | null;
     setIsConversationOpen: React.Dispatch<React.SetStateAction<boolean>>;
     isLoadMessages: boolean;
 }
 
-function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages }: ConversationProps) {
+function Conversation({ room_id, first_name, user_img, setIsConversationOpen, isLoadMessages }: ConversationProps) {
 
     // States
     const [messages, setMessages] = useState<any[]>([]); // Replace `any` with the appropriate message type if available
@@ -40,6 +44,10 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
+    const { theme } = useTheme();
+
+    // Refs
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         // Connect to the WebSocket server with the username as a query parameter
@@ -143,14 +151,26 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
         return date.toLocaleDateString('en-US', options);
     };
 
+    // Scroll to the bottom of the div whenever the messages change
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+        }
+    }, [messages]);
+    
     return (
-        <div className='conversation-wrapper'>
-            <div className='conversation-topnav-wrapper'>
-                {user_img ? (
-                    <img src={user_img} className='conversation-circle-img' alt="User Image" />
-                ) : (
-                    <FaUserCircle className='conversation-circle-img' />
-                )}
+        <div className={`conversation-wrapper ${theme}alt`}>
+            <div className={`conversation-topnav-wrapper ${theme}`}>
+                <div className='conversation-topnav-inner'>
+                    {user_img ? (
+                        <img src={user_img} className='conversation-circle-img' alt="User Image" />
+                    ) : (
+                        <FaUserCircle className='conversation-circle-img' />
+                    )}
+
+                    <span style={{fontWeight: '600'}}> {first_name} </span>
+                </div>
+
 
                 <div className='conversation-topnav-divider'>
                     <UnMatch room_id={room_id}/>
@@ -162,7 +182,7 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
             <div className='conversation-underline-separator' /> {/* underline separator */}
 
             <div className="conversation-messages-wrapper">
-                <div className="conversation-messages-inner" id='messagesContainer'>
+                <div className="conversation-messages-inner" id='messagesContainer' ref={messagesEndRef}>
                     {loading ? (
                         <div className='conversation-circular'>
                             <CircularProgress sx={{ color: '#d43e73 ' }} />
@@ -233,16 +253,16 @@ function Conversation({ room_id, user_img, setIsConversationOpen, isLoadMessages
 
             <div className='conversation-underline-separator' /> {/* underline separator */}
 
-            <form className='conversation-send-wrapper' onSubmit={handleSubmit}>
-                <input type="file" id="fileInput" name="image" onChange={handleFileChange} />
-                {/* <div className="file-upload-wrapper">
-                    <input type="file" style={{display: 'none'}} id="fileInput" name="image" />
+            <form className={`conversation-send-wrapper ${theme}`} onSubmit={handleSubmit}>
+                {/* <input type="file" id="fileInput" name="image" onChange={handleFileChange} /> */}
+                <div className="file-upload-wrapper">
+                    <input type="file" style={{display: 'none'}} id="fileInput" name="image" onChange={handleFileChange} />
                     
                     <label htmlFor="fileInput" className="file-input-label">
                         <FaRegImages size={40} /> 
                     </label>
-                </div> */}
-                <input type="text" className='conversation-send-text' name="message" placeholder="Type a message" value={message} onChange={(event) => setMessage(event.target.value)} />
+                </div>
+                <input type="text" style={{color: theme === 'dark' ? 'white' : 'black'}} className='conversation-send-text' name="message" placeholder="Type a message" value={message} onChange={(event) => setMessage(event.target.value)} />
                 <button type='submit' className='conversation-send-submit' value="Send"> SEND </button>
             </form>
         </div>

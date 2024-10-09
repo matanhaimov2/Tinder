@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive'
 
 // CSS
 import './messages.css';
 
 // React MUI
 import CircularProgress from '@mui/material/CircularProgress';
+
+// React Icons
+import { FaUserCircle } from "react-icons/fa";
 
 // Components
 import Conversation from '../Conversation/conversation';
@@ -29,21 +33,30 @@ function Messages({ messages }: UserMatchProps) {
     const [isConversationOpen, setIsConversationOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
     const [selectedUserImg, setSelectedUserImg] = useState<string | null>(null);
+    const [selectedUserFirst, setSelectedUserFirst] = useState<string | null>(null);
+
+    // Handle responsive
+    const isTabletOrPhone = useMediaQuery({ query: '(max-width: 760px)' })
 
     // Open conversation component
-    const openConversation = (user_id: number, room_id: string, selectedUserImg: string) => {
+    const openConversation = (user_id: number, first_name: string ,room_id: string, selectedUserImg: string) => {
 
         // console.log('new conversation starts')
 
         if(room_id && user_id) {
             setSelectedRoomId(room_id);
-            setSelectedUserImg(selectedUserImg);    
+            setSelectedUserFirst(first_name) 
+            setSelectedUserImg(selectedUserImg);   
             setIsConversationOpen(true);
         }
     };
 
     return (
-        <div className='messages-wrapper'>
+        <div className={`messages-wrapper ${isTabletOrPhone ? 'messages-phone-wrapper' : ''}`}>
+
+            {isTabletOrPhone && (
+                <span className='messages-title-phone'> Messages </span>
+            )}
             {!messages ? (
                 <div className='messages-circular'>
                     <CircularProgress sx={{ color: '#d43e73 ' }} />
@@ -52,9 +65,13 @@ function Messages({ messages }: UserMatchProps) {
                 <>
                     {messages.map((message) => (
                         <div key={message.user_id}>
-                            <div className='messages-inner-wrapper' onClick={() => openConversation(message.user_id, message.room_id, message.image)}>
+                            <div className='messages-inner-wrapper' onClick={() => openConversation(message.user_id, message.first_name, message.room_id, message.image)}>
                                 <div>
-                                    <img className='messages-circle-img' src={message.image} />
+                                    {message.image ? (
+                                        <img className='messages-circle-img' alt='User Image' src={message.image} />
+                                    ) : (
+                                        <FaUserCircle className='messages-circle-img' />
+                                    )}
                                 </div>
 
                                 <div className='messages-content-wrapper'>
@@ -71,11 +88,15 @@ function Messages({ messages }: UserMatchProps) {
                             {isConversationOpen && (
                                 <Conversation
                                     room_id={selectedRoomId!}
+                                    first_name={selectedUserFirst}
                                     user_img={selectedUserImg}
                                     setIsConversationOpen={setIsConversationOpen}
                                     isLoadMessages={true}
                                 />
                             )}
+
+                            {isTabletOrPhone && (<div className='messages-underline-separator' />)} {/* underline separator */}
+
                         </div>
                     ))}
                 </>

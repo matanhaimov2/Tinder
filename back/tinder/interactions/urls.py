@@ -9,15 +9,13 @@ urlpatterns = [
 ]
 
 # Tasks:
-# dark mode light mode logic - 
-# responsivnes (in the end)- 
-# fix error where needed (google api) -
-# on match pop
-# fix images inserted in setProfile & editCard
-# try to understand db import (backup)
-
 # Conversation:
-# WebSockets secured authenticate - ?
 # send image (bonus: icon)- ?
 # real time matches doesnt work - dont remember if fixed?
-# on load start conversation from bottom
+# load 10 messages max everytime
+# text size - another - width!
+
+# not important:
+# try to understand db import (backup)
+# fix error where needed (google api) -
+# bio cardProfile overflow

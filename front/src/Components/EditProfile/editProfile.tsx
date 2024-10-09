@@ -12,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import CardProfile from '../CardProfile/cardProfile';
 
 // Sub Components
-import EditCard from './subComponents/editCard/editCard';
+import EditCard from './subComponents/editCard';
 
 function EditProfile() {
     // States
@@ -73,19 +73,6 @@ function EditProfile() {
                     </div>
                 )}
             </div>
-
-            {tabValue === 'Edit' && (
-                <div className='editProfile-save-wrapper'>
-
-                    {!isSaveUpdates ? (
-                        <button className='editProfile-save-button' onClick={() => setIsSaveUpdates(true)}> Save </button>
-                    ) : (
-                        <div>
-                            <CircularProgress sx={{ color: '#d43e73 ' }} />
-                        </div>
-                    )}
-                </div>
-            )}
         </div>
     );
 }

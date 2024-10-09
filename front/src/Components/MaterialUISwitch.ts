@@ -2,7 +2,11 @@
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+interface MaterialUISwitchProps {
+    checked: boolean;
+}
+
+const MaterialUISwitch = styled(Switch)<MaterialUISwitchProps>(({ theme }) => ({
     width: 62,
     height: 34,
     padding: 7,
