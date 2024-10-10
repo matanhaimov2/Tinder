@@ -12,10 +12,11 @@ urlpatterns = [
 # send image (bonus: icon)- ?
 # real time matches doesnt work - dont remember if fixed?
 # load 10 messages max everytime
-# text size - another profile - width!
-# in PhoneMatches fix overflow x so user will be able to scroll.
-# bio cardProfile overflow
+
+# Problems:
+# ignore redux warning (redux/toolkit cant find getdefaultmiddleware )
+# warning with routes, change from / to /*
+# fix messages with marks (?, !)
 
 # not important:
 # try to understand db import (backup)
-# fix error where needed (google api) -
