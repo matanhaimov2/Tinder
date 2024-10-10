@@ -70,8 +70,10 @@
 }
 
 .matches-swiping-match-phone-wrapper {
-    display: flex;
-    flex-direction: row;
+    display: -webkit-box;
+    overflow-x: auto;
+    /* display: flex;
+    flex-direction: row; */
     gap: 2%;
 }
 

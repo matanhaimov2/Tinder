@@ -28,7 +28,7 @@ interface UserMatchProps {
 }
 
 function Messages({ messages }: UserMatchProps) {
-    
+
     // States
     const [isConversationOpen, setIsConversationOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
@@ -39,14 +39,14 @@ function Messages({ messages }: UserMatchProps) {
     const isTabletOrPhone = useMediaQuery({ query: '(max-width: 760px)' })
 
     // Open conversation component
-    const openConversation = (user_id: number, first_name: string ,room_id: string, selectedUserImg: string) => {
+    const openConversation = (user_id: number, first_name: string, room_id: string, selectedUserImg: string) => {
 
         // console.log('new conversation starts')
 
-        if(room_id && user_id) {
+        if (room_id && user_id) {
             setSelectedRoomId(room_id);
-            setSelectedUserFirst(first_name) 
-            setSelectedUserImg(selectedUserImg);   
+            setSelectedUserFirst(first_name)
+            setSelectedUserImg(selectedUserImg);
             setIsConversationOpen(true);
         }
     };
@@ -57,55 +57,59 @@ function Messages({ messages }: UserMatchProps) {
             {isTabletOrPhone && (
                 <span className='messages-title-phone'> Messages </span>
             )}
-            {!messages ? (
-                <div className='messages-circular'>
-                    <CircularProgress sx={{ color: '#d43e73 ' }} />
-                </div>
-            ) : messages.length > 0 ? (
-                <>
-                    {messages.map((message) => (
-                        <div key={message.user_id}>
-                            <div className='messages-inner-wrapper' onClick={() => openConversation(message.user_id, message.first_name, message.room_id, message.image)}>
-                                <div>
-                                    {message.image ? (
-                                        <img className='messages-circle-img' alt='User Image' src={message.image} />
-                                    ) : (
-                                        <FaUserCircle className='messages-circle-img' />
-                                    )}
-                                </div>
 
-                                <div className='messages-content-wrapper'>
-                                    <div className='messages-content-name'>
-                                        {message.first_name}
+            <div style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+                {!messages ? (
+                    <div className='messages-circular'>
+                        <CircularProgress sx={{ color: '#d43e73 ' }} />
+                    </div>
+                ) : messages.length > 0 ? (
+                    <>
+                        {messages.map((message) => (
+                            <div key={message.user_id}>
+                                <div className='messages-inner-wrapper' onClick={() => openConversation(message.user_id, message.first_name, message.room_id, message.image)}>
+                                    <div>
+                                        {message.image ? (
+                                            <img className='messages-circle-img' alt='User Image' src={message.image} />
+                                        ) : (
+                                            <FaUserCircle className='messages-circle-img' />
+                                        )}
                                     </div>
 
-                                    <div className='messages-content-text'>
-                                        {message.latest_message}
+                                    <div className='messages-content-wrapper'>
+                                        <div className='messages-content-name'>
+                                            {message.first_name}
+                                        </div>
+
+                                        <div className='messages-content-text'>
+                                            {message.latest_message}
+                                        </div>
                                     </div>
                                 </div>
+
+                                {isTabletOrPhone && (<div className='messages-underline-separator' />)} {/* underline separator */}
+
                             </div>
+                        ))}
+                    </>
+                ) : (
+                    <div className='messages-error-wrapper'>
+                        <span> Start chatting </span>
+                        <span> with your matches</span>
+                    </div>
+                )}
 
-                            {isConversationOpen && (
-                                <Conversation
-                                    room_id={selectedRoomId!}
-                                    first_name={selectedUserFirst}
-                                    user_img={selectedUserImg}
-                                    setIsConversationOpen={setIsConversationOpen}
-                                    isLoadMessages={true}
-                                />
-                            )}
+                {isConversationOpen && (
+                    <Conversation
+                        room_id={selectedRoomId!}
+                        first_name={selectedUserFirst}
+                        user_img={selectedUserImg}
+                        setIsConversationOpen={setIsConversationOpen}
+                        isLoadMessages={true}
+                    />
+                )}
 
-                            {isTabletOrPhone && (<div className='messages-underline-separator' />)} {/* underline separator */}
-
-                        </div>
-                    ))}
-                </>
-            ) : (
-                <div className='messages-error-wrapper'>
-                    <span> Start chatting </span>
-                    <span> with your matches</span>
-                </div>
-            )}
+            </div>
 
         </div>
     );

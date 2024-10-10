@@ -81,6 +81,7 @@
     display: flex;
     justify-content: center;
     color: grey;
+    padding: 1%;
 }
 
 .owner {
@@ -99,10 +100,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: fit-content;
     max-width: 20vw;
-    padding-right: 1%;
+    padding-right: 0%;
     border-radius: 12px;
-    gap: 4%;
+    gap: 5px;
 }
 
 .content-owner {
@@ -110,6 +112,7 @@
     border-radius: 5px;
     color: white;
     width: 100%;
+    padding-right: 5%;
 }
 
 .content-another {
@@ -119,6 +122,7 @@
     padding-inline: 5%;
     color: white;
     width: 100%;
+    padding-left: 5%;
 }
 
 .content-message {
@@ -130,6 +134,7 @@
     overflow-wrap: break-word;
     white-space: pre-wrap;
     display: inline-block;
+    width: max-content;
 }
 
 .conversation-image-file {
@@ -141,6 +146,7 @@
     font-size: 70%;
     margin: unset;
     padding: 5px;
+    width: max-content;
 }
 
 .content-timestamp-right {
@@ -221,6 +227,10 @@
     .conversation-wrapper {
         width: 65%;
     }
+
+    .conversation-date-divider {
+        padding: 2%;
+    }
 }
 
 @media (max-width: 760px) {
@@ -244,5 +254,13 @@
 
     .owner {
         max-width: 40vw;
+    }
+
+    .another {
+        max-width: 40vw;
+    }
+
+    .conversation-date-divider {
+        padding: 3%;
     }
 }

@@ -68,7 +68,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
     const { theme } = useTheme();
 
-    const [{ x, opacity }, set] = useSpring(() => ({ x: 0, opacity: 1 }));
+    const [{ x, opacity }, api] = useSpring(() => ({ x: 0, opacity: 1 }));
 
     // Use Private hook
     const axiosPrivateInstance = useAxiosPrivate()
@@ -128,7 +128,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
         if (usersProfilesData.length > 0 && usersProfilesData[usersIndex]) {
             setCurrentUser(usersProfilesData[usersIndex]);
             setCurrentUserImages(usersProfilesData[usersIndex].images);
-            set({ x: 0, opacity: 1 }); // Reset animation state
+            api.start({ x: 0, opacity: 1 }); // Reset animation state
         } else {
             setCurrentUser(null);
         }
@@ -226,7 +226,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
         onDrag: ({ active, movement: [mx], memo = x.get() }) => {
             if (active) {
                 // Set x to the current movement position
-                set({ x: memo + mx, opacity: 1 - Math.abs(mx) / 500 }); // Adjust opacity based on swipe distance
+                api.start({ x: memo + mx, opacity: 1 - Math.abs(mx) / 500 }); // Adjust opacity based on swipe distance
                 return memo; // return memoized x position
             } else {
                 // Check if the swipe exceeds the threshold
@@ -235,7 +235,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                     handleUserAction(direction);
                 }
                 // Reset the animation
-                set({ x: 0, opacity: 1 });
+                api.start({ x: 0, opacity: 1 });
                 return 0; // Reset memo
             }
         },
@@ -319,7 +319,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                         </div>
 
                         <div className='cardProfile-user-details-wrapper'>
-                            <div className='cardProfile-details-inner'>
+                            <div className='cardProfile-details-inner' style={{flex: '2'}}>
                                 <div className='cardProfile-ageFirst-wrapper'>
                                     <span> {currentUser.age} </span>
                                     <span> {currentUser.firstname} </span>
@@ -331,7 +331,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
                             </div>
 
-                            <div className='cardProfile-details-inner'>
+                            <div className='cardProfile-details-inner' style={{flex: '8'}}>
                                 <div className='cardProfile-details-location'>
                                     <IoLocationOutline />
                                     <span> {currentUser.location} </span>
