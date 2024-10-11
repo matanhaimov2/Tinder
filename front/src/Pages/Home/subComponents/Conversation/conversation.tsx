@@ -9,14 +9,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 // React Icons
 import { FaUserCircle } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { FaRegImages } from 'react-icons/fa'; // Importing an image icon (you can choose another one)
+import { FaRegImages } from 'react-icons/fa';
 
 // Redux
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../Redux/store';
 
 // Assets
-import { DOMAIN } from "../../../../Assets/GlobalVeriables";
+import { DOMAIN, SERVER_URL } from "../../../../Assets/GlobalVeriables";
+
+// Hooks
+import useAxiosPrivate from '../../../../Hooks/usePrivate';
 
 // Components
 import { useTheme } from '../../../../Components/ThemeContext';
@@ -40,7 +43,6 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
     const [loading, setLoading] = useState<boolean>(true); // Loading state
     const [socket, setSocket] = useState<WebSocket | null>(null); // Typed as WebSocket or null
     const [message, setMessage] = useState<string>("");
-    const [selectedImage, setSelectedImage] = useState<File>();
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
@@ -49,6 +51,8 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
     // Refs
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+    const axiosPrivateInstance = useAxiosPrivate()
+
     useEffect(() => {
         // Connect to the WebSocket server with the username as a query parameter
         const newSocket = new WebSocket(`ws://${DOMAIN}/ws/chat/${room_id}/`);
@@ -56,9 +60,9 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
 
         newSocket.onopen = () => {
             console.log("WebSocket connected")
-            
+
             // Load messages if there's already a chat history
-            if(!isLoadMessages) {         
+            if (!isLoadMessages) {
                 setLoading(false);
             }
         };
@@ -86,46 +90,51 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
             };
         }
     }, [socket]);
-  
+
     // Send message
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (message && socket) {
+        // Send the image data if available - Problem
+        const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+        const isImageSent = fileInput?.files && fileInput.files.length > 0;
+        if ((isImageSent || message) && socket) {
 
             const data = {
                 message: message,
                 username: userData?.username,
             };
 
-            // Send the image data if available - Problem
-            const fileInput = document.getElementById("fileInput") as HTMLInputElement;
 
             if (fileInput?.files && fileInput.files.length > 0) {
                 const imageFile = fileInput.files[0];
                 const formData = new FormData();
-                formData.append("message", message);
                 formData.append("image", imageFile);
+                formData.append("username", userData?.username!);
 
-                // Send the data as FormData if there's an image
-                socket.send(JSON.stringify({
-                    ...data,
-                    image: URL.createObjectURL(imageFile), // Just for preview (you may want to handle this differently)
-                }));
+                const response = await axiosPrivateInstance.post(`interactions/imageHandler/${room_id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data', // Ensure the correct content type
+                    },
+                });
+
+                if (response) {
+
+                    // Send the data as FormData if there's an image
+                    socket.send(JSON.stringify({
+                        ...data,
+                        image: response.data.imageUrl, // Just for preview (you may want to handle this differently)
+                    }));
+
+                    fileInput.value = '';
+                }
+
             } else {
                 socket.send(JSON.stringify(data));
             }
 
             setMessage("");
         }
-    };
-
-    // Handle uploaded image change
-    const handleFileChange: ChangeEventHandler<HTMLInputElement> = (
-        event
-    ) => {
-        const file = event.target.files as FileList;
-        setSelectedImage(file?.[0]);
     };
 
     // Function to format the timestamp - hh-mm-am/pm
@@ -157,7 +166,7 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
         }
     }, [messages]);
-    
+
     return (
         <div className={`conversation-wrapper ${theme}alt`}>
             <div className={`conversation-topnav-wrapper ${theme}`}>
@@ -168,12 +177,12 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
                         <FaUserCircle className='conversation-circle-img' />
                     )}
 
-                    <span style={{fontWeight: '600'}}> {first_name} </span>
+                    <span style={{ fontWeight: '600' }}> {first_name} </span>
                 </div>
 
 
                 <div className='conversation-topnav-divider'>
-                    <UnMatch room_id={room_id}/>
+                    <UnMatch room_id={room_id} />
 
                     <IoMdCloseCircleOutline className='conversation-exit-button' onClick={() => setIsConversationOpen(false)} />
                 </div>
@@ -230,7 +239,7 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
 
                                             {/* Display the image if exists */}
                                             {message.image ? (
-                                                <img className='conversation-image-file' src={`http://localhost:8000${message.image}`} loading="lazy" width={300} height={150} />
+                                                <img className='conversation-image-file' src={`${SERVER_URL}/media/${message.image.replace("/media", "")}`} loading="lazy" width={300} height={150} />
                                             ) : (
                                                 ''
                                             )}
@@ -254,15 +263,16 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
             <div className='conversation-underline-separator' /> {/* underline separator */}
 
             <form className={`conversation-send-wrapper ${theme}`} onSubmit={handleSubmit}>
-                {/* <input type="file" id="fileInput" name="image" onChange={handleFileChange} /> */}
+
                 <div className="file-upload-wrapper">
-                    <input type="file" style={{display: 'none'}} id="fileInput" name="image" onChange={handleFileChange} />
-                    
+                    <input type="file" id="fileInput" name="image" className='file-upload-input' />
+
                     <label htmlFor="fileInput" className="file-input-label">
-                        <FaRegImages size={40} /> 
+                        <FaRegImages size={40} />
                     </label>
                 </div>
-                <input type="text" style={{color: theme === 'dark' ? 'white' : 'black'}} className='conversation-send-text' name="message" placeholder="Type a message" value={message} onChange={(event) => setMessage(event.target.value)} />
+
+                <input type="text" style={{ color: theme === 'dark' ? 'white' : 'black' }} className='conversation-send-text' name="message" placeholder="Type a message" value={message} onChange={(event) => setMessage(event.target.value)} />
                 <button type='submit' className='conversation-send-submit' value="Send"> SEND </button>
             </form>
         </div>

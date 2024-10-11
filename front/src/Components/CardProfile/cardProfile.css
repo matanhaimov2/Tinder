@@ -57,7 +57,6 @@
     direction: rtl;
     justify-content: space-between;
     padding: 2%;
-    overflow-y: auto;
 }
 
 .cardProfile-ageFirst-wrapper {
@@ -117,6 +116,7 @@
     flex: 1.5;
     justify-content: space-evenly;
     align-items: center;
+    direction: rtl;
 }
 
 .tinder-button {

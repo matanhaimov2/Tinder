@@ -74,26 +74,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # This method creates a new message in the database and associates it
         # with the current room. It uses database_sync_to_async to ensure it 
         # runs in the async context properly.
+
         message_obj = Message.objects.create(
             content=message,
             username=username,
             room=self.room, # Ensure the room is associated
-            image=image
+            image= image if image else ''
         )
         return message_obj
 
     async def receive(self, text_data):
         # This method handles incoming messages from the WebSocket.
         data = json.loads(text_data)
-        print("received", data)
         message = data['message']
         username = data['username']
         image = data.get('image', None)  # Get the image if it exists
-        print(image)
         
         # Create a new message object and save it to the database
-        message_obj = await self.create_message(message, username)
-
+        message_obj = await self.create_message(message, username, image)
+        
         # Step 8: Send the new message to the group, so all users in the room receive it
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -103,7 +102,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message_obj.content,
                 'username': message_obj.username,
                 'timestamp': str(message_obj.timestamp),
-                'image': message_obj.image.url if message_obj.image else None  # Send the image URL if it exists
+                'image': message_obj.image if message_obj.image else ''
             }
         )
 
@@ -114,7 +113,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         timestamp = event['timestamp']
         image = event['image']
         message_id = event['id']
-
+ 
         # Send the message to the websocket
         await self.send(text_data=json.dumps({
             'id': message_id,

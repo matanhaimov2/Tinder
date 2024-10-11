@@ -1,13 +1,12 @@
 from django.conf import settings
-from rest_framework import response, decorators as rest_decorators, permissions as rest_permissions, status, viewsets
+from rest_framework import response, decorators as rest_decorators, permissions as rest_permissions, status
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from profiles.models import Profile
 import jwt
 from rest_framework.response import Response
-from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
-from .models import Message, Room
+from .models import Message, Room, ImageUpload
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
@@ -184,7 +183,7 @@ def unmatchUser(request):
         target_Profile = Profile.objects.get(user_id=target_user_id)
     except Profile.DoesNotExist:
         return response.Response({'error': 'target_Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+
     try:
         # Remove target_user_id from user_id matches
         profile.matches.remove(target_user_id)
@@ -205,9 +204,16 @@ def unmatchUser(request):
             # Fetch and delete all messages related to the room
             messages = Message.objects.filter(room_id=room.pk)
             
-            # Check if there are any messages to delete
+            ## Check if there are any messages to delete
             if messages.exists():
                 messages.delete()  # Delete all messages related to the room
+
+            # Fetch and delete all images related to the room
+            images = ImageUpload.objects.filter(room_id=room_id)
+            
+            ## Check if there are any images to delete
+            if images.exists():
+                images.delete()  # Delete all images related to the room
 
             # Now delete the room
             room.delete()
@@ -220,3 +226,23 @@ def unmatchUser(request):
         # Log the error message for debugging
         print(f"An error occurred: {e}")
         return response.Response({'error': 'An error occurred while processing the unmatch request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@rest_decorators.api_view(["POST"])
+@rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def imageHandler(request, room_id):
+    username = request.data.get('username')
+
+    try:
+        image = request.data.get('image')
+
+        if image == "undefined":
+            return response.Response({'error': 'Upload img failed'}, status=status.HTTP_404_NOT_FOUND)
+
+        image = ImageUpload.objects.create(username=username, room_id=room_id, image=image)
+
+        return response.Response({'imageUrl': str(image.image)}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return response.Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)  # Log the exception

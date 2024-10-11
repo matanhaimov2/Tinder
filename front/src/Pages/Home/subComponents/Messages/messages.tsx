@@ -82,7 +82,11 @@ function Messages({ messages }: UserMatchProps) {
                                         </div>
 
                                         <div className='messages-content-text'>
-                                            {message.latest_message}
+                                            {message.latest_message
+                                                ? (message.latest_message.length > 17
+                                                    ? `${message.latest_message.slice(0, 17)}...`
+                                                    : message.latest_message)
+                                                : "No message"}
                                         </div>
                                     </div>
                                 </div>

@@ -41,6 +41,7 @@
 
 .messages-content-text {
     color: grey;
+    direction: ltr;
 }
 
 .messages-error-wrapper {

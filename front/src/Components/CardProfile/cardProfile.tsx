@@ -326,12 +326,12 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                                 </div>
 
                                 {currentUser.distance && (
-                                    <span style={{ display: 'flex', alignItems: 'center' }}> {Math.floor(currentUser.distance)} kilometers away</span>
+                                    <span style={{ display: 'flex', alignItems: 'center', direction: 'ltr' }}> {Math.floor(currentUser.distance)} kilometers away</span>
                                 )}
 
                             </div>
 
-                            <div className='cardProfile-details-inner' style={{flex: '8'}}>
+                            <div className='cardProfile-details-inner' style={{flex: '8', overflowY: 'auto'}}>
                                 <div className='cardProfile-details-location'>
                                     <IoLocationOutline />
                                     <span> {currentUser.location} </span>
