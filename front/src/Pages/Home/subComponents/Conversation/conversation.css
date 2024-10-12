@@ -199,6 +199,16 @@
     opacity: 0;
 }
 
+.file-clear-icon {
+    cursor: pointer;
+    color: grey;
+    transition: color 0.3s ease;
+}
+
+.file-clear-icon:hover {
+    color: rgb(207, 56, 56);
+}
+
 .file-input-label {
     cursor: pointer;
     color: grey; /* Icon color */

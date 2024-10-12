@@ -10,7 +10,7 @@ urlpatterns = [
 ]
 
 # Tasks: => to monday
-# conversation images - fix css and change img icon according to state
+# conversation images - fix css
 # load 10 messages max everytime
 # real time matches doesnt work - dont remember if fixed?
 

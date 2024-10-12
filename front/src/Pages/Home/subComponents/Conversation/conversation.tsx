@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, ChangeEventHandler } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 // CSS
 import './conversation.css';
@@ -9,7 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 // React Icons
 import { FaUserCircle } from "react-icons/fa";
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { FaRegImages } from 'react-icons/fa';
+import { CiImageOn } from "react-icons/ci";
 
 // Redux
 import { useSelector } from 'react-redux';
@@ -43,6 +43,7 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
     const [loading, setLoading] = useState<boolean>(true); // Loading state
     const [socket, setSocket] = useState<WebSocket | null>(null); // Typed as WebSocket or null
     const [message, setMessage] = useState<string>("");
+    const [isFileSelected, setIsFileSelected] = useState<boolean>(false); // Track if a file is selected
 
     // Global States
     const userData = useSelector((state: RootState) => state.auth.userData);
@@ -95,9 +96,9 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        // Send the image data if available - Problem
         const fileInput = document.getElementById("fileInput") as HTMLInputElement;
         const isImageSent = fileInput?.files && fileInput.files.length > 0;
+        
         if ((isImageSent || message) && socket) {
 
             const data = {
@@ -105,7 +106,7 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
                 username: userData?.username,
             };
 
-
+            // Send the image data if available
             if (fileInput?.files && fileInput.files.length > 0) {
                 const imageFile = fileInput.files[0];
                 const formData = new FormData();
@@ -114,19 +115,19 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
 
                 const response = await axiosPrivateInstance.post(`interactions/imageHandler/${room_id}`, formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data', // Ensure the correct content type
+                        'Content-Type': 'multipart/form-data',
                     },
                 });
 
                 if (response) {
-
                     // Send the data as FormData if there's an image
                     socket.send(JSON.stringify({
                         ...data,
-                        image: response.data.imageUrl, // Just for preview (you may want to handle this differently)
+                        image: response.data.imageUrl
                     }));
 
                     fileInput.value = '';
+                    setIsFileSelected(false); // Reset the file selection state here
                 }
 
             } else {
@@ -166,6 +167,19 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
         }
     }, [messages]);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const fileInput = event.target;
+        setIsFileSelected(!!fileInput.files?.length); // Convert to boolean
+    };
+
+    const handleClearFile = () => {
+        const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = ''; // Clear the file input
+            setIsFileSelected(false); // Reset the state
+        }
+    };
 
     return (
         <div className={`conversation-wrapper ${theme}alt`}>
@@ -265,11 +279,18 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
             <form className={`conversation-send-wrapper ${theme}`} onSubmit={handleSubmit}>
 
                 <div className="file-upload-wrapper">
-                    <input type="file" id="fileInput" name="image" className='file-upload-input' />
+                    <input type="file" id="fileInput" name="image" className='file-upload-input' onChange={handleFileChange} />
 
-                    <label htmlFor="fileInput" className="file-input-label">
-                        <FaRegImages size={40} />
-                    </label>
+                    {isFileSelected ? (
+                        <div className="file-clear-icon">
+                            <IoMdCloseCircleOutline size={30} onClick={handleClearFile} />
+                        </div>
+                    ) : (
+                        <label htmlFor="fileInput" className="file-input-label">
+                            <CiImageOn size={30} />
+                        </label>
+                    )}
+
                 </div>
 
                 <input type="text" style={{ color: theme === 'dark' ? 'white' : 'black' }} className='conversation-send-text' name="message" placeholder="Type a message" value={message} onChange={(event) => setMessage(event.target.value)} />
