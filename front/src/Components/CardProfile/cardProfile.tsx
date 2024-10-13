@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSpring, animated } from 'react-spring';
-import { useGesture } from 'react-use-gesture'; // Add useGesture for gesture handling
+import { useGesture } from 'react-use-gesture';
 
 // CSS
 import './cardProfile.css';

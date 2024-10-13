@@ -147,7 +147,7 @@ export default function Home() {
                                 {userData?.first_name}
                             </div>
                             {userData && userData.images.length > 0 ? (
-                                <img className='home-side-nav-img' src={userData.images[0]}></img>
+                                <img className='home-side-nav-img' src={userData.images[0]} alt="User Image"></img>
                             ) : (
                                 <FaUserCircle className='home-side-nav-img' />
                             )}

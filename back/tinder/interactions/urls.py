@@ -11,11 +11,8 @@ urlpatterns = [
 
 # Tasks: => to monday
 # load 10 messages max everytime
-# real time matches doesnt work - dont remember if fixed?
+# real time matches
 
-# Problems:
+# Warnings:
 # ignore redux warning (redux/toolkit cant find getdefaultmiddleware )
 # warning with routes, change from / to /*
-
-# not important:
-# try to understand db import (backup)

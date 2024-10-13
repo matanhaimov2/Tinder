@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // CSS
 import './editProfile.css';
@@ -6,7 +6,6 @@ import './editProfile.css';
 // React MUI
 import Tab from '@mui/material/Tab';
 import { TabContext, TabList } from '@mui/lab';
-import CircularProgress from '@mui/material/CircularProgress';
 
 // Components
 import CardProfile from '../CardProfile/cardProfile';
