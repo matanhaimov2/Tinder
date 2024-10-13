@@ -139,8 +139,8 @@
 }
 
 .conversation-image-file {
-    width: auto;
-    height: 100px;
+    width: -webkit-fill-available;
+    height: auto;
 }
 
 .content-timestamp-left {
@@ -178,6 +178,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 1%;
+    gap: 1%;
 }
 
 .conversation-send-file {
@@ -224,7 +225,9 @@
     border: none;
     background: none;
     outline: none;
+    font-family: 'Montserrat', sans-serif;
     caret-color: white;
+    direction: ltr;
 }
 
 .conversation-send-submit {
@@ -234,6 +237,7 @@
     font-weight: 600;
     font-size: 100%;
     border: none;
+    font-family: 'Montserrat', sans-serif;
     color: white;
     cursor: pointer;
 }

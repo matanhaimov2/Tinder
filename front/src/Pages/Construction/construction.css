@@ -1,0 +1,34 @@
+.construction-wrapper {
+    color: black;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('./../../Assets/Images/tinder_background_img.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.construction-inner-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    gap: 2%;
+}
+
+.construction-img {
+    width: 80%;
+}
+
+/* Handle Responsive */
+
+@media (max-width: 760px) {
+    .construction-img {
+        width: 100%;
+        height: auto;
+    }  
+}

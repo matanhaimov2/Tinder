@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Main CSS
@@ -16,6 +16,8 @@ import { setIsLoggedIn } from './Redux/features/authSlice';
 import Landing from './Pages/Landing/landing';
 import Home from './Pages/Home/home';
 import SetProfile from './Pages/SetProfile/setprofile';
+import NotFound from './Pages/NotFound/notFound';
+import Construction from './Pages/Construction/construction';
 
 // Components
 import TopNav from './Components/TopNav/topnav';
@@ -28,20 +30,6 @@ import useAxiosPrivate from "./Hooks/usePrivate"
 // Services
 import { healthCheck } from './Services/administrationService';
 
-// Functions
-function landing() {
-  return <Landing />;
-}
-
-function home() {
-  return <Home />;
-}
-
-function setprofile() {
-  return <SetProfile />;
-}
-
-
 // For Components With Topnav
 const ComponentsWithNav = () => {
   return (
@@ -53,7 +41,7 @@ const ComponentsWithNav = () => {
 
         <div className='com-with-nav-item'>
           <Routes>
-            <Route path='/' element={landing()} />
+            <Route path='/' element={<Landing />} />
           </Routes>
         </div>
       </div>
@@ -92,11 +80,11 @@ const PrivateRoutes = () => {
       {isLoggedIn ? (
         <Routes>
           <Route path='/' element={<PersistLogin />}>
-            <Route path="/home" element={home()} />
-            <Route path="/setprofile" element={setprofile()} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/setprofile" element={<SetProfile />} />
 
             {/* Page Doesnt Exists */}
-            <Route path='*' element={<div>404 doesnt exists</div>} />
+            <Route path='*' element={<NotFound />} />
           </Route>
         </Routes>
       ) : (
@@ -149,10 +137,7 @@ function App() {
               <Route path='/*' element={<PrivateRoutes />} />
 
               {/* Backend Disabled */}
-              <Route path='/sitenotfound' element={<div>site is under constarction</div>} />
-
-              {/* Page Doesnt Exists */}
-              <Route path='*' element={<div>404 doesnt exists</div>} />
+              <Route path='/sitenotfound' element={<Construction />} />
             </Routes>
           </Router>
         </div>

@@ -159,7 +159,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                 }
             }
 
-            if (currentUser?.user_id) { // PROBLEM - matches doesnt work on real time
+            if (currentUser?.user_id) { // Solution for real time matches => move match verfiying to backend (can cause latency)
                 if (userData?.likes.includes(currentUser?.user_id)) {
 
                     // Handle pop up match
@@ -171,7 +171,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                     setUserDetailsProps(user_data)
                     setIsMatchPop(true)
 
-                    await axiosPrivateInstance.post(`interactions/verifyMatch/`, {
+                    await axiosPrivateInstance.post(`interactions/handleMatch/`, {
                         target_user_id: currentUser?.user_id
                     });
 

@@ -56,7 +56,7 @@ def handleUserReaction(request, action):
 
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([rest_permissions.IsAuthenticated])
-def verifyMatch(request):
+def handleMatch(request):
     auth_header = request.headers.get('Authorization', None)
     access_token = auth_header.split(' ')[1]
     decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
