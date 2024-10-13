@@ -4,12 +4,12 @@
 
 .myProfile-discovery-title {
     display: block;
-    color: #b9bfc8;
+    color: #4b4f55;
     padding: 3%;
+    font-weight: 600;
 }
 
 .myProfile-divs-wrapper {
-    background: #111418;
     padding: 4% 3%
 }
 
@@ -43,4 +43,13 @@ div#interest-select {
     width: 7vw; /* try to understand why percentage doesnt work */
     padding: unset;
     padding-block: 3%;
+}
+
+/* Handle Responsive */
+
+
+@media (max-width: 760px) {
+    .myProfile-wrapper {
+        padding-top: 5%;
+    }
 }

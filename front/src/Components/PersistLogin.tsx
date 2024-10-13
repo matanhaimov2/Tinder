@@ -18,7 +18,6 @@ export default function PersistLogin() {
 
     const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
     const accessToken = useSelector((state: RootState) => state.auth.accessToken);
-    const userData = useSelector((state: RootState) => state.auth.userData);
 
     const [loading, setLoading] = useState<boolean>(true);
     const axiosPrivate = useAxiosPrivate();
@@ -37,7 +36,7 @@ export default function PersistLogin() {
 
             try {
                 await refresh();
-                const { data } = await axiosPrivate.get('users/verify/');
+                await axiosPrivate.get('users/verify/');
                 
                 // console.log(data)
             } catch (error: any) {

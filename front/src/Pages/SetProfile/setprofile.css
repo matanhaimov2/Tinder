@@ -36,7 +36,7 @@
 .setprofile-upload-images-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 2vh;
+    gap: 1vh;
     padding: 1vh 0;
 }
 
@@ -49,26 +49,28 @@
 
 .setprofile-upload-image-box {
     width: 11vw;
-    height: 10vh;
+    height: 22vh;
     border: 1px dashed gray;
     background: white;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     position: relative;
 }
 
 .setprofile-upload-uploaded-image {
     width: 100%;
     height: 100%;
-    /* object-fit: cover; */
 }
 
 .setprofile-upload-remove-image-button {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
+    color: white;
+    cursor: pointer;
 }
+
 .setprofile-upload-add-image-button {
     width: 100%;
     height: 100%;
@@ -94,10 +96,11 @@
 
 @media (max-width: 500px) {
     .setprofile-inner-wrapper {
-        width: 90%;
-        margin-block: 10%;
+        width: 95%;
+        margin-block: 5%;
     }
     .setprofile-upload-image-box {
         width: 40vw;
+        height: 17vh;
     }
 }

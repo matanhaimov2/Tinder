@@ -23,10 +23,22 @@
     padding: 1%;
 }
 
+.conversation-topnav-inner {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 .conversation-circle-img {
     width: 40px;
     height: 40px;
     border-radius: 50px;
+}
+
+.conversation-topnav-divider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .conversation-exit-button {
@@ -50,7 +62,6 @@
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    /* flex-direction: column-reverse; */
     gap: 1%;
 }
 
@@ -61,59 +72,90 @@
     transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
 }
 
-.owner {
-    border-radius: 12px;
-    width: fit-content;
-    max-width: 60vh;
-    align-self: flex-end;
+.conversation-messages-container {
+    display: flex;
+    flex-direction: column;
+}
 
+.conversation-date-divider {
+    display: flex;
+    justify-content: center;
+    color: grey;
+    padding: 1%;
+}
+
+.owner {
     display: flex;
     flex-direction: row;
-    direction: ltr;
+    width: fit-content;
     align-items: center;
+    align-self: flex-end;
+    direction: ltr;
+    max-width: 20vw;
     padding-left: 2%;
+    border-radius: 12px;
 }
 
 .another {
-    border-radius: 12px;
-    width: fit-content;
-    max-width: 60vh;
-    right: 0;
-
     display: flex;
     flex-direction: row;
-    gap: 4%;
     align-items: center;
-    padding-right: 1%;
+    width: fit-content;
+    max-width: 20vw;
+    padding-right: 0%;
+    border-radius: 12px;
+    gap: 5px;
 }
 
 .content-owner {
     background-color: #106bd5;
     border-radius: 5px;
+    color: white;
+    width: 100%;
+    padding-right: 5%;
 }
 
 .content-another {
     background-color: #21262e;
     border-radius: 5px;
-    text-align: end;
+    text-align: -webkit-left;
     padding-inline: 5%;
+    color: white;
+    width: 100%;
+    padding-left: 5%;
 }
 
 .content-message {
-    padding-inline: 1%;
+    padding-inline: 5px;
     max-width: 100%;
-    padding: 10px;
     margin: 5px 0;
     border-radius: 10px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: pre-wrap;
     display: inline-block;
+    width: max-content;
+    direction: ltr;
 }
 
 .conversation-image-file {
-    width: auto;
-    height: 100px;
+    width: -webkit-fill-available;
+    height: auto;
+}
+
+.content-timestamp-left {
+    font-size: 70%;
+    margin: unset;
+    padding: 5px;
+    width: max-content;
+}
+
+.content-timestamp-right {
+    font-size: 70%;
+    margin: unset;
+    padding: 5px;
+    direction: ltr;
+    width: max-content;
 }
 
 .conversation-start-chat-title {
@@ -127,7 +169,6 @@
     font-weight: bold;           
     text-align: center;             
     letter-spacing: 1px;            
-    transition: color 0.3s;         
 }
 
 /* Conversation Bottom Nav - message actions */
@@ -137,6 +178,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 1%;
+    gap: 1%;
 }
 
 .conversation-send-file {
@@ -150,6 +192,22 @@
     justify-content: start;
     align-items: center;
     flex: 1;
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 0;
+    opacity: 0;
+}
+
+.file-clear-icon {
+    cursor: pointer;
+    color: grey;
+    transition: color 0.3s ease;
+}
+
+.file-clear-icon:hover {
+    color: rgb(207, 56, 56);
 }
 
 .file-input-label {
@@ -167,8 +225,9 @@
     border: none;
     background: none;
     outline: none;
+    font-family: 'Montserrat', sans-serif;
     caret-color: white;
-    color: white;
+    direction: ltr;
 }
 
 .conversation-send-submit {
@@ -178,6 +237,51 @@
     font-weight: 600;
     font-size: 100%;
     border: none;
+    font-family: 'Montserrat', sans-serif;
     color: white;
     cursor: pointer;
+}
+
+/* Handle Responsive */
+
+@media (max-width: 1000px) {
+    .conversation-wrapper {
+        width: 65%;
+    }
+
+    .conversation-date-divider {
+        padding: 2%;
+    }
+}
+
+@media (max-width: 760px) {
+    .conversation-wrapper {
+        width: 100%;
+        height: 95%;
+        direction: rtl;
+    }
+
+    .conversation-send-wrapper {
+        padding: 2% 1%;
+    }
+
+    .conversation-send-text {
+        flex: 7;
+    }
+
+    .conversation-send-submit {
+        flex: 2;
+    }
+
+    .owner {
+        max-width: 40vw;
+    }
+
+    .another {
+        max-width: 40vw;
+    }
+
+    .conversation-date-divider {
+        padding: 3%;
+    }
 }

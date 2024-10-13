@@ -79,13 +79,13 @@ function MyProfile() {
                 location: location || userData.location,
                 interested_in: interest || userData.interested_in,
                 latitude: coordinates?.lat || userData.latitude,
-                longitude: coordinates?.lng || userData.longitude 
+                longitude: coordinates?.lng || userData.longitude
             };
-                
+
             dispatch(setUpdatedUserData(data));
         }
     }, [distance, ageRange, interest, location, dispatch]);
-    
+
     return (
         <div className='myProfile-wrapper'>
             <span className='myProfile-discovery-title'> DISCOVERY SETTINGS </span>
@@ -95,7 +95,7 @@ function MyProfile() {
             {/* Location Update */}
             <div className='myProfile-divs-wrapper'>
                 <div className='myProfile-organize-row'>
-                    <span style={{ color: 'white', fontSize: '110%' }}>
+                    <span style={{ fontSize: '110%' }}>
                         Location
                     </span>
 
@@ -112,7 +112,7 @@ function MyProfile() {
                                 id="location-input"
                                 type="text"
                                 placeholder="Enter your location"
-                                style={{ padding: '2%', borderRadius: '4px', width: '100%' }}
+                                style={{ padding: '2%', borderRadius: '4px', width: '100%', border: 'none', outline: 'none' }}
                                 onChange={(e) => setLocation(e.target.value)}
                             />
                         </div>
@@ -127,12 +127,12 @@ function MyProfile() {
             <div className='myProfile-divs-wrapper'>
                 <div className='myProfile-organize-row'>
                     {/* Distance Preference Title */}
-                    <span style={{ color: 'white', fontSize: '110%' }}>
+                    <span style={{ fontSize: '110%' }}>
                         Distance Preference
                     </span>
 
                     {/* Distance Display */}
-                    <span style={{ color: 'white' }}>
+                    <span>
                         {distance} km
                     </span>
                 </div>
@@ -145,10 +145,10 @@ function MyProfile() {
                     max={161}
                     valueLabelDisplay="auto"  // This will show the value in km
                     sx={{
-                        color: '#FF3D00',  // Adjust the slider color (similar to Tinder's primary color)
+                        color: '#ff4458',  // Adjust the slider color (similar to Tinder's primary color)
                         '& .MuiSlider-thumb': {
                             borderRadius: '50%',
-                            backgroundColor: '#FF3D00',
+                            backgroundColor: '#ff4458',
                         },
                         '& .MuiSlider-rail': {
                             opacity: 0.5,
@@ -163,7 +163,7 @@ function MyProfile() {
             {/* Interested_in Update */}
             <div className='myProfile-divs-wrapper'>
                 <div className='myProfile-organize-row'>
-                    <span style={{ color: 'white', fontSize: '110%' }}>
+                    <span style={{ fontSize: '110%' }}>
                         Looking for
                     </span>
 
@@ -176,9 +176,21 @@ function MyProfile() {
                         <div className='myProfile-arrow-wrapper'>
                             <IoIosArrowBack className='myProfile-arrow-icon' onClick={() => setIsInterestOpen(!isInterestOpen)} />
 
-                            <div className='damn'>
+                            <div>
                                 <Select
-                                    sx={{ background: 'white' }}
+                                    sx={{
+                                        background: 'white',
+                                        border: 'none',            // Removes border
+                                        outline: 'none',           // Removes outline
+                                        boxShadow: 'none',         // Removes box-shadow when focused
+                                        '& fieldset': {            // Removes the border when focused
+                                            border: 'none'
+                                        },
+                                        '&:focus-visible': {       // Removes default focus behavior
+                                            outline: 'none',
+                                            boxShadow: 'none'
+                                        }
+                                    }}
                                     labelId="interest-select-label"
                                     id="interest-select"
                                     label="Interested in"
@@ -201,12 +213,12 @@ function MyProfile() {
             <div className='myProfile-divs-wrapper'>
                 <div className='myProfile-organize-row'>
                     {/* Age Preference Title */}
-                    <span style={{ color: 'white', fontSize: '110%' }}>
+                    <span style={{ fontSize: '110%' }}>
                         Age Preference
                     </span>
 
                     {/* Age Range Display */}
-                    <span style={{ color: 'white' }}>
+                    <span>
                         {ageRange[1]} - {ageRange[0]}
                     </span>
                 </div>
@@ -218,10 +230,10 @@ function MyProfile() {
                     valueLabelDisplay="auto"
                     min={18}
                     sx={{
-                        color: '#FF3D00',  // Adjust the slider color (similar to Tinder's primary color)
+                        color: '#ff4458',  // Adjust the slider color (similar to Tinder's primary color)
                         '& .MuiSlider-thumb': {
                             borderRadius: '50%',
-                            backgroundColor: '#FF3D00',
+                            backgroundColor: '#ff4458',
                         },
                         '& .MuiSlider-rail': {
                             opacity: 0.5,
@@ -236,7 +248,7 @@ function MyProfile() {
             {/* Logout */}
             <div className='myProfile-divs-wrapper' style={{ cursor: 'pointer' }} onClick={logout}>
                 <div className='myProfile-organize-row'>
-                    <span style={{ color: 'white', fontSize: '110%', margin: 'auto' }}>
+                    <span style={{ fontSize: '110%', margin: 'auto' }}>
                         Logout
                     </span>
                 </div>

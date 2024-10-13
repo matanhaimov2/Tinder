@@ -1,17 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useMediaQuery } from 'react-responsive'
 
 // CSS
 import './matches.css';
 
 // React MUI
 import CircularProgress from '@mui/material/CircularProgress';
-
-// Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../Redux/store';
-
-// Hooks
-import useAxiosPrivate from '../../../../Hooks/usePrivate';
 
 // Components
 import Conversation from '../Conversation/conversation';
@@ -21,102 +15,130 @@ interface UserMatch {
     user_id: number;
     image: string;
     first_name: string;
-    room_id: string[]
+    room_id: string;
+    latest_message: string | null;
+    latest_message_timestamp: string | null;
 }
 
-function Matches() {
+interface UserMatchProps {
+    matches?: UserMatch[];
+    withFilteredConv?: UserMatch[];
+}
+
+function Matches({ matches, withFilteredConv }: UserMatchProps) {
 
     // States
-    const [matches, setMatches] = useState<UserMatch[]>();
     const [isConversationOpen, setIsConversationOpen] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [selectedUserImg, setSelectedUserImg] = useState<string | null>(null);
+    const [selectedUserFirst, setSelectedUserFirst] = useState<string | null>(null);
+    const [isLoadMessages, setIsLoadMessages] = useState(false);
 
-
-    // Global States
-    const userData = useSelector((state: RootState) => state.auth.userData);
-    const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
-
-    // Use Private hook
-    const axiosPrivateInstance = useAxiosPrivate()
-
-    // Fetch matches from backend
-    useEffect(() => {
-        const checkForMatches = async () => {
-            // Check if there any matches for logged_in user
-            const response = await axiosPrivateInstance.get('interactions/getAvailableMatches/');
-            // console.log(response)
-            setMatches(response.data.usersMatchesData)
-        }
-
-        checkForMatches();
-
-    }, [didMatchOccuer])
+    // Handle responsive
+    const isTabletOrPhone = useMediaQuery({ query: '(max-width: 760px)' })
 
     // Open conversation component
-    const openConversation = (user_id: number, correctRoomId: string, selectedUserImg: string) => {
-        // Close the current conversation if open
-        if (isConversationOpen) {
-            setIsConversationOpen(false);
+    const openConversation = (user_id: number, first_name: string, room_id: string, selectedUserImg: string) => {
+
+        // console.log('new conversation starts')
+
+        // If there is a chat history, load the messages. Otherwise skip.
+        if (withFilteredConv?.some(user => user.user_id === user_id)) {
+            setIsLoadMessages(true);
         }
-        
-        setSelectedRoomId(correctRoomId);
-        setSelectedUserId(user_id);
-        setSelectedUserImg(selectedUserImg)
-        setIsConversationOpen(true);
+        else {
+            setIsLoadMessages(false);
+        }
+
+        if (room_id && user_id) {
+            setSelectedRoomId(room_id);
+            setSelectedUserFirst(first_name)
+            setSelectedUserImg(selectedUserImg);
+            setIsConversationOpen(true);
+        }
     };
 
-    // Checks out of the 2 patterns the correct one and sends to openConversation
-    const HandleRoomPattern = async (selectedUserId: number, room_ids: string[], selectedUserImg: string) => {
-        // Look for both possible room_id patterns
-        const roomIdPattern1 = `match_${userData?.user_id}_${selectedUserId}`;
-        const roomIdPattern2 = `match_${selectedUserId}_${userData?.user_id}`;
-
-        // Find the correct room_id that matches either pattern
-        const correctRoomId = room_ids.find(
-            (room_id) => room_id === roomIdPattern1 || room_id === roomIdPattern2
-        );
-
-        if (correctRoomId) openConversation(selectedUserId, correctRoomId, selectedUserImg)
-    }
 
     return (
-        <div className='matches-wrapper'>
-            {!matches ? (
-                <div className='matches-circular'>
-                    <CircularProgress sx={{ color: '#d43e73 ' }} />
-                </div>
-            ) : matches.length > 0 ? (
-                <>
-                    {matches.map((match) => (
-                        <div key={match.user_id}>
-                            <div
-                                onClick={() => HandleRoomPattern(match.user_id, match.room_id, match.image)}
-                                className='matches-box-wrapper'
-                                style={{
-                                    backgroundColor: match.image ? 'transparent' : 'black',
-                                    backgroundImage: match.image ? `url(${match.image})` : 'none',
-                                }}
-                            >
-                                {match.first_name}
-                            </div>
+        <div className={`matches-wrapper ${isTabletOrPhone ? 'matches-phone-wrapper' : ''}`}>
 
-                            {isConversationOpen && selectedRoomId && selectedUserId && (
-                                <Conversation
-                                    match_user_id={selectedUserId}
-                                    room_id={selectedRoomId} 
-                                    user_img={selectedUserImg}
-                                    setIsConversationOpen={setIsConversationOpen}
-                                />
-                            )}
-                        </div>
-                    ))}
-                </>
+            {isTabletOrPhone ? (
+                <div className='matches-inner-phone-wrapper'>
+                    <span className='matches-title-phone-wrapper'> Matches </span>
+
+                    <div className='matches-swiping-match-phone-wrapper'>
+                        {!matches ? (
+                            <div className='matches-circular'>
+                                <CircularProgress sx={{ color: '#d43e73 ' }} />
+                            </div>
+                        ) : matches.length > 0 ? (
+                            <>
+                                {matches.map((match) => (
+                                    <div className='matches-swiping-match-phone' key={match.user_id}>
+                                        <div
+                                            onClick={() => openConversation(match.user_id, match.first_name, match.room_id, match.image)}
+                                            className='matches-box-phone-wrapper'
+                                            style={{
+                                                backgroundColor: match.image ? 'transparent' : 'black',
+                                                backgroundImage: match.image ? `url(${match.image})` : 'none',
+                                            }}
+                                        >
+                                            <span style={{ color: 'white', paddingInline: '2%' }}> {match.first_name} </span>
+                                        </div>
+
+                                    </div>
+                                ))}
+                            </>
+                        ) : (
+                            <div className='matches-error-phone-wrapper'>
+                                <span> No matches found </span>
+                            </div>
+                        )}
+                    </div>
+                </div>
             ) : (
-                <div>No matches found</div>
+                <>
+                    {!matches ? (
+                        <div className='matches-circular'>
+                            <CircularProgress sx={{ color: '#d43e73 ' }} />
+                        </div>
+                    ) : matches.length > 0 ? (
+                        <>
+                            {matches.map((match) => (
+                                <div key={match.user_id}>
+                                    <div
+                                        onClick={() => openConversation(match.user_id, match.first_name, match.room_id, match.image)}
+                                        className='matches-box-wrapper'
+                                        style={{
+                                            backgroundColor: match.image ? 'transparent' : 'black',
+                                            backgroundImage: match.image ? `url(${match.image})` : 'none',
+                                        }}
+                                    >
+                                        <span style={{ color: 'white', paddingInline: '2%' }}> {match.first_name} </span>
+                                    </div>
+
+                                </div>
+                            ))}
+                        </>
+                    ) : (
+                        <div className='matches-error-wrapper'>
+                            <span> No matches found </span>
+                        </div>
+                    )}
+                </>
             )}
 
+
+
+            {isConversationOpen && (
+                <Conversation
+                    room_id={selectedRoomId!}
+                    first_name={selectedUserFirst}
+                    user_img={selectedUserImg}
+                    setIsConversationOpen={setIsConversationOpen}
+                    isLoadMessages={isLoadMessages}
+                />
+            )}
         </div>
     );
 }

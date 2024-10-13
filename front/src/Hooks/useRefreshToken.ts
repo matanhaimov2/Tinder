@@ -1,6 +1,6 @@
 // Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../Redux/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../Redux/store';
 import { setAccessToken, setCsrfToken } from "../Redux/features/authSlice";
 
 // Services

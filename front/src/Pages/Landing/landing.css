@@ -33,3 +33,23 @@
     font-weight: 600;
     z-index: 1;
 }
+
+/* Handle Responsive */
+
+@media (max-width: 970px) {
+    .landing-title-wrapper {
+        font-size: 800%;
+    }
+}
+
+@media (max-width: 780px) {
+    .landing-title-wrapper {
+        font-size: 500%;
+    }
+}
+
+@media (max-width: 470px) {
+    .landing-title-wrapper {
+        font-size: 350%;
+    }
+}

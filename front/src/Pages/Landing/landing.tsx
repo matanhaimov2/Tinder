@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // CSS
 import './landing.css';
@@ -8,8 +8,9 @@ import Register from '../../Components/Register/register';
 
 function Landing () {
 
+    // States
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-    
+
     return (
         <div className='landing-wrapper'>
             <div className='landing-title-wrapper'>

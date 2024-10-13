@@ -1,5 +1,3 @@
-# translator - python to json
-# from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
