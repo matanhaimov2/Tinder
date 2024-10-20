@@ -112,17 +112,16 @@
     border-radius: 5px;
     color: white;
     width: 100%;
-    padding-right: 5%;
+    padding: 3% 5%;
 }
 
 .content-another {
     background-color: #21262e;
     border-radius: 5px;
     text-align: -webkit-left;
-    padding-inline: 5%;
+    padding: 4% 5%;
     color: white;
     width: 100%;
-    padding-left: 5%;
 }
 
 .content-message {
@@ -136,6 +135,7 @@
     display: inline-block;
     width: max-content;
     direction: ltr;
+    margin-block: 0;
 }
 
 .conversation-image-file {

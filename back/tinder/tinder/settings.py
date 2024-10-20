@@ -74,6 +74,7 @@ CHANNEL_LAYERS = {
     }
 }
 
+
 ROOT_URLCONF = 'tinder.urls'
 
 # Allow all origins

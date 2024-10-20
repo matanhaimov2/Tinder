@@ -98,7 +98,7 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
 
         const fileInput = document.getElementById("fileInput") as HTMLInputElement;
         const isImageSent = fileInput?.files && fileInput.files.length > 0;
-        
+
         if ((isImageSent || message) && socket) {
 
             const data = {
@@ -247,15 +247,16 @@ function Conversation({ room_id, first_name, user_img, setIsConversationOpen, is
                                         </div>
 
                                         <div className={`${userData?.username === message.username ? 'content-owner' : 'content-another'}`}>
-                                            {message.message && (
-                                                <p className='content-message'>{message.message}</p>
-                                            )}
 
                                             {/* Display the image if exists */}
                                             {message.image ? (
                                                 <img className='conversation-image-file' src={`${SERVER_URL}/media/${message.image.replace("/media", "")}`} loading="lazy" width={300} height={150} />
                                             ) : (
                                                 ''
+                                            )}
+
+                                            {message.message && (
+                                                <p className='content-message'>{message.message}</p>
                                             )}
 
                                             <p className={`${userData?.username === message.username ? 'content-timestamp-left' : 'content-timestamp-right'}`}>{formatTimestamp(message.timestamp)}</p>
