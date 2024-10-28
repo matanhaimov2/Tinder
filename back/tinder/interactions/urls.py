@@ -11,7 +11,6 @@ urlpatterns = [
 
 # Tasks: => to monday
 # load 10 messages max everytime
-# real time matches
 
 # Warnings:
 # ignore redux warning (redux/toolkit cant find getdefaultmiddleware )

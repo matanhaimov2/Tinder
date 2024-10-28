@@ -142,7 +142,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
                 >
                     <div className='login-tinder-content-wrapper'>
                         <div className='login-tinder-icon-wrapper'>
-                            <img className='login-tinder-icon' src={tinder_icon}></img>
+                            <img className='login-tinder-icon' src={tinder_icon} alt='Tinder Icon'></img>
                         </div>
 
                         <div className='login-tinder-title-wrapper'>

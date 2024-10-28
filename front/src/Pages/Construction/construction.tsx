@@ -11,7 +11,7 @@ export default function Construction() {
     return (
         <div className='construction-wrapper'>
             <div className='construction-inner-wrapper'>
-                <img className='construction-img' src={img} />
+                <img className='construction-img' src={img} alt='Under Construction'/>
             </div>
         </div>
     );

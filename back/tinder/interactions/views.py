@@ -16,7 +16,7 @@ def handleUserReaction(request, action):
     decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
     user_id = decoded_payload.get('user_id') # 4
     
-    target_user_id = request.data.get('target_user_id')  # ID of user(if liked), 4 OR users(if disliked), [2,4,7]
+    target_user_id = request.data.get('target_user_id')  # The ID of the user being liked/disliked
     
     try:
         profile = Profile.objects.get(user_id=user_id)
@@ -62,7 +62,7 @@ def handleMatch(request):
     decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
     user_id = decoded_payload.get('user_id')
 
-    target_user_id = request.data.get('target_user_id')  # The ID of the user being liked/disliked 14
+    target_user_id = request.data.get('target_user_id')  # The ID of the user being liked/disliked
 
     # Fetch the profile
     try:
@@ -76,31 +76,35 @@ def handleMatch(request):
     except Profile.DoesNotExist:
         return response.Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    if target_user_id in profile.likes:
+        matches = profile.matches
+        room_id = profile.room_id
+        if target_user_id not in matches:
+            matches.append(target_user_id)
+            room_id.append(f"match_{user_id}_{target_user_id}")
+            profile.matches = matches
 
-    matches = profile.matches
-    room_id = profile.room_id
-    if target_user_id not in matches:
-        matches.append(target_user_id)
-        room_id.append(f"match_{user_id}_{target_user_id}")
-        profile.matches = matches
+        matches_two = target_profile.matches
+        room_id_two = target_profile.room_id
 
-    matches_two = target_profile.matches
-    room_id_two = target_profile.room_id
-    if user_id not in matches_two:
-        matches_two.append(user_id)
-        target_profile.matches = matches_two
-        room_id_two.append(f"match_{user_id}_{target_user_id}")
+        if user_id not in matches_two:
+            matches_two.append(user_id)
+            target_profile.matches = matches_two
+            room_id_two.append(f"match_{user_id}_{target_user_id}")
 
-        # Remove for each user the his likes in db - 'likes'
-        profile.likes.remove(target_user_id)
-        target_profile.likes.remove(user_id)
+            # Remove for each user the his likes in db - 'likes'
+            profile.likes.remove(target_user_id)
+            target_profile.likes.remove(user_id)
 
-    # Save changes to the profile
-    profile.save()
-    # Save changes to the target_profile
-    target_profile.save()
-    
-    return response.Response({'status': 'success'}, status=status.HTTP_200_OK)
+        # Save changes to the profile
+        profile.save()
+        # Save changes to the target_profile
+        target_profile.save()
+    else:
+        # No match occuered
+        return response.Response({'match_status': False}, status=status.HTTP_200_OK)
+
+    return response.Response({'match_status': True}, status=status.HTTP_200_OK)
 
 
 @rest_decorators.api_view(["GET"])

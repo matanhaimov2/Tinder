@@ -149,19 +149,16 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
             if (action === 'like') {
                 // Send like action to the backend
-                const response = await axiosPrivateInstance.post(`interactions/userAction/${action}/`, {
+                await axiosPrivateInstance.post(`interactions/userAction/${action}/`, {
                     target_user_id: currentUser?.user_id
                 });
-            }
-            else {
-                if (currentUser?.user_id) {
-                    setDislikeSum([...dislikeSum, currentUser?.user_id])
-                }
-            }
 
-            if (currentUser?.user_id) { // Solution for real time matches => move match verfiying to backend (can cause latency)
-                if (userData?.likes.includes(currentUser?.user_id)) {
+                // Verify match
+                const response = await axiosPrivateInstance.post(`interactions/handleMatch/`, {
+                    target_user_id: currentUser?.user_id
+                });
 
+                if (response.data.match_status) {
                     // Handle pop up match
                     let user_data = {
                         first_name: currentUser?.firstname || '',
@@ -170,14 +167,15 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
                     setUserDetailsProps(user_data)
                     setIsMatchPop(true)
-
-                    await axiosPrivateInstance.post(`interactions/handleMatch/`, {
-                        target_user_id: currentUser?.user_id
-                    });
-
                     dispatch(setDidMatchOccuer(!didMatchOccuer))
                 }
             }
+            else {
+                if (currentUser?.user_id) {
+                    setDislikeSum([...dislikeSum, currentUser?.user_id])
+                }
+            }
+
         } catch (error) {
             console.error("Error handling user action:", error);
         }
@@ -186,10 +184,10 @@ function CardProfile({ isInEditProfile }: EditProfile) {
     // dislikeRequest funciton for blacklisting users
     const dislikeRequest = async (ListOfDislikes: number[]) => {
         // Send dislike action to the backend
-        const response = await axiosPrivateInstance.post('interactions/userAction/dislike/', {
+        await axiosPrivateInstance.post('interactions/userAction/dislike/', {
             target_user_id: ListOfDislikes
         });
-        
+
         setDislikeSum([])
     }
 
@@ -250,8 +248,8 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                     <div style={{ width: '100%', height: '100%' }}><CardLoader /></div> // loading ui here!
                 ) : currentUser ? (
                     <animated.div
-                            {...(isInEditProfile ? {} : bind())}  // Add condition here
-                            style={{
+                        {...(isInEditProfile ? {} : bind())}  // Add condition here
+                        style={{
                             transform: x.to((x) => `translateX(${x}px)`),
                             opacity,
                             backgroundImage: currentUserImages.length > 0 ? `url(${currentUserImages[userImagesIndex]})` : 'none',
@@ -319,7 +317,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
                         </div>
 
                         <div className='cardProfile-user-details-wrapper'>
-                            <div className='cardProfile-details-inner' style={{flex: '2'}}>
+                            <div className='cardProfile-details-inner' style={{ flex: '2' }}>
                                 <div className='cardProfile-ageFirst-wrapper'>
                                     <span> {currentUser.age} </span>
                                     <span> {currentUser.firstname} </span>
@@ -331,7 +329,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
 
                             </div>
 
-                            <div className='cardProfile-details-inner' style={{flex: '8', overflowY: 'auto'}}>
+                            <div className='cardProfile-details-inner' style={{ flex: '8', overflowY: 'auto' }}>
                                 <div className='cardProfile-details-location'>
                                     <IoLocationOutline />
                                     <span> {currentUser.location} </span>
@@ -364,7 +362,7 @@ function CardProfile({ isInEditProfile }: EditProfile) {
             )}
 
             {isMatchPop && userDetailsProps && (
-                <MatchPopUp setIsMatchPop={setIsMatchPop} user_details={userDetailsProps}/>
+                <MatchPopUp setIsMatchPop={setIsMatchPop} user_details={userDetailsProps} />
             )}
         </div>
     );

@@ -70,7 +70,7 @@ function Messages({ messages }: UserMatchProps) {
                                 <div className='messages-inner-wrapper' onClick={() => openConversation(message.user_id, message.first_name, message.room_id, message.image)}>
                                     <div>
                                         {message.image ? (
-                                            <img className='messages-circle-img' alt='User Image' src={message.image} />
+                                            <img className='messages-circle-img' alt='User Img' src={message.image} />
                                         ) : (
                                             <FaUserCircle className='messages-circle-img' />
                                         )}
