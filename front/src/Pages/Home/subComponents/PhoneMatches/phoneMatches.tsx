@@ -9,7 +9,7 @@ import logo from '../../../../Assets/Images/tinder-main-logo2.png'
 // Components
 import Matches from '../Matches/matches';
 import Messages from '../Messages/messages';
-import { useTheme } from '../../../../Components/ThemeContext';
+import { useTheme } from '../../../../Components/Theme/ThemeContext';
 
 // Interfaces
 interface UserMatch {

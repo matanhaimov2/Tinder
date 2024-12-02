@@ -6,8 +6,8 @@ import './phoneMyProfile.css';
 // Components
 import EditProfile from '../../../../Components/EditProfile/editProfile';
 import MyProfile from '../../../../Components/MyProfile/myProfile';
-import { useTheme } from '../../../../Components/ThemeContext';
-import MaterialUISwitch from '../../../../Components/MaterialUISwitch';
+import { useTheme } from '../../../../Components/Theme/ThemeContext';
+import MaterialUISwitch from '../../../../Components/Theme/MaterialUISwitch';
 
 // Interfaces
 

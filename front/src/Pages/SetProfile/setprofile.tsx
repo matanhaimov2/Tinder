@@ -119,6 +119,8 @@ function SetProfile() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        setLoading(true);
+
         const uploadedImages: string[] = [];
 
         for (const image of images) {
@@ -147,8 +149,6 @@ function SetProfile() {
             latitude: coordinates?.lat,
             longitude: coordinates?.lng
         }
-
-        setLoading(true);
 
         try {
             const response = await axiosPrivateInstance.post('profiles/updateProfile/', data)
@@ -373,7 +373,9 @@ function SetProfile() {
                                 backgroundColor: 'primary.dark', // Adjust hover color if needed
                             }
                         }}
-                        >Proceed</Button>
+                        >
+                            Proceed
+                        </Button>
                     )}
 
                     {/* Display message */}

@@ -17,6 +17,10 @@ type LoginData = {
     password: string;
 }
 
+type GoogleLoginData = {
+    google_token: string;
+};
+
 const register = async (data : RegisterData) => {
     try {
         // Sends to back the data to insert db
@@ -39,7 +43,7 @@ const login = async (data : LoginData) => {
         // Sends to back username and password to see if correct
         const response = await axios.post(SERVER_URL + "/users/login/", data, {
             withCredentials: true // Include cookies
-        })
+        });
 
         return response.data;
     }
@@ -51,6 +55,22 @@ const login = async (data : LoginData) => {
         }
     }
 }
+const googleLoginService = async (data: GoogleLoginData) => {
+    try {
+        const response = await axios.post(`${SERVER_URL}/users/google_login/`, data, {
+            withCredentials: true,
+        });
+
+        return response.data;
+
+    } catch (err: any) {
+        if (err.response) {
+            return err.response.data;
+        } else {
+            throw new Error("An unknown error occurred.");
+        }
+    }
+};
 
 export const axiosInstance = axios.create({
     baseURL: SERVER_URL,
@@ -59,7 +79,6 @@ export const axiosInstance = axios.create({
         "Content-Type": "application/json"
     }
 })
-
 
 export const axiosPrivateInstance = axios.create({
     baseURL: SERVER_URL,
@@ -72,5 +91,6 @@ export const axiosPrivateInstance = axios.create({
 
 export {
     login,
+    googleLoginService,
     register,
 }

@@ -7,7 +7,7 @@ import './matchPopUp.css';
 import logo from '../../../../Assets/Images/popupmatch.png';
 
 // Components
-import { useTheme } from '../../../ThemeContext';
+import { useTheme } from '../../../Theme/ThemeContext';
 
 // Props Interfaces
 interface MatchDetails {

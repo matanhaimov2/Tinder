@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import login, register, logout, CookieTokenRefreshView, verify, healthCheck
+from .views import login, register, logout, CookieTokenRefreshView, verify, healthCheck, google_login
 
 urlpatterns = [
     path('register/', register, name='register'),
     path('login/', login, name='login'),
+    path('google_login/', google_login, name='google_login'),
 
     path('refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
     path("verify/", verify, name='verify'),
@@ -11,9 +12,3 @@ urlpatterns = [
     
     path('logout/', logout, name='logout'),
 ]
-
-
-# go through everything and understand it
-# organize everthing
-# get data from profile table when login
-# store userData, tokens in global state using redux

@@ -38,7 +38,6 @@ export default function PersistLogin() {
                 await refresh();
                 await axiosPrivate.get('users/verify/');
                 
-                // console.log(data)
             } catch (error: any) {
                 console.log(error?.response);
                 
