@@ -16,6 +16,9 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
+// Components
+import GoogleLoginButton from './subComponents/GoogleLoginButton';
+
 // Hooks
 import { useLogin } from '../../Hooks/auth/useLogin';
 
@@ -29,7 +32,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
 
     // Refs
     const loginRef = useRef<HTMLFormElement>(null);
-    
+
     // Close login when clicking outside of the component
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -58,9 +61,9 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
                         backgroundColor: "#111418",
                         border: 'none',
                         width: 300,
-                        height: 360,
+                        height: 'fit-content',
                         mx: 'auto', // margin left & right
-                        my: 12, // margin top & bottom
+                        my: 0, // margin top & bottom
                         py: 6, // padding top & bottom
                         px: 2, // padding left & right
                         display: 'flex',
@@ -108,7 +111,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
                     {/* Show CircularProgress while loading */}
                     {loading ? (
                         <Box className='login-loading-wrapper'>
-                            <CircularProgress color='inherit' />
+                            <CircularProgress size={28} color='inherit' />
                         </Box>
                     ) : (
                         <Button type='submit'>Sign in</Button>
@@ -118,7 +121,11 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
                     {errorMessage && (
                         <Alert severity='error'> {errorMessage} </Alert>
                     )}
+
+                    <GoogleLoginButton />
+
                 </Sheet>
+
             </form>
         </div>
     );

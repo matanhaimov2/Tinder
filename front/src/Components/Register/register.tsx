@@ -58,9 +58,11 @@ function Register({ isRegisterOpen, setIsRegisterOpen }: RegisterProps) {
                         backgroundColor: "#111418",
                         border: 'none',
                         width: 300,
+                        height: 'fit-content',
                         mx: 'auto', // margin left & right
-                        my: 12, // margin top & bottom
-                        py: 6, // padding top & bottom
+                        my: 0, // margin top & bottom
+                        pt: '20px', // padding top
+                        pb: '16px', // padding bottom
                         px: 2, // padding left & right
                         display: 'flex',
                         flexDirection: 'column',
@@ -142,7 +144,7 @@ function Register({ isRegisterOpen, setIsRegisterOpen }: RegisterProps) {
                     {/* Show CircularProgress while loading */}
                     {loading ? (
                         <Box className='register-loading-wrapper'>
-                            <CircularProgress color='inherit' />
+                            <CircularProgress size={28} color='inherit' />
                         </Box>
                     ) : (
                         <Button type='submit' className='register-submit-button'>Register</Button>

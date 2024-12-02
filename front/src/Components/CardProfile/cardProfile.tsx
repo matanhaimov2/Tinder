@@ -25,7 +25,7 @@ import useAxiosPrivate from '../../Hooks/usePrivate';
 
 // Components
 import CardLoader from '../Loaders/cardLoader/cardLoader';
-import { useTheme } from '../ThemeContext';
+import { useTheme } from '../Theme/ThemeContext';
 import MatchPopUp from './subComponents/matchPopUp/matchPopUp';
 
 // Interfaces

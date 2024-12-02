@@ -29,8 +29,8 @@ import { RootState } from '../../Redux/store';
 import MyProfile from '../../Components/MyProfile/myProfile';
 import EditProfile from '../../Components/EditProfile/editProfile';
 import CardProfile from '../../Components/CardProfile/cardProfile';
-import MaterialUISwitch from '../../Components/MaterialUISwitch';
-import { useTheme } from '../../Components/ThemeContext';
+import MaterialUISwitch from '../../Components/Theme/MaterialUISwitch';
+import { useTheme } from '../../Components/Theme/ThemeContext';
 
 // Sub Components
 import Matches from './subComponents/Matches/matches';
