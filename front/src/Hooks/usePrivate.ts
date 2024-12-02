@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from '../Redux/store';
 import { setAccessToken, setCsrfToken } from "../Redux/features/authSlice";
 
 // Hookes
-import useRefreshToken from "./useRefreshToken";
+import useRefreshToken from "./auth/useRefreshToken";
 
 // Services
 import { axiosPrivateInstance } from "../Services/authService";

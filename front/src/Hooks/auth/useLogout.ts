@@ -1,10 +1,10 @@
 // Redux
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../Redux/store';
-import { setAccessToken, setCsrfToken, setUserData, setIsLoggedIn } from "../Redux/features/authSlice";
+import { AppDispatch } from '../../Redux/store';
+import { setAccessToken, setCsrfToken, setUserData, setIsLoggedIn } from "../../Redux/features/authSlice";
 
 // Services
-import { axiosPrivateInstance } from "../Services/authService"
+import { axiosPrivateInstance } from "../../Services/authService"
 
 export default function useLogout() {
     const dispatch = useDispatch<AppDispatch>();

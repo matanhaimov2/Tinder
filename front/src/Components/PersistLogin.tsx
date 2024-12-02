@@ -10,7 +10,7 @@ import PageLoader from './Loaders/pageLoader/pageLoader';
 
 // Hooks
 import useAxiosPrivate from '../Hooks/usePrivate';
-import useRefreshToken from '../Hooks/useRefreshToken';
+import useRefreshToken from '../Hooks/auth/useRefreshToken';
 
 
 export default function PersistLogin() {

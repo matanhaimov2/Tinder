@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // CSS
 import './register.css';
@@ -16,8 +16,8 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-// Services
-import { register } from '../../Services/authService';
+// Hooks
+import { useRegister } from '../../Hooks/auth/useRegister';
 
 // Props Types
 type RegisterProps = {
@@ -26,15 +26,6 @@ type RegisterProps = {
 }
 
 function Register({ isRegisterOpen, setIsRegisterOpen }: RegisterProps) {
-
-    // States
-    const [email, setEmail] = useState<string>('');
-    const [username, setUsername] = useState<string>('');
-    const [fname, setFname] = useState<string>('');
-    const [lname, setLname] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [message, setMessage] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
 
     // Refs
     const registerRef = useRef<HTMLFormElement>(null);
@@ -56,37 +47,8 @@ function Register({ isRegisterOpen, setIsRegisterOpen }: RegisterProps) {
         };
     }, []);
 
-    const handleRegistration = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const data = {
-            email: email,
-            username: username,
-            first_name: fname,
-            last_name: lname,
-            password: password
-        }
-
-        setLoading(true);
-
-        try {
-            const response = await register(data);
-            console.log(response);
-
-            if (response && response.success) {
-                setMessage(response.success)
-            } else {
-                setMessage(response.error[0]);
-            }
-
-        } catch (error) {
-            console.error(error);
-            setMessage('An error occurred. Please try again.');
-
-        } finally {
-            setLoading(false); // End loading
-        }
-    };
+    // Using the custom hook
+    const { setEmail, setUsername, setFname, setLname, setPassword, handleRegistration, message, loading } = useRegister();
 
     return (
         <div className='register-wrapper'>
@@ -180,7 +142,7 @@ function Register({ isRegisterOpen, setIsRegisterOpen }: RegisterProps) {
                     {/* Show CircularProgress while loading */}
                     {loading ? (
                         <Box className='register-loading-wrapper'>
-                            <CircularProgress color='inherit'/>
+                            <CircularProgress color='inherit' />
                         </Box>
                     ) : (
                         <Button type='submit' className='register-submit-button'>Register</Button>

@@ -18,6 +18,11 @@ function EditProfile() {
     const [tabValue, setTabValue] = useState('Edit')
     const [isSaveUpdates, setIsSaveUpdates] = useState(false)
 
+    const tabs = [
+        { label: 'Preview', value: 'Preview', ariaLabel: 'Preview Profile' },
+        { label: 'Edit', value: 'Edit', ariaLabel: 'Edit Profile' },
+    ];
+
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setTabValue(newValue);
     };
@@ -28,34 +33,24 @@ function EditProfile() {
                 <TabContext value={tabValue}>
                     <div style={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Tabs" sx={{ '& .MuiTabs-indicator': { display: 'none', }, }}>
-                            <Tab
-                                label="Preview"
-                                value="Preview"
-                                sx={{
-                                    color: tabValue === 'Preview' ? '#ff4458' : '#7c8591',
-                                    textTransform: 'none',
-                                    fontSize: "120%",
-                                    borderRadius: '5px',
-                                    fontWeight: '600',
-                                    '&.Mui-selected': {
-                                        color: '#ff4458',
-                                    },
-                                }}
-                            />
-                            <Tab
-                                label="Edit"
-                                value="Edit"
-                                sx={{
-                                    color: tabValue === 'Edit' ? '#ff4458' : '#7c8591',
-                                    textTransform: 'none',
-                                    fontSize: "120%",
-                                    borderRadius: '5px',
-                                    fontWeight: '600',
-                                    '&.Mui-selected': {
-                                        color: '#ff4458',
-                                    }
-                                }}
-                            />
+                            {tabs.map((tab) => (
+                                <Tab
+                                    key={tab.value}
+                                    label={tab.label}
+                                    value={tab.value}
+                                    aria-label={tab.ariaLabel}
+                                    sx={{
+                                        color: tabValue === tab.value ? '#ff4458' : '#7c8591',
+                                        textTransform: 'none',
+                                        fontSize: '120%',
+                                        borderRadius: '5px',
+                                        fontWeight: '600',
+                                        '&.Mui-selected': {
+                                            color: '#ff4458',
+                                        },
+                                    }}
+                                />
+                            ))}
                         </TabList>
                     </div>
                 </TabContext>
