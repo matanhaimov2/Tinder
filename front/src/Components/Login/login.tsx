@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef } from 'react';
 
 // CSS
 import './login.css';
@@ -17,16 +16,8 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-// Redux
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../Redux/store';
-import { setAccessToken, setUserData, setIsLoggedIn } from "../../Redux/features/authSlice";
-
 // Hooks
-import useAxiosPrivate from "../../Hooks/usePrivate"
-
-// Services
-import { login } from '../../Services/authService';
+import { useLogin } from '../../Hooks/auth/useLogin';
 
 // Props Types
 type LoginProps = {
@@ -34,15 +25,7 @@ type LoginProps = {
     setIsLoginOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
 function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
-    const dispatch = useDispatch<AppDispatch>();
-
-    // States
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
 
     // Refs
     const loginRef = useRef<HTMLFormElement>(null);
@@ -64,58 +47,8 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
         };
     }, []);
 
-    // Navigation Handle
-    const navigate = useNavigate();
-
-    const axiosPrivateInstance = useAxiosPrivate()
-    
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const data = {
-            username: username,
-            password: password
-        }
-
-        setLoading(true);
-
-        try {
-            const response = await login(data);
-
-            dispatch(setAccessToken(response.access_token));
-            
-            if (response && !response.detail) {
-               
-                const res = await axiosPrivateInstance.get('profiles/getUserData/');
-                const data = res.data.userData;
-               
-                dispatch(setIsLoggedIn(true));
-            
-                if (data && data.isFirstLogin) {
-                    dispatch(setUserData(data));
-                    navigate('/setprofile');
-                }
-                else if (data && !data.isFirstLogin) {
-                    dispatch(setUserData(data));
-                    navigate('/home');
-                }
-                else {
-                    dispatch(setIsLoggedIn(false));
-                    console.log('Something went wrong');
-                }
-            } 
-            else {
-                setErrorMessage('Username or password incorrect'); // when mistake happen - if i try again with correct credentials => An error occurred - Problem!
-            }
-
-        } catch (error) {
-            console.error(error);
-            setErrorMessage('An error occurred. Please try again.');
-
-        } finally {
-            setLoading(false); // End loading
-        }
-    };
+    // Using the custom hook
+    const { setUsername, setPassword, handleLogin, errorMessage, loading } = useLogin();
 
     return (
         <div className='login-wrapper'>

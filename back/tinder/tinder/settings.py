@@ -193,11 +193,11 @@ WSGI_APPLICATION = 'tinder.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tinder_db_kfa5',  # The database name
-        'USER': 'tinder_db_kfa5_user',  # Your PostgreSQL user
-        'PASSWORD': 'RxN65Z3YolGm0z0x2dc6npeluQCqgjv9',  # Your PostgreSQL password
-        'HOST': 'dpg-csetone8ii6s73990rsg-a.oregon-postgres.render.com',  # The host address of your PostgreSQL server
-        'PORT': '5432',  # The default port for PostgreSQL
+        'NAME': 'defaultdb',  # The database name
+        'USER': 'avnadmin',  # Your PostgreSQL user
+        'PASSWORD': '',  # Your PostgreSQL password
+        'HOST': 'pg-tinder-tinder-db.d.aivencloud.com',  # The host address of your PostgreSQL server
+        'PORT': '26552',  # The default port for PostgreSQL
     }
 }
 

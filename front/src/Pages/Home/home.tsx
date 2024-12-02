@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive'
 
 // CSS
@@ -39,22 +39,27 @@ import PhoneMatches from './subComponents/PhoneMatches/phoneMatches';
 import PhoneMyProfile from './subComponents/PhoneMyProfile/phoneMyProfile';
 
 // Hooks
-import useAxiosPrivate from '../../Hooks/usePrivate';
+import { useMatches } from '../../Hooks/matches/useMatches';
 
-// Interfaces
-interface UserMatch {
-    user_id: number;
-    image: string;
-    first_name: string;
-    room_id: string;
-    latest_message: string | null;
-    latest_message_timestamp: string | null;
-}
+type Tab = {
+    id: 'home' | 'chats' | 'profile';
+    icon: JSX.Element;
+    label: string;
+};
+
+const PhoneView = ({ activeTabPhone, messages, matches }: any) => {
+    switch (activeTabPhone) {
+        case 'chats':
+            return <PhoneMatches messages={messages} matches={matches} withFilteredConv={messages} />;
+        case 'profile':
+            return <PhoneMyProfile />;
+        default:
+            return null;
+    }
+};
 
 export default function Home() {
     // States
-    const [matches, setMatches] = useState<UserMatch[]>();
-    const [messages, setMessages] = useState<UserMatch[]>();
     const [isProfileOpen, setIsProfileOpen] = useState(false); // State to manage visibility
     const [navValue, setNavValue] = useState(2); // Index for nav (Matches/Messages)
     const [activeTabPhone, setActiveTabPhone] = useState<'home' | 'chats' | 'profile'>('home'); // Set default active tab
@@ -63,30 +68,13 @@ export default function Home() {
     const userData = useSelector((state: RootState) => state.auth.userData);
     const didMatchOccuer = useSelector((state: RootState) => state.auth.didMatchOccuer);
 
-    // Use Private hook
-    const axiosPrivateInstance = useAxiosPrivate()
-
     const { theme, toggleTheme } = useTheme();
 
     // Handle responsive
     const isTabletOrPhone = useMediaQuery({ query: '(max-width: 760px)' })
 
-    // Fetch matches from backend
-    useEffect(() => {
-        const checkForMatches = async () => {
-            // Check if there any matches for logged_in user
-            const response = await axiosPrivateInstance.get('interactions/getAvailableMatches/');
-
-            // Filter out matches with null latest_message
-            const filteredMatches = response.data.usersMatchesData.filter((match: UserMatch) => match.latest_message !== null);
-
-            setMatches(response.data.usersMatchesData)
-            setMessages(filteredMatches)
-        }
-
-        checkForMatches();
-
-    }, [didMatchOccuer])
+    // Fetch matches and messages from the custom hook
+    const { matches, messages } = useMatches(didMatchOccuer);
 
     // Toggle profile visibility
     const handleProfileClick = () => {
@@ -101,6 +89,19 @@ export default function Home() {
     const handleTabClick = (tab: 'home' | 'chats' | 'profile') => {
         setActiveTabPhone(tab);
     };
+
+    // nav between tabs
+    const tabs = [
+        { id: 'messages', label: 'Messages', value: '1' },
+        { id: 'matches', label: 'Matches', value: '2' }
+    ];
+
+    // Phone bottom-nav - nav between tabs
+    const phoneTabs: Tab[] = [
+        { id: 'home', icon: <SiTinder />, label: 'Home' },
+        { id: 'chats', icon: <PiChatsCircleFill />, label: 'Chats' },
+        { id: 'profile', icon: <PiUserFill />, label: 'Profile' },
+    ];
 
     return (
         <div className={`home-wrapper ${theme}alt`}>
@@ -174,27 +175,23 @@ export default function Home() {
                                                         },
                                                     }}
                                                 >
-
-                                                    <Tab label="Messages" value="1" sx={{
-                                                        fontFamily: 'Montserrat, sans-serif',
-                                                        fontWeight: '600',
-                                                        color: theme === 'dark' ? 'white' : 'black', // Default color for inactive tabs
-                                                        textTransform: 'none', // Disable uppercase transformation
-                                                        '&.Mui-selected': {
-                                                            color: theme === 'dark' ? 'white' : 'black', // Set white color for the active tab
-                                                        },
-                                                    }}
-                                                    />
-                                                    <Tab label="Matches" value="2" sx={{
-                                                        fontFamily: 'Montserrat, sans-serif',
-                                                        fontWeight: '600',
-                                                        color: theme === 'dark' ? 'white' : 'black', // Default color for inactive tabs
-                                                        textTransform: 'none', // Disable uppercase transformation
-                                                        '&.Mui-selected': {
-                                                            color: theme === 'dark' ? 'white' : 'black', // Set white color for the active tab
-                                                        },
-                                                    }}
-                                                    />
+                                                    {tabs.map(tab => (
+                                                        <Tab
+                                                            key={tab.id}
+                                                            label={tab.label}
+                                                            value={tab.value}
+                                                            aria-label={tab.label}
+                                                            sx={{
+                                                                fontFamily: 'Montserrat, sans-serif',
+                                                                fontWeight: '600',
+                                                                color: theme === 'dark' ? 'white' : 'black', // Default color for inactive tabs
+                                                                textTransform: 'none', // Disable uppercase transformation
+                                                                '&.Mui-selected': {
+                                                                    color: theme === 'dark' ? 'white' : 'black', // Set white color for the active tab
+                                                                },
+                                                            }}
+                                                        />
+                                                    ))}
                                                 </TabList>
                                             </Box>
                                         </div>
@@ -216,31 +213,18 @@ export default function Home() {
                 </div>
             ) : (
                 <div className={`home-bottom-nav-phone-wrapper ${theme}alt`}>
-                    <div className='home-bottom-icons-phone-wrapper' onClick={() => handleTabClick('home')}>
-                        <SiTinder style={{ color: activeTabPhone === 'home' ? '#ff4458' : '#7c8591' }} />
-                    </div>
-
-                    <div className='home-bottom-icons-phone-wrapper' onClick={() => handleTabClick('chats')}>
-                        <PiChatsCircleFill style={{ color: activeTabPhone === 'chats' ? '#ff4458' : '#7c8591' }} />
-                    </div>
-
-                    <div className='home-bottom-icons-phone-wrapper' onClick={() => handleTabClick('profile')}>
-                        <PiUserFill style={{ color: activeTabPhone === 'profile' ? '#ff4458' : '#7c8591' }} />
-                    </div>
+                    {phoneTabs.map((tab) => (
+                        <div key={tab.id} className='home-bottom-icons-phone-wrapper' onClick={() => handleTabClick(tab.id)}>
+                            <div className={activeTabPhone === tab.id ? 'active-tab' : 'inactive-tab'}>
+                                {tab.icon}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
 
-            {isTabletOrPhone && (
-                <>
-                    {activeTabPhone === 'chats' && (
-                        <PhoneMatches messages={messages} matches={matches} withFilteredConv={messages} />
-                    )}
+            {isTabletOrPhone && <PhoneView activeTabPhone={activeTabPhone} messages={messages} matches={matches} />}
 
-                    {activeTabPhone === 'profile' && (
-                        <PhoneMyProfile />
-                    )}
-                </>
-            )}
         </div>
     );
 }

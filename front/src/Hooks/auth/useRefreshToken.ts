@@ -1,10 +1,10 @@
 // Redux
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../Redux/store';
-import { setAccessToken, setCsrfToken } from "../Redux/features/authSlice";
+import { AppDispatch } from '../../Redux/store';
+import { setAccessToken, setCsrfToken } from "../../Redux/features/authSlice";
 
 // Services
-import { axiosInstance } from "../Services/authService";
+import { axiosInstance } from "../../Services/authService";
 
 export default function useRefreshToken() {
     const dispatch = useDispatch<AppDispatch>();

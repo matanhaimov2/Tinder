@@ -18,7 +18,7 @@ import { RootState, AppDispatch } from '../../Redux/store';
 import { setUpdatedUserData } from "../../Redux/features/authSlice";
 
 // Hooks
-import useLogout from '../../Hooks/useLogout';
+import useLogout from '../../Hooks/auth/useLogout';
 
 // Utils
 import useLocation from '../../Utils/locationUtils';
