@@ -22,6 +22,7 @@ from decouple import config
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
+AIVEN_PASSWORD = config('AIVEN_PASSWORD')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -195,7 +196,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'defaultdb',  # The database name
         'USER': 'avnadmin',  # Your PostgreSQL user
-        'PASSWORD': '',  # Your PostgreSQL password
+        'PASSWORD': AIVEN_PASSWORD,  # Your PostgreSQL password
         'HOST': 'pg-tinder-tinder-db.d.aivencloud.com',  # The host address of your PostgreSQL server
         'PORT': '26552',  # The default port for PostgreSQL
     }
