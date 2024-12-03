@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 // Redux
 import { useDispatch } from 'react-redux';
@@ -10,9 +12,13 @@ import { setAccessToken, setUserData, setIsLoggedIn } from "../../Redux/features
 import { login } from '../../Services/authService';
 import useAxiosPrivate from '../usePrivate';
 
+
+// Global Veribales
+import { SERVER_URL } from "../../Assets/GlobalVeriables";
+
 export const useLogin = () => {
     const dispatch = useDispatch<AppDispatch>();
-    
+
     // Navigation Handle
     const navigate = useNavigate();
 
@@ -63,10 +69,50 @@ export const useLogin = () => {
         }
     };
 
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true); // Start loading
+            try {
+                const googleToken = tokenResponse.access_token;
+
+                // Send the Google token to the backend for verification and user creation/fetching
+                const response = await axios.post(SERVER_URL + '/users/google_login/', { google_token: googleToken });
+
+                const { access_token, userData } = response.data;
+
+                console.log(access_token)
+                console.log(userData)
+
+                // Store the JWT access token in Redux
+                dispatch(setAccessToken(access_token));
+
+                // Set user data in Redux and navigate based on the login status
+                dispatch(setIsLoggedIn(true));
+                dispatch(setUserData(userData));
+
+                if (userData.isFirstLogin) {
+                    navigate('/setprofile');
+                } else {
+                    navigate('/home');
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                setErrorMessage('An error occurred during Google login. Please try again.');
+            } finally {
+                setLoading(false); // Stop loading
+            }
+        },
+        onError: (error) => {
+            console.error('Google Login Error:', error);
+            setErrorMessage('Google Login Failed.');
+        },
+    });
+
     return {
         setUsername,
         setPassword,
         handleLogin,
+        googleLogin,
         errorMessage,
         loading
     };

@@ -48,7 +48,7 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
     }, []);
 
     // Using the custom hook
-    const { setUsername, setPassword, handleLogin, errorMessage, loading } = useLogin();
+    const { setUsername, setPassword, handleLogin, googleLogin, errorMessage, loading } = useLogin();
 
     return (
         <div className='login-wrapper'>
@@ -119,6 +119,9 @@ function Login({ isLoginOpen, setIsLoginOpen }: LoginProps) {
                         <Alert severity='error'> {errorMessage} </Alert>
                     )}
                 </Sheet>
+
+                <button onClick={() => googleLogin()}>Sign in with Google 🚀</button>
+
             </form>
         </div>
     );
