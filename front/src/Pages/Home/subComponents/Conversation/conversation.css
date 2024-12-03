@@ -1,0 +1,287 @@
+.conversation-wrapper {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #111418;
+}
+
+.conversation-underline-separator {
+    height: 1px;
+    background-color: grey;
+}
+
+ /* Conversation Top Nav */
+.conversation-topnav-wrapper {
+    display: flex;
+    flex: 0.5;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1%;
+}
+
+.conversation-topnav-inner {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.conversation-circle-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+}
+
+.conversation-topnav-divider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.conversation-exit-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+/* Conversation Main - message ui */
+.conversation-messages-wrapper {
+    flex: 9;
+    padding: 1%;
+    position: relative;
+    overflow-y: auto;
+}
+
+.conversation-messages-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    gap: 1%;
+}
+
+.conversation-circular {
+    position: absolute;
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
+}
+
+.conversation-messages-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.conversation-date-divider {
+    display: flex;
+    justify-content: center;
+    color: grey;
+    padding: 1%;
+}
+
+.owner {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    align-items: center;
+    align-self: flex-end;
+    direction: ltr;
+    max-width: 20vw;
+    padding-left: 2%;
+    border-radius: 12px;
+}
+
+.another {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: fit-content;
+    max-width: 20vw;
+    padding-right: 0%;
+    border-radius: 12px;
+    gap: 5px;
+}
+
+.content-owner {
+    background-color: #106bd5;
+    border-radius: 5px;
+    color: white;
+    width: 100%;
+    padding: 3% 5%;
+}
+
+.content-another {
+    background-color: #21262e;
+    border-radius: 5px;
+    text-align: -webkit-left;
+    padding: 4% 5%;
+    color: white;
+    width: 100%;
+}
+
+.content-message {
+    padding-inline: 5px;
+    max-width: 100%;
+    margin: 5px 0;
+    border-radius: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    display: inline-block;
+    width: max-content;
+    direction: ltr;
+    margin-block: 0;
+}
+
+.conversation-image-file {
+    width: -webkit-fill-available;
+    height: auto;
+}
+
+.content-timestamp-left {
+    font-size: 70%;
+    margin: unset;
+    padding: 5px;
+    width: max-content;
+}
+
+.content-timestamp-right {
+    font-size: 70%;
+    margin: unset;
+    padding: 5px;
+    direction: ltr;
+    width: max-content;
+}
+
+.conversation-start-chat-title {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;                
+    color: #d43e73;              
+    font-weight: bold;           
+    text-align: center;             
+    letter-spacing: 1px;            
+}
+
+/* Conversation Bottom Nav - message actions */
+.conversation-send-wrapper {
+    display: flex;
+    flex: 0.5;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1%;
+    gap: 1%;
+}
+
+.conversation-send-file {
+    flex: 1;
+    padding: 1%;
+    cursor: pointer;
+}
+
+.file-upload-wrapper {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex: 1;
+}
+
+.file-upload-input {
+    position: absolute;
+    width: 0;
+    opacity: 0;
+}
+
+.file-clear-icon {
+    cursor: pointer;
+    color: grey;
+    transition: color 0.3s ease;
+}
+
+.file-clear-icon:hover {
+    color: rgb(207, 56, 56);
+}
+
+.file-input-label {
+    cursor: pointer;
+    color: grey; /* Icon color */
+    transition: color 0.3s ease;
+}
+
+.file-input-label:hover {
+    color: white;
+}
+
+.conversation-send-text {
+    flex: 8;
+    border: none;
+    background: none;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    caret-color: white;
+    direction: ltr;
+}
+
+.conversation-send-submit {
+    flex: 1 1;
+    background-color: #3c444f;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 100%;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    cursor: pointer;
+}
+
+/* Handle Responsive */
+
+@media (max-width: 1000px) {
+    .conversation-wrapper {
+        width: 65%;
+    }
+
+    .conversation-date-divider {
+        padding: 2%;
+    }
+}
+
+@media (max-width: 760px) {
+    .conversation-wrapper {
+        width: 100%;
+        height: 95%;
+        direction: rtl;
+    }
+
+    .conversation-send-wrapper {
+        padding: 2% 1%;
+    }
+
+    .conversation-send-text {
+        flex: 7;
+    }
+
+    .conversation-send-submit {
+        flex: 2;
+    }
+
+    .owner {
+        max-width: 40vw;
+    }
+
+    .another {
+        max-width: 40vw;
+    }
+
+    .conversation-date-divider {
+        padding: 3%;
+    }
+}

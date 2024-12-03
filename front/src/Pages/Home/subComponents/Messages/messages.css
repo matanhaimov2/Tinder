@@ -1,0 +1,77 @@
+.messages-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    direction: rtl;
+}
+
+.messages-circular {
+    position: absolute;
+    top: 30%;
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Offset by half of the element's width and height */
+}
+
+.messages-inner-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 6%;
+    width: 100%;
+    cursor: pointer;
+    padding: 1%;
+}
+
+.messages-circle-img {
+    width: 78px;
+    height: 78px;
+    border-radius: 50px;
+}
+
+
+.messages-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-block: 1%;}
+
+.messages-content-name {
+    font-weight: 600;
+    font-size: 120%;
+}
+
+.messages-content-text {
+    color: grey;
+    direction: ltr;
+}
+
+.messages-error-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 120px;
+    color: #d43e73;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 110%;
+}
+
+/* Phone CSS */
+
+.messages-phone-wrapper {
+    direction: ltr;
+    padding: 2%;
+    overflow-y: auto;
+    height: calc(100vh - 300px); /* cheat */
+}
+
+.messages-title-phone {
+    font-size: 110%;
+    font-weight: 600;
+    padding-block: 2%;
+}
+
+.messages-underline-separator {
+    height: 1px;
+    background-color: #3c444f;
+}

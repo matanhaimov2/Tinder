@@ -1,0 +1,173 @@
+.home-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+    background: black;
+}
+
+/* Main */
+.home-main-wrapper {
+    display: flex;
+    width: 75%;
+    height: 100%;
+    /* background: black; */
+    transition: 0.3s;
+}
+
+.home-cardProfile-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 97%;
+    margin: auto;
+}
+
+.home-cardProfile-icons-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    gap: 20px;
+}
+
+.home-cardProfile-icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Right Side */
+.home-side-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    height: 100%;
+}
+
+/* Right Side - TopNav */
+.home-side-nav-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    background: linear-gradient(45deg, #eb3131, #d43e73 );
+    border: none;
+    box-shadow: 0 5px 15px #0003;
+    color: #fff;
+    text-decoration: none;
+    transition: all .3s ease;
+    font-weight: 600;
+    z-index: 1;
+    padding-inline: 1% 2%;
+    direction: rtl;
+    justify-content: space-between;
+}
+
+.home-side-nav-inner {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: fit-content;
+    gap: 5%;
+    padding: 2%;
+    border-radius: 30px;
+    cursor: pointer;
+    direction: ltr;
+}
+.home-side-nav-inner:hover {
+    background-color: #191300;
+}
+
+.home-side-nav-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+}
+
+/* Right Side - Main (content) */
+.home-side-content-wrapper {
+    flex: 9;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #111418;
+    overflow-y: auto;
+    transition: 0.3s;
+}
+
+.home-side-content-title-wrapper {
+    display: flex;
+    flex-direction: column;
+    /* color: white; */
+}
+
+.home-side-content-title-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.home-side-content-details {
+    width: 95%;
+    height: 100%;
+    padding-top: 5%;
+    margin: auto;
+    overflow-y: auto; /* when there're too match matches */
+    overflow-x: hidden; /* when hovering transition pops out overflow-x*/
+}
+
+/* Phone CSS */
+.home-img-phone-wrapper {
+    width: 100%;
+    max-width: 120px;
+}
+
+.home-bottom-nav-phone-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 1%;
+    background-color: #111418;
+    z-index: 1;
+}
+
+.home-bottom-icons-phone-wrapper {
+    font-size: 160%;
+}
+
+.active-tab {
+    color: #ff4458;
+}
+
+.inactive-tab {
+    color: #7c8591;
+}
+
+/* Handle Responsive */
+
+@media (max-width: 1000px) {
+    .home-main-wrapper {
+        width: 65%;
+    }
+
+    .home-side-wrapper {
+        width: 35%;
+    }
+}
+
+@media (max-width: 760px) {
+    .home-wrapper {
+        flex-direction: column;
+    }
+    
+    .home-main-wrapper {
+        width: 100%;
+    }
+
+    .home-cardProfile-wrapper {
+        margin: unset;
+    }
+}
