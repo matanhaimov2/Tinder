@@ -25,87 +25,10 @@ def get_user_tokens(user):
     }
 
 # Google Auth Login
-# @rest_decorators.api_view(["POST"])
-# @rest_decorators.permission_classes([])
-# def google_login(request):
-#     google_token = request.data.get("google_token")
-#     print('Google token received on backend:', google_token)
-
-#     if not google_token:
-#         raise AuthenticationFailed("Google token is required")
-
-#     # Verify the Google access token by sending it to Google's OAuth2 API
-#     url = f'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={google_token}'
-#     response = requests.get(url)
-
-#     if response.status_code != 200:
-#         raise AuthenticationFailed("Invalid Google token")
-
-#     # Parse the response from Google
-#     user_info = response.json()
-#     print('Google user info:', user_info)
-
-#     # Extract user information
-#     email = user_info.get('email')
-#     print('EMAIL : ', email)
-
-#     # Check if user exists
-#     user = authenticate(username=email)
-
-#     if user is None:
-#         # User doesn't exist, create a new user
-#         user_data = {
-#             "email": email,
-#             "username": email,
-#             "first_name": '',
-#             "last_name": '',
-#             "password": '123456'  # No password needed for Google login
-#         }
-
-#         user_serializer = UserSerializer(data=user_data)
-#         print('SERIAL : ', user_serializer)
-
-#         if user_serializer.is_valid():
-#             print('GOT IN!?!?!?')
-#             user = user_serializer.save()
-#         else:
-#             print("User serializer errors:", user_serializer.errors)  # Log the errors
-#             raise AuthenticationFailed("User could not be created")
-
-#     # Get tokens for the user
-#     tokens = get_user_tokens(user)
-
-#     # Return tokens and user data
-#     res = Response()
-#     res.set_cookie(
-#         key=settings.SIMPLE_JWT['AUTH_COOKIE'],
-#         value=tokens["access_token"],
-#         expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-#         secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-#         httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-#         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-#     )
-
-#     res.set_cookie(
-#         key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
-#         value=tokens["refresh_token"],
-#         expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-#         secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-#         httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-#         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-#     )
-
-#     res.data = tokens
-#     res["X-CSRFToken"] = csrf.get_token(request)
-
-#     return res
-
-# Google Auth Login
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([])
 def google_login(request):
     google_token = request.data.get("google_token")
-    print('Google token received on backend:', google_token)
 
     if not google_token:
         raise AuthenticationFailed("Google token is required")
@@ -119,30 +42,39 @@ def google_login(request):
 
     # Parse the response from Google
     user_info = response.json()
-    print('Google user info:', user_info)
 
     # Extract user information
     email = user_info.get('email')
-    print('EMAIL : ', email)
+
+    # Extract username from email (before the '@')
+    username = email.split('@')[0]
+
+    # Extract first and last names
+    first_name = user_info.get('given_name', '')  # Google provides this as 'given_name'
+    last_name = user_info.get('family_name', '')  # Google provides this as 'family_name'
+
+    # If first and last names are missing, use the username as a fallback
+    if not first_name:
+        first_name = username
+    if not last_name:
+        last_name = username
 
     # Check if user already exists
     try:
-        user = User().objects.get(email=email)
-    except User().DoesNotExist:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
         # User doesn't exist, create a new user
         user_data = {
             "email": email,
-            "username": email,  # Use email as username
-            "first_name": user_info.get('given_name', ''),
-            "last_name": user_info.get('family_name', ''),
+            "username": username,
+            "first_name": first_name,
+            "last_name": last_name,
             "password": '123456'  # No password needed for Google login
         }
 
         user_serializer = UserSerializer(data=user_data)
-        print('SERIAL : ', user_serializer)
 
         if user_serializer.is_valid():
-            print('GOT IN!?!?!?')
             user = user_serializer.save()
         else:
             print("User serializer errors:", user_serializer.errors)  # Log the errors
