@@ -13,7 +13,7 @@ export default function useLogout() {
         try {
             const res = await axiosPrivateInstance.post("users/logout/")
           
-            console.log(res)
+            // console.log(res)
             dispatch(setAccessToken(''))
             dispatch(setCsrfToken(''))
             dispatch(setUserData(null))

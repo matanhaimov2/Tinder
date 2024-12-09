@@ -1,11 +1,11 @@
 from django.conf import settings
 from rest_framework import response, decorators as rest_decorators, permissions as rest_permissions, status
-from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.decorators import parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
-from profiles.models import Profile
 import jwt
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+
+# Models
+from profiles.models import Profile
 from .models import Message, Room, ImageUpload
 
 @rest_decorators.api_view(["POST"])

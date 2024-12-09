@@ -3,7 +3,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Message, Room
 
-
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Step 1: Retrieve the room_id from the URL parameters

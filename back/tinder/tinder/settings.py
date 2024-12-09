@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-from decouple import config
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -28,7 +28,6 @@ AIVEN_PASSWORD = config('AIVEN_PASSWORD')
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -75,7 +74,6 @@ CHANNEL_LAYERS = {
     }
 }
 
-
 ROOT_URLCONF = 'tinder.urls'
 
 # Allow all origins
@@ -101,8 +99,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost"
     # Add other allowed origins here
 ]
-
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -176,7 +172,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tinder.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
