@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Message, Room
+from django.core.cache import cache  # Django cache system, which uses Redis
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -24,8 +25,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         print(f'WebSocket connected: {self.channel_name}')
         
-        # Step 5: Fetch existing messages from the database for this room
-        messages = await self.get_messages()
+        # Step 5: Check Redis cache for existing messages or fetch from the database
+        messages = await self.get_messages_from_cache_or_db()
 
         # Step 6: Send the existing messages to the connected user
         await self.send_existing_messages(messages)
@@ -48,12 +49,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return room
 
     @database_sync_to_async
-    def get_messages(self):
+    def get_messages_from_db(self):
         # Step 5 Explanation: This method retrieves all messages associated with 
         # the room_id from the database. It returns a list of dictionaries containing
         # the username, content, and timestamp of each message.
         return list(Message.objects.filter(room__room_id=self.room_name).values('id', 'username', 'content', 'timestamp', 'image'))
 
+    async def get_messages_from_cache_or_db(self):
+        # First check if the messages are cached in Redis
+        cached_messages = cache.get(f'chat:{self.room_name}:messages')
+
+        if cached_messages:
+            # If cached messages exist, return them
+            print("Messages fetched from Redis cache.")
+            return cached_messages
+        else:
+            # If no cached messages, fetch from the database and cache them
+            print("Messages fetched from database and caching them.")
+            messages = await self.get_messages_from_db()
+
+            # Cache the fetched messages for future use (1 hour expiration)
+            cache.set(f'chat:{self.room_name}:messages', messages, timeout=3600)
+            return messages
+        
     async def send_existing_messages(self, messages):
         # Step 6 Explanation: This method sends all existing messages retrieved 
         # from the database to the connected user via the WebSocket. Each message
@@ -79,6 +97,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room=self.room, # Ensure the room is associated
             image= image if image else ''
         )
+
+        # After saving the new message, clear the cache for the room
+        # to ensure the cache is refreshed with the new message
+        cache.delete(f'chat:{self.room_name}:messages')
+        
         return message_obj
 
     async def receive(self, text_data):

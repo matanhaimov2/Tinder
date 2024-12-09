@@ -22,7 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
+# - If True => local db applyed, If False - server db (AIVEN) applyed
+USE_LOCAL_DB = config('USE_LOCAL_DB', default=False, cast=bool)
+# - If True => local cache applyed, If False - server cache (Redis Cloud) applyed
+USE_LOCAL_CACHE = config('USE_LOCAL_CACHE', default=False, cast=bool)
 AIVEN_PASSWORD = config('AIVEN_PASSWORD')
+REDIS_PASSWORD = config('REDIS_PASSWORD')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -67,12 +72,24 @@ MIDDLEWARE = [
 
 ASGI_APPLICATION = 'tinder.asgi.application'
 
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+if USE_LOCAL_CACHE:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
     }
-}
+else:
+    # Redis Cloud
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [
+                    f"redis://:{REDIS_PASSWORD}@redis-11596.c6.eu-west-1-1.ec2.redns.redis-cloud.com:11596/0"
+                ],
+            },
+        },
+    }
 
 ROOT_URLCONF = 'tinder.urls'
 
@@ -176,26 +193,27 @@ WSGI_APPLICATION = 'tinder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'tinder-db',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Matan2004',
-#         "HOST": "127.0.0.1",
-#     }
-# }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'defaultdb',  # The database name
-        'USER': 'avnadmin',  # Your PostgreSQL user
-        'PASSWORD': AIVEN_PASSWORD,  # Your PostgreSQL password
-        'HOST': 'pg-tinder-tinder-db.d.aivencloud.com',  # The host address of your PostgreSQL server
-        'PORT': '26552',  # The default port for PostgreSQL
+if USE_LOCAL_DB:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql', # Using PostgreSQL as the database engine
+            'NAME': 'tinder-db', # The name of the local PostgreSQL database
+            'USER': 'postgres', # Local database username (default for PostgreSQL)
+            'PASSWORD': 'Matan2004', # Local database password
+            'HOST': '127.0.0.1', # The host address for the local database (127.0.0.1 means localhost)
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql', # Using PostgreSQL as the database engine
+            'NAME': 'defaultdb', # The name of the remote PostgreSQL database (on the server)
+            'USER': 'avnadmin', # The username for the server's PostgreSQL database
+            'PASSWORD': AIVEN_PASSWORD, # Fetch the PostgreSQL password from the environment
+            'HOST': 'pg-tinder-tinder-db.d.aivencloud.com', # The host address of the PostgreSQL server
+            'PORT': '26552', # The port for connecting to the PostgreSQL server (default port is usually 5432)
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
