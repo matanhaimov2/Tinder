@@ -170,7 +170,12 @@ function MyProfile() {
                     {!isInterestOpen ? (
                         <div className='myProfile-arrow-wrapper'>
                             <IoIosArrowForward className='myProfile-arrow-icon' onClick={() => setIsInterestOpen(!isInterestOpen)} />
-                            <span style={{ color: '#7c8591' }}> {userData?.interested_in} </span>
+                            <span style={{ color: '#7c8591' }}>
+                                {/* Map the value to the human-readable label */}
+                                {userData?.interested_in === 'woman' ? 'Women' :
+                                    userData?.interested_in === 'man' ? 'Men' :
+                                        userData?.interested_in === 'other' ? 'Other' : ''}
+                            </span>
                         </div>
                     ) : (
                         <div className='myProfile-arrow-wrapper'>
@@ -197,8 +202,8 @@ function MyProfile() {
                                     value={interest}
                                     onChange={handleInterestChange}
                                 >
-                                    <MenuItem value={'man'}>Man</MenuItem>
-                                    <MenuItem value={'woman'}>Woman</MenuItem>
+                                    <MenuItem value={'man'}>Men</MenuItem>
+                                    <MenuItem value={'woman'}>Women</MenuItem>
                                     <MenuItem value={'other'}>Other</MenuItem>
                                 </Select>
                             </div>
