@@ -201,85 +201,84 @@ def deleteAccount(request):
     decoded_payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
     user_id = decoded_payload.get('user_id') # extract user_id from payload
     print(user_id)
-
-    data = OutstandingToken.objects.filter(user_id=user_id).values() # get from db data where user_id=user_id
-
-    # Extracting the 'id' field from each entry in the queryset
-    ids = [item['id'] for item in data]
-
+    
+    # Step 1: Delete related OutstandingTokens and BlacklistedTokens
+    data = OutstandingToken.objects.filter(user_id=user_id).values()
+    ids = [item['id'] for item in data] # Extracting the 'id' field from each entry
     # print(ids)
+    BlacklistedToken.objects.filter(token_id__in=ids).delete()
+    OutstandingToken.objects.filter(user_id=user_id).delete()
 
-    # Deleting all BlacklistedToken rows where room_id is in the 'ids' list
-    # BlacklistedToken.objects.filter(token_id__in=ids).delete()
-
-    # Deleting all OutstandingToken rows where user_id matches the given user_id
-    # OutstandingToken.objects.filter(user_id=user_id).delete()
-
+    # Step 2: Retrieve the user's profile and process room_ids
     profile = Profile.objects.filter(user_id=user_id).first() # get from db data where user_id=user_id
+    if not profile:
+        print(f"Profile not found for user_id {user_id}")
+        return Response({"detail": "User profile not found."}, status=404)
+
+    # Step 3: Ensure that room_id is a list before using it
     room_ids_str = profile.room_id
-    room_ids_int = []
-    for match in room_ids_str:
-        # Query the ChatRoom table to get the corresponding room id
+    if isinstance(room_ids_str, str):
         try:
-            chat_room = Room.objects.get(room_id=match)
-            room_ids_int.append(chat_room.id)  # Store the room's id
+            room_ids_str = json.loads(room_ids_str)  # Decode the JSON string if it's a string
+        except json.JSONDecodeError:
+            print(f"Invalid JSON format in room_id for user_id {user_id}")
+            return Response({"detail": "Invalid room_id format."}, status=400)
+
+    print(f"Room IDs from profile: {room_ids_str}")
+    
+    # room_ids_str = profile.room_id
+
+    # Step 4: Delete the chat rooms and related data
+    room_ids_int = []
+    for room_id_str in room_ids_str:
+        try:
+            chat_room = Room.objects.get(room_id=room_id_str) # Get room by room_id
+            room_ids_int.append(chat_room.id) # Store the corresponding room ID
         except Room.DoesNotExist:
-            print(f"ChatRoom with room_id {match} does not exist.")
+            print(f"ChatRoom with room_id {room_id_str} does not exist.")
 
     print(room_ids_str)
     print(room_ids_int)
 
-    # Deleting all ChatRoom rows where the id is in the room_ids list
-    Room.objects.filter(id__in=room_ids_int).delete()
+    # Delete associated ChatRoom, Message, and ImageUpload data
+    Room.objects.filter(id__in=room_ids_int).delete() # Deleting all ChatRoom rows where the id is in the room_ids list
+    Message.objects.filter(room_id__in=room_ids_int).delete() # Deleting all ChatMesages rows where the room_id is in the room_ids list
+    ImageUpload.objects.filter(room_id__in=room_ids_str).delete() # Deleting all ChatImages rows where room_id is in the room_ids_str
 
-    # Deleting all ChatMesages rows where the room_id is in the room_ids list
-    Message.objects.filter(room_id__in=room_ids_int).delete()
-
-    # Deleting all ChatImages rows where room_id is in the room_ids_str
-    ImageUpload.objects.filter(room_id__in=room_ids_str).delete()
-
-    # Step 9: Remove the user_id from other users' profiles
-    # Remove the user_id from the "matches" and "room_id" fields of all other users' profiles
+    # Step 5: Remove the user_id from other users' profiles
     profiles_to_update = Profile.objects.exclude(user_id=user_id)  # Get all profiles except for the deleted user's
     for profile in profiles_to_update:
-        # Remove any "match_{user_id}_" from matches or room_id
-        matches = json.loads(profile.matches) if profile.matches else []
-        room_ids = json.loads(profile.room_id) if profile.room_id else []
+        # Parse the JSON columns if they exist, or set them to empty lists if they don't
+        matches = profile.matches if isinstance(profile.matches, list) else json.loads(profile.matches) if profile.matches else []
+        likes = profile.likes if isinstance(profile.likes, list) else json.loads(profile.likes) if profile.likes else []
+        blacklist = profile.blacklist if isinstance(profile.blacklist, list) else json.loads(profile.blacklist) if profile.blacklist else []
+        room_ids = profile.room_id if isinstance(profile.room_id, list) else json.loads(profile.room_id) if profile.room_id else []
 
-        # Remove match IDs that contain the deleted user_id (like "match_32_18")
-        matches = [match for match in matches if f"match_{user_id}_" not in match]
-        room_ids = [room for room in room_ids if f"match_{user_id}_" not in room]
+        # Step 5.1: Remove any occurrences of the deleted user's user_id from matches, likes, and blacklist
+        matches = [match for match in matches if int(user_id) != match]
+        likes = [like for like in likes if int(user_id) != like]
+        blacklist = [blacklist_item for blacklist_item in blacklist if int(user_id) != blacklist_item]
 
-        # Update the profile's matches and room_ids after removal
-        profile.matches = json.dumps(matches)
-        profile.room_id = json.dumps(room_ids)
+        # Step 5.2: Remove any "match_{user_id}_" or "_{user_id}" from room_ids
+        room_ids = [room for room in room_ids if f"match_{user_id}_" not in room and f"_{user_id}" not in room]
+
+        # Step 5.3: Update the profile's matches, likes, blacklist, and room_ids after removal
+        # Update the profile's fields after removing the user_id references
+        profile.matches = matches  # Do not convert to string
+        profile.likes = likes  # Do not convert to string
+        profile.blacklist = blacklist  # Do not convert to string
+        profile.room_id = room_ids  # Do not convert to string
+
         profile.save()
-
-    # Step 10: Delete the user's profile
-    # profile.delete()
-
-    # Step 11: Optionally, delete the user from the User model as well
-    # user = User.objects.get(id=user_id)
-    # user.delete()
-    
-    # try:
-    #     refreshToken = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-    #     token = tokens.RefreshToken(refreshToken)
-    #     token.blacklist()
-
-    #     res = response.Response()
-   
-    #     res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
-    #     res.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-    #     res.delete_cookie("X-CSRFToken")
-    #     res.delete_cookie("csrftoken")
-   
-    #     res["X-CSRFToken"]=None
         
-    #     return res
-    # except:
-    #     raise rest_exceptions.ParseError("Invalid token")
-    return response.Response(status=status.HTTP_201_CREATED)
+    # Step 6: Delete the user's profile (user whose account is being deleted)
+    profile.delete()
+
+    # Step 7: Optionally, delete the user from the User model as well
+    user = User.objects.get(id=user_id)
+    user.delete()
+    
+    return Response({"detail": "Account and related data deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 
 # Refresh Token
