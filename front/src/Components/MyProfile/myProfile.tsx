@@ -20,6 +20,7 @@ import { setUpdatedUserData } from "../../Redux/features/authSlice";
 
 // Hooks
 import useLogout from '../../Hooks/auth/useLogout';
+import useDeleteAccount from '../../Hooks/auth/useDeleteAccount';
 
 // Utils
 import useLocation from '../../Utils/locationUtils';
@@ -43,6 +44,7 @@ function MyProfile() {
 
     // Get logout function from the hook
     const logout = useLogout()
+    const deleteAccount = useDeleteAccount()
 
     // Set default values for ageRange and distance based on userData
     useEffect(() => {
@@ -262,9 +264,14 @@ function MyProfile() {
 
             <div className='myProfile-underline-separator' /> {/* underline separator */}
 
-            <div>
-                <Button style={{fontFamily: 'Montserrat, sans-serif'}}>Delete My Account</Button>
+            <div className='myProfile-divs-wrapper' onClick={deleteAccount}>
+                <Button sx={{ fontFamily: 'Montserrat, sans-serif', color: '#ff4458', width: '100%' }}>
+                    Delete My Account
+                </Button>
             </div>
+
+            <div className='myProfile-underline-separator' /> {/* underline separator */}
+
         </div>
     );
 }
