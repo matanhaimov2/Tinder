@@ -7,6 +7,7 @@ import './myProfile.css';
 import Slider from '@mui/material/Slider';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Button from '@mui/material/Button';
 
 // React Icons
 import { IoIosArrowForward } from "react-icons/io";
@@ -261,6 +262,9 @@ function MyProfile() {
 
             <div className='myProfile-underline-separator' /> {/* underline separator */}
 
+            <div>
+                <Button style={{fontFamily: 'Montserrat, sans-serif'}}>Delete My Account</Button>
+            </div>
         </div>
     );
 }
