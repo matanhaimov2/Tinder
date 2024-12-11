@@ -28,6 +28,8 @@ USE_LOCAL_DB = config('USE_LOCAL_DB', default=False, cast=bool)
 USE_LOCAL_CACHE = config('USE_LOCAL_CACHE', default=False, cast=bool)
 AIVEN_PASSWORD = config('AIVEN_PASSWORD')
 REDIS_PASSWORD = config('REDIS_PASSWORD')
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000,http://localhost').split(',')
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:3000,http://localhost').split(',')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -93,28 +95,25 @@ else:
 
 ROOT_URLCONF = 'tinder.urls'
 
-# Allow all origins
-# CORS_ALLOW_ALL_ORIGINS = True
-
-# Allow all credentials
+# Allow all credentials for CORS
 CORS_ALLOW_CREDENTIALS = True
 
+# CSRF and session security settings
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTP_ONLY = True
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost"
-]
-
-CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
-SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
 
+# Expose CSRF Token and Content-Type header for cross-origin requests
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
+
+CSRF_TRUSTED_ORIGINS = [
+    *CORS_ALLOWED_ORIGINS # Use the value from the .env file
+]
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost"
-    # Add other allowed origins here
+    *CSRF_TRUSTED_ORIGINS # Use the value from the .env file
 ]
 
 REST_FRAMEWORK = {

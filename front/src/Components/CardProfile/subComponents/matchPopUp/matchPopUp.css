@@ -15,7 +15,7 @@
     background-color: #111418;
     border-radius: 10px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-    padding: 1% 2%;
+    padding: 2% 2%;
     text-align: center; 
     animation: fadeIn 0.3s ease; 
 }

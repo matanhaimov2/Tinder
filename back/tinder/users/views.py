@@ -339,7 +339,6 @@ def verify(request):
         return response.Response({'Error': f'Something went wrong: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 # Health Check
 @rest_decorators.api_view(["POST"])
 @rest_decorators.permission_classes([])
