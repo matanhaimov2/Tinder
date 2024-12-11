@@ -8,10 +8,3 @@ urlpatterns = [
     path("unmatchUser/", unmatchUser, name="unmatchUser"),
     path('imageHandler/<str:room_id>', imageHandler, name="imageHandler"),
 ]
-
-# Tasks: => to monday
-# load 10 messages max everytime
-
-# Warnings:
-# ignore redux warning (redux/toolkit cant find getdefaultmiddleware )
-# warning with routes, change from / to /*

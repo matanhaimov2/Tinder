@@ -120,13 +120,12 @@ export default function Home() {
                         {!isTabletOrPhone && (
                             <div className='home-cardProfile-icons-wrapper'>
                                 <div className='home-cardProfile-icons'>
-                                    <span> Like </span>
-                                    <LuArrowRightSquare />
-                                </div>
-
-                                <div className='home-cardProfile-icons'>
-                                    <span> Nope </span>
                                     <LuArrowLeftSquare />
+                                    <span> Nope </span>
+                                </div>
+                                <div className='home-cardProfile-icons'>
+                                    <LuArrowRightSquare />
+                                    <span> Like </span>
                                 </div>
                             </div>
                         )}

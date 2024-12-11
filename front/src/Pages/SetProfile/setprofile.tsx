@@ -355,8 +355,8 @@ function SetProfile() {
                             onChange={handleInterestChange}
                             required
                         >
-                            <MenuItem value={'man'}>Man</MenuItem>
-                            <MenuItem value={'woman'}>Woman</MenuItem>
+                            <MenuItem value={'man'}>Men</MenuItem>
+                            <MenuItem value={'woman'}>Women</MenuItem>
                             <MenuItem value={'other'}>Other</MenuItem>
                         </Select>
                     </FormControl>

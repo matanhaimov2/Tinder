@@ -1,8 +1,8 @@
 from django.conf import settings
 from rest_framework import response, decorators as rest_decorators, permissions as rest_permissions, status
-from .models import Profile
 import jwt
 from math import radians, cos, sin, asin, sqrt
+from .models import Profile
 
 # Get User Data From DB
 @rest_decorators.api_view(["GET"])
