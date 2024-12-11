@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 // Redux
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../Redux/store';
@@ -8,23 +10,27 @@ import { axiosPrivateInstance } from "../../Services/authService"
 
 export default function useDeleteAccount() {
     const dispatch = useDispatch<AppDispatch>();
-    
+
+    // Navigation Handle
+    const navigate = useNavigate();
+
     const deleteAccount = async () => {
         try {
-            const res = await axiosPrivateInstance.post("users/deleteAccount/")
-            console.log(res)
+            await axiosPrivateInstance.post("users/deleteAccount/")
 
             // logout user
-            // dispatch(setAccessToken(''))
-            // dispatch(setCsrfToken(''))
-            // dispatch(setUserData(null))
-            // dispatch(setIsLoggedIn(false))
-            
-            // // Clear local storage
-            // localStorage.removeItem('persist:root'); // Adjust if you use a different key
+            dispatch(setAccessToken(''))
+            dispatch(setCsrfToken(''))
+            dispatch(setUserData(null))
+            dispatch(setIsLoggedIn(false))
+
+            // Clear local storage
+            localStorage.removeItem('persist:root');
+
+            navigate('/');
 
         } catch (error) {
-            console.error('Logout failed', error); // Check for any errors
+            console.error('Account Deletion failed', error); // Check for any errors
         }
     }
 
