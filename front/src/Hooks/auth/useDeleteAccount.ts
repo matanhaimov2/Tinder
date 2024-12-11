@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Redux
@@ -11,10 +12,14 @@ import { axiosPrivateInstance } from "../../Services/authService"
 export default function useDeleteAccount() {
     const dispatch = useDispatch<AppDispatch>();
 
+    // States
+    const [loading, setLoading] = useState(false);
+
     // Navigation Handle
     const navigate = useNavigate();
 
     const deleteAccount = async () => {
+        setLoading(true);
         try {
             await axiosPrivateInstance.post("users/deleteAccount/")
 
@@ -31,8 +36,10 @@ export default function useDeleteAccount() {
 
         } catch (error) {
             console.error('Account Deletion failed', error); // Check for any errors
+        } finally {
+            setLoading(false);
         }
     }
 
-    return deleteAccount
+    return { deleteAccount, loading };
 }

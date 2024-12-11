@@ -1,16 +1,15 @@
 from django.contrib.auth import authenticate
 from django.conf import settings
 from django.middleware import csrf
-from rest_framework import exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
+from django.db import transaction
+from rest_framework import status, exceptions as rest_exceptions, response, decorators as rest_decorators, permissions as rest_permissions
 from rest_framework_simplejwt import tokens, views as jwt_views, serializers as jwt_serializers, exceptions as jwt_exceptions
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 import requests
 import jwt
 import json
-from django.db import transaction
 
 # Serializers
 from users import serializers
@@ -20,8 +19,7 @@ from .serializers import UserSerializer
 from django.contrib.auth.models import User
 from profiles.models import Profile
 from interactions.models import Room, Message, ImageUpload
-from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
 def get_user_tokens(user):
     refresh = tokens.RefreshToken.for_user(user)
@@ -203,7 +201,7 @@ def deleteAccount(request):
     user_id = decoded_payload.get('user_id') # extract user_id from payload
     
     try:
-        # Wrap the entire process in a transaction -  If any step fails, the entire block will be rolled back
+        # Wrap the entire process in a transaction - If any step fails, the entire block will be rolled back
         with transaction.atomic():
 
             # Step 1: Delete related OutstandingTokens and BlacklistedTokens
