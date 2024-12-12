@@ -53,7 +53,7 @@
     display: flex;
     justify-content: end;
     align-items: center;
-    background: linear-gradient(45deg, #eb3131, #d43e73 );
+    background: var(--default-button-bg);
     border: none;
     box-shadow: 0 5px 15px #0003;
     color: #fff;
@@ -95,6 +95,7 @@
     flex-direction: column;
     background: #111418;
     overflow-y: auto;
+    overflow-x: hidden;
     transition: 0.3s;
 }
 
@@ -139,7 +140,7 @@
 }
 
 .active-tab {
-    color: #ff4458;
+    color: var(--primary-color);
 }
 
 .inactive-tab {

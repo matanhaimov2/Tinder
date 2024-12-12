@@ -47,7 +47,7 @@
 }
 
 .editProfile-save-button {
-    background: linear-gradient(45deg, #eb3131, #d43e73 );
+    background: var(--default-button-bg);
     border: none;
     border-radius: 50px;
     box-shadow: 0 5px 15px #0003;

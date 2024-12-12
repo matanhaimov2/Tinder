@@ -176,216 +176,218 @@ function SetProfile() {
 
 
     return (
-        <form className='setprofile-wrapper' onSubmit={handleSubmit}>
-            <div className='setprofile-inner-wrapper'>
-                <Sheet
-                    sx={{
-                        backgroundColor: "#111418",
-                        border: 'none',
-                        width: 'auto',
-                        mx: 'auto', // margin left & right
-                        py: 3, // padding top & bottom
-                        px: 2, // padding left & right
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 2,
-                        borderRadius: 'sm',
-                        boxShadow: 'md',
-                        color: 'white'
-                    }}
-                    variant="outlined"
-                >
-                    <div className='login-tinder-content-wrapper'>
-                        <div className='login-tinder-icon-wrapper'>
-                            <img className='login-tinder-icon' src={tinder_icon} alt='Tinder Icon'></img>
+        <div style={{height: '100vh'}}>
+            <form className='setprofile-wrapper' onSubmit={handleSubmit}>
+                <div className='setprofile-inner-wrapper'>
+                    <Sheet
+                        sx={{
+                            backgroundColor: "#111418",
+                            border: 'none',
+                            width: 'auto',
+                            mx: 'auto', // margin left & right
+                            py: 3, // padding top & bottom
+                            px: 2, // padding left & right
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                            borderRadius: 'sm',
+                            boxShadow: 'md',
+                            color: 'white'
+                        }}
+                        variant="outlined"
+                    >
+                        <div className='login-tinder-content-wrapper'>
+                            <div className='login-tinder-icon-wrapper'>
+                                <img className='login-tinder-icon' src={tinder_icon} alt='Tinder Icon'></img>
+                            </div>
+
+                            <div className='login-tinder-title-wrapper'>
+                                <h1>Set Your Profile</h1>
+                            </div>
                         </div>
 
-                        <div className='login-tinder-title-wrapper'>
-                            <h1>Set Your Profile</h1>
-                        </div>
-                    </div>
+                        {/* Images Input */}
+                        <div className='setprofile-upload-images-wrapper'>
+                            <InputLabel id="age-select-label" sx={{ color: 'white' }}>Images</InputLabel>
 
-                    {/* Images Input */}
-                    <div className='setprofile-upload-images-wrapper'>
-                        <InputLabel id="age-select-label" sx={{ color: 'white' }}>Images</InputLabel>
-
-                        <div className='setprofile-upload-images-sub-wrapper'>
-                            {[...Array(3)].map((_, index) => (
-                                <Box className="setprofile-upload-image-box" key={index}>
-                                    {images[index] ? (
-                                        <>
-                                            <img
-                                                src={getObjectURL(images[index])}
-                                                alt={`img-${index}`}
-                                                className="setprofile-upload-uploaded-image"
-                                            />
-                                            <div onClick={() => handleRemoveImage(index)} className="setprofile-upload-remove-image-button">
-                                                <Delete />
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <IconButton component="label" className="setprofile-upload-add-image-button">
-                                            <AddAPhoto />
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                hidden
-                                                onChange={(e) => handleImageChange(e, index)}
-                                            />
-                                        </IconButton>
-                                    )}
-                                </Box>
-                            ))}
-                        </div>
-
-                        <div className='setprofile-upload-images-sub-wrapper'>
-                            {[...Array(3)].map((_, index) => (
-                                <Box className="setprofile-upload-image-box" key={index + 3}>
-                                    {images[index + 3] ? (
-                                        <>
-                                            <img
-                                                src={getObjectURL(images[index + 3])}
-                                                alt={`img-${index + 3}`}
-                                                className="setprofile-upload-uploaded-image"
-                                            />
-                                            <div onClick={() => handleRemoveImage(index + 3)} className="setprofile-upload-remove-image-button">
-                                                <Delete />
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <IconButton component="label" className="setprofile-upload-add-image-button">
-                                            <AddAPhoto />
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                hidden
-                                                onChange={(e) => handleImageChange(e, index + 3)}
-                                            />
-                                        </IconButton>
-                                    )}
-                                </Box>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Age & Gender Input */}
-                    <div className='setprofile-content-wrapper'>
-                        <FormControl required sx={{ width: '50%' }}>
-                            <InputLabel id="age-select-label" sx={{ color: 'white' }}>Age</InputLabel>
-                            <Select
-                                sx={{ background: 'white' }}
-                                labelId="age-select-label"
-                                id="age-select"
-                                label="Age"
-                                value={age}
-                                onChange={handleAgeChange}
-                                required
-                            >
-                                {ages.map(age => (
-                                    <MenuItem key={age} value={age}>
-                                        {age}
-                                    </MenuItem>
+                            <div className='setprofile-upload-images-sub-wrapper'>
+                                {[...Array(3)].map((_, index) => (
+                                    <Box className="setprofile-upload-image-box" key={index}>
+                                        {images[index] ? (
+                                            <>
+                                                <img
+                                                    src={getObjectURL(images[index])}
+                                                    alt={`img-${index}`}
+                                                    className="setprofile-upload-uploaded-image"
+                                                />
+                                                <div onClick={() => handleRemoveImage(index)} className="setprofile-upload-remove-image-button">
+                                                    <Delete />
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <IconButton component="label" className="setprofile-upload-add-image-button">
+                                                <AddAPhoto />
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    hidden
+                                                    onChange={(e) => handleImageChange(e, index)}
+                                                />
+                                            </IconButton>
+                                        )}
+                                    </Box>
                                 ))}
-                            </Select>
+                            </div>
+
+                            <div className='setprofile-upload-images-sub-wrapper'>
+                                {[...Array(3)].map((_, index) => (
+                                    <Box className="setprofile-upload-image-box" key={index + 3}>
+                                        {images[index + 3] ? (
+                                            <>
+                                                <img
+                                                    src={getObjectURL(images[index + 3])}
+                                                    alt={`img-${index + 3}`}
+                                                    className="setprofile-upload-uploaded-image"
+                                                />
+                                                <div onClick={() => handleRemoveImage(index + 3)} className="setprofile-upload-remove-image-button">
+                                                    <Delete />
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <IconButton component="label" className="setprofile-upload-add-image-button">
+                                                <AddAPhoto />
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    hidden
+                                                    onChange={(e) => handleImageChange(e, index + 3)}
+                                                />
+                                            </IconButton>
+                                        )}
+                                    </Box>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Age & Gender Input */}
+                        <div className='setprofile-content-wrapper'>
+                            <FormControl required sx={{ width: '50%' }}>
+                                <InputLabel id="age-select-label" sx={{ color: 'white' }}>Age</InputLabel>
+                                <Select
+                                    sx={{ background: 'white' }}
+                                    labelId="age-select-label"
+                                    id="age-select"
+                                    label="Age"
+                                    value={age}
+                                    onChange={handleAgeChange}
+                                    required
+                                >
+                                    {ages.map(age => (
+                                        <MenuItem key={age} value={age}>
+                                            {age}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
+                            <FormControl required sx={{ width: '50%' }}>
+                                <InputLabel id="gender-select-label" sx={{ color: 'white' }}>Gender</InputLabel>
+                                <Select
+                                    sx={{ background: 'white' }}
+                                    labelId="gender-select-label"
+                                    id="gender-select"
+                                    label="Gender"
+                                    value={gender}
+                                    onChange={handleGenderChange}
+                                    required
+                                >
+                                    <MenuItem value={'man'}>Man</MenuItem>
+                                    <MenuItem value={'woman'}>Woman</MenuItem>
+                                    <MenuItem value={'other'}>Other</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+
+                        {/* Bio Input */}
+                        <FormControl sx={{ width: '100%' }}>
+                            <InputLabel id="bio-input" sx={{ color: 'white' }}>Bio</InputLabel>
+                            <TextField
+                                id="bio-input"
+                                placeholder="Tell us about yourself"
+                                variant="outlined" // Can also be 'filled' or 'standard'
+                                multiline
+                                rows={4} // Adjust this for the height of the TextField
+                                value={bio}
+                                onChange={handleBioChange}
+                                sx={{
+                                    background: 'white', '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            border: 'none', // Disable the outline
+                                        },
+                                    },
+                                }}
+                                required
+                            />
                         </FormControl>
 
-                        <FormControl required sx={{ width: '50%' }}>
-                            <InputLabel id="gender-select-label" sx={{ color: 'white' }}>Gender</InputLabel>
+                        {/* Location Input */}
+                        <FormControl sx={{ width: '100%' }}>
+                            <InputLabel id="location-input" sx={{ color: 'white' }}>Location</InputLabel>
+                            <input
+                                ref={inputRef}
+                                id="location-input"
+                                type="text"
+                                placeholder="Enter your location"
+                                style={{ padding: '2%', borderRadius: '4px', outline: 'none' }}
+                                onChange={(e) => setLocation(e.target.value)}
+                                required
+                            />
+                        </FormControl>
+
+                        {/* Intereset_in Input */}
+                        <FormControl sx={{ width: '100%' }}>
+                            <InputLabel id="interest-select-label" sx={{ color: 'white' }}>Interested in</InputLabel>
                             <Select
                                 sx={{ background: 'white' }}
-                                labelId="gender-select-label"
-                                id="gender-select"
-                                label="Gender"
-                                value={gender}
-                                onChange={handleGenderChange}
+                                labelId="interest-select-label"
+                                id="interest-select-0"
+                                label="Interested in"
+                                value={interest}
+                                onChange={handleInterestChange}
                                 required
                             >
-                                <MenuItem value={'man'}>Man</MenuItem>
-                                <MenuItem value={'woman'}>Woman</MenuItem>
+                                <MenuItem value={'man'}>Men</MenuItem>
+                                <MenuItem value={'woman'}>Women</MenuItem>
                                 <MenuItem value={'other'}>Other</MenuItem>
                             </Select>
                         </FormControl>
-                    </div>
 
-                    {/* Bio Input */}
-                    <FormControl sx={{ width: '100%' }}>
-                        <InputLabel id="bio-input" sx={{ color: 'white' }}>Bio</InputLabel>
-                        <TextField
-                            id="bio-input"
-                            placeholder="Tell us about yourself"
-                            variant="outlined" // Can also be 'filled' or 'standard'
-                            multiline
-                            rows={4} // Adjust this for the height of the TextField
-                            value={bio}
-                            onChange={handleBioChange}
-                            sx={{
-                                background: 'white', '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        border: 'none', // Disable the outline
-                                    },
-                                },
+                        {/* Show CircularProgress while loading */}
+                        {loading ? (
+                            <Box className='login-loading-wrapper'>
+                                <CircularProgress color='inherit' />
+                            </Box>
+                        ) : (
+                            <Button type='submit' sx={{
+                                padding: 2, backgroundColor: 'primary.main', color: 'white',
+                                '&:hover': {
+                                    backgroundColor: 'primary.dark', // Adjust hover color if needed
+                                }
                             }}
-                            required
-                        />
-                    </FormControl>
+                            >
+                                Proceed
+                            </Button>
+                        )}
 
-                    {/* Location Input */}
-                    <FormControl sx={{ width: '100%' }}>
-                        <InputLabel id="location-input" sx={{ color: 'white' }}>Location</InputLabel>
-                        <input
-                            ref={inputRef}
-                            id="location-input"
-                            type="text"
-                            placeholder="Enter your location"
-                            style={{ padding: '2%', borderRadius: '4px', outline: 'none' }}
-                            onChange={(e) => setLocation(e.target.value)}
-                            required
-                        />
-                    </FormControl>
+                        {/* Display message */}
+                        {errorMessage && (
+                            <Alert severity='error'> {errorMessage} </Alert>
+                        )}
 
-                    {/* Intereset_in Input */}
-                    <FormControl sx={{ width: '100%' }}>
-                        <InputLabel id="interest-select-label" sx={{ color: 'white' }}>Interested in</InputLabel>
-                        <Select
-                            sx={{ background: 'white' }}
-                            labelId="interest-select-label"
-                            id="interest-select-0"
-                            label="Interested in"
-                            value={interest}
-                            onChange={handleInterestChange}
-                            required
-                        >
-                            <MenuItem value={'man'}>Men</MenuItem>
-                            <MenuItem value={'woman'}>Women</MenuItem>
-                            <MenuItem value={'other'}>Other</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    {/* Show CircularProgress while loading */}
-                    {loading ? (
-                        <Box className='login-loading-wrapper'>
-                            <CircularProgress color='inherit' />
-                        </Box>
-                    ) : (
-                        <Button type='submit' sx={{
-                            padding: 2, backgroundColor: 'primary.main', color: 'white',
-                            '&:hover': {
-                                backgroundColor: 'primary.dark', // Adjust hover color if needed
-                            }
-                        }}
-                        >
-                            Proceed
-                        </Button>
-                    )}
-
-                    {/* Display message */}
-                    {errorMessage && (
-                        <Alert severity='error'> {errorMessage} </Alert>
-                    )}
-
-                </Sheet>
-            </div>
-        </form>
+                    </Sheet>
+                </div>
+            </form>
+        </div>
     );
 }
 

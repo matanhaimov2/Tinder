@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 USE_LOCAL_DB = config('USE_LOCAL_DB', default=False, cast=bool)
 # - If True => local cache applyed, If False - server cache (Redis Cloud) applyed
 USE_LOCAL_CACHE = config('USE_LOCAL_CACHE', default=False, cast=bool)
-AIVEN_PASSWORD = config('AIVEN_PASSWORD')
+NEON_PASSWORD = config('NEON_PASSWORD')
 REDIS_PASSWORD = config('REDIS_PASSWORD')
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000,http://localhost').split(',')
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:3000,http://localhost').split(',')
@@ -206,11 +206,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql', # Using PostgreSQL as the database engine
-            'NAME': 'defaultdb', # The name of the remote PostgreSQL database (on the server)
-            'USER': 'avnadmin', # The username for the server's PostgreSQL database
-            'PASSWORD': AIVEN_PASSWORD, # Fetch the PostgreSQL password from the environment
-            'HOST': 'pg-tinder-tinder-db.d.aivencloud.com', # The host address of the PostgreSQL server
-            'PORT': '26552', # The port for connecting to the PostgreSQL server (default port is usually 5432)
+            'NAME': 'pg-tinder', # The name of the remote PostgreSQL database (on the server)
+            'USER': 'pg-tinder_owner', # The username for the server's PostgreSQL database
+            'PASSWORD': NEON_PASSWORD, # Fetch the PostgreSQL password from the environment
+            'HOST': 'ep-billowing-shape-a2pshy9e.eu-central-1.aws.neon.tech', # The host address of the PostgreSQL server
+            'PORT': '5432', # The port for connecting to the PostgreSQL server (default port is usually 5432)
         }
     }
 

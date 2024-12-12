@@ -170,7 +170,7 @@ export default function Home() {
                                                 <TabList onChange={handleChange} aria-label="lab API tabs example"
                                                     TabIndicatorProps={{
                                                         style: {
-                                                            backgroundColor: '#ff4458', // The active tab
+                                                            backgroundColor: 'var(--primary-color)', // The active tab
                                                         },
                                                     }}
                                                 >

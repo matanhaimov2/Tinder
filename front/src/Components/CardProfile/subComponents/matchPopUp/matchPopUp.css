@@ -56,7 +56,7 @@
 .matchPopUp-close-button {
     color: white;
     font-family: 'Montserrat', sans-serif;
-    background-color: #f50057; 
+    background-color: var(--primary-button-bg); 
     border: none; 
     padding: 12px 24px; 
     border-radius: 10px; 
@@ -69,7 +69,7 @@
 }
 
 .matchPopUp-close-button:hover {
-    background-color: #d4004a; 
+    background-color: var(--primary-button-bg-hover); 
 }
 
 .matchPopUp-close-button:active {

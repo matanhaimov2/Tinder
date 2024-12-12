@@ -8,6 +8,7 @@
     background-color: #111418;
     padding-block: 2%;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .phoneMyProfile-switch-theme-wrapper {

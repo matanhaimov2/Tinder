@@ -4,7 +4,6 @@
     flex-direction: column;
     width: 35%;
     height: 95%;
-    /* margin: auto; */
     box-shadow: rgba(99, 99, 99, 0.2) 2px 5px 8px 2px;
 }
 
@@ -88,7 +87,7 @@
     align-items: center;
     flex-direction: column;
     height: 100%;
-    color: #d43e73;
+    color: var(--secondary-color);
     font-weight: bold;
     letter-spacing: 1px;
     font-size: 110%;
@@ -132,11 +131,11 @@
 }
 
 .heart-button {
-    border-color: #2cf2a2;
+    border-color: var(--like-color);
 }
 
 .dislike-button {
-    border-color: #f22c59;
+    border-color: var(--dislike-color);
 }
 
 .icon {
@@ -144,11 +143,11 @@
 }
 
 .heart-button .icon {
-    color: #2cf2a2;
+    color: var(--like-color);
 }
 
 .dislike-button .icon {
-    color: #f22c59;
+    color: var(--dislike-color);
 }
 
 /* Handle Responsive */

@@ -165,7 +165,7 @@
     justify-content: center;
     align-items: center;
     font-size: 24px;                
-    color: #d43e73;              
+    color: var(--secondary-color);              
     font-weight: bold;           
     text-align: center;             
     letter-spacing: 1px;            
@@ -207,7 +207,7 @@
 }
 
 .file-clear-icon:hover {
-    color: rgb(207, 56, 56);
+    color: var(--primary-button-bg-hover);
 }
 
 .file-input-label {

@@ -65,9 +65,6 @@ export default function UnMatch({ room_id }: UnmatchProps) {
                     text: "You have successfully unmatched this user.",
                     icon: "success",
                     confirmButtonText: "Great!",
-                    // background: '#000000',
-                    // color: '#ffffff'
-                    // adjusment for light/dark mode is missing
                 }).then(() => {
                     window.location.reload(); // Refresh the page after the alert
                 });
@@ -83,9 +80,6 @@ export default function UnMatch({ room_id }: UnmatchProps) {
                 title: 'Error!',
                 text: 'Failed to unmatch user. Please try again.',
                 icon: 'error',
-                // background: '#000000',
-                // color: '#ffffff'
-                // adjusment for light/dark mode is missing
             })
         }
     };
@@ -125,12 +119,12 @@ export default function UnMatch({ room_id }: UnmatchProps) {
                                 <span>?this user</span>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-                                <span onClick={handleUnmatch} style={{ cursor: 'pointer', color: '#ff6666' }}>Yes, unmatch</span>
+                                <span onClick={handleUnmatch} style={{ cursor: 'pointer', color: 'var(--primary-color)' }}>Yes, unmatch</span>
                                 <span onClick={() => setOpen(false)} style={{ cursor: 'pointer', color: '#888888' }}>Cancel</span>
                             </div>
                         </Paper>
                     ) : (
-                        <CircularProgress sx={{ color: '#d43e73 ' }} />
+                        <CircularProgress sx={{ color: 'var(--secondary-color)' }} />
                     )}
 
                 </Box>

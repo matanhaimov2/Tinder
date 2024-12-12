@@ -1,3 +1,15 @@
+:root {
+  --primary-color: #ff4458;
+  --secondary-color: #d43e73; /* used for titles, progress*/
+  --default-button-bg: linear-gradient(45deg, #eb3131, #d43e73 ); /* used for main buttons*/
+  --primary-button-bg: #ff4458; /* used for ordinary buttons*/
+  --primary-button-bg-hover: #e02c4f; /* Hover background color */
+  --inactive-tab-color: #7c8591; /* Gray for inactive tabs */
+  --like-color: #2cf2a2; /* Green for "like" */
+  --dislike-color: #f22c59; /* Red for "dislike" */
+  --slider-track-color: #ff4458; /* Light gray for the unfilled part of the slider */
+}
+
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;

@@ -1,12 +1,13 @@
 .setprofile-wrapper {
     width: 100%;
-    height: 100%;
+    height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
     background-image: url('../../Assets//Images/tinder_background_img.jpg');
     background-size: cover;
     background-position: center;
     color: white;
+    padding-block: 1%;
 }
 
 .setprofile-wrapper::before {
@@ -23,7 +24,7 @@
 .setprofile-inner-wrapper {
     z-index: 1;
     margin: auto;
-    padding-block: 1%;
+    overflow-y: auto;
 }
 
 .setprofile-content-wrapper {

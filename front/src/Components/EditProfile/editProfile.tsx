@@ -40,13 +40,13 @@ function EditProfile() {
                                     value={tab.value}
                                     aria-label={tab.ariaLabel}
                                     sx={{
-                                        color: tabValue === tab.value ? '#ff4458' : '#7c8591',
+                                        color: tabValue === tab.value ? 'var(--primary-color)' : 'var(--inactive-tab-color)',
                                         textTransform: 'none',
                                         fontSize: '120%',
                                         borderRadius: '5px',
                                         fontWeight: '600',
                                         '&.Mui-selected': {
-                                            color: '#ff4458',
+                                            color: 'var(--primary-color)',
                                         },
                                     }}
                                 />

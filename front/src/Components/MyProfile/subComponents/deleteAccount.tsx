@@ -40,7 +40,7 @@ export default function DeleteAccount() {
 
     return (
         <div>
-            <Button style={{ fontFamily: 'Montserrat, sans-serif', color: '#ff4458', width: '100%' }} onClick={() => setOpen(true)}>delete my account</Button>
+            <Button style={{ fontFamily: 'Montserrat, sans-serif', color: 'var(--primary-color)', width: '100%' }} onClick={() => setOpen(true)}>delete my account</Button>
             <Backdrop open={open} sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} aria-hidden={!open}>
                 <Box
                     ref={closeRef}
@@ -70,7 +70,7 @@ export default function DeleteAccount() {
                             }}
                         >
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', direction: 'ltr' }}>
-                                <h2 style={{ color: '#ff6666' }}>We’re sad to see you go!</h2>
+                                <h2 style={{ color: 'var(--primary-color)' }}>We’re sad to see you go!</h2>
                                 <span>Are you sure you want to delete your account?</span>
                             </div>
                             <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', gap: '40px' }}>
@@ -78,13 +78,13 @@ export default function DeleteAccount() {
                                     onClick={deleteAccount}
                                     disabled={loading}
                                     sx={{
-                                        backgroundColor: '#ff4458',
+                                        backgroundColor: 'var(--primary-button-bg)',
                                         color: '#fff',
                                         width: '100px',
                                         padding: '8px',
                                         borderRadius: '8px',
                                         fontWeight: 'bold',
-                                        '&:hover': { backgroundColor: '#e02c4f' },
+                                        '&:hover': { backgroundColor: 'var(--primary-button-bg-hover)' },
                                         fontFamily: 'Montserrat, sans-serif',
                                     }}
                                 >
@@ -108,7 +108,7 @@ export default function DeleteAccount() {
                             </div>
                         </Paper>
                     ) : (
-                        <CircularProgress sx={{ color: '#d43e73 ' }} />
+                        <CircularProgress sx={{ color: 'var(--secondary-color)' }} />
                     )}
                 </Box>
             </Backdrop>

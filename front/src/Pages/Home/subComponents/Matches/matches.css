@@ -42,7 +42,7 @@
     flex-direction: column;
     width: -webkit-fill-available;
     height: 120px;
-    color: #d43e73;
+    color: var(--secondary-color);
     font-weight: bold;
     letter-spacing: 1px;
     font-size: 110%;
@@ -72,8 +72,6 @@
 .matches-swiping-match-phone-wrapper {
     display: -webkit-box;
     overflow-x: auto;
-    /* display: flex;
-    flex-direction: row; */
     gap: 2%;
 }
 
@@ -101,7 +99,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #d43e73;
+    color: var(--secondary-color);
     font-weight: bold;
     letter-spacing: 1px;
     font-size: 110%;
